@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		
+		<link rel="stylesheet" href="jquery.syntax.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="example.css" type="text/css" media="screen" />
+	
+		<script src="jquery-1.4.1.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script src="jquery.syntax.js" type="text/javascript" charset="utf-8"></script>
+		<script src="jquery.syntax.cache.js" type="text/javascript" charset='utf-8'></script>
+		
+		<script type="text/javascript" language="JavaScript">
+		//<!--
+			$(function() {
+				$('#highlight').click(function() {
+					$('pre.clang').syntax({brush: 'clang', layout: 'table', replace: true}, function(options, html, container) {
+						//$('.function', html).replaceWith(function(){
+						//	return $('<a>').addClass('function').attr('href', '#' + $(this).text()).html($(this).html());
+						//})
+					});
+				});
+			});
+		//-->
+		</script>
+ 
+	</head>
+	<body>
+		<h1>Syntax Highlighting Example</h1>
+		
+		<button id="highlight">Highlight</button>
+		
+		<pre class="clang">#include &lt;iostream&gt; // std::out
+int main (int argv, char ** argv) {
+	return EXIT_SUCCESS;
+}
+</pre>
+
+	</body>
+</html>
