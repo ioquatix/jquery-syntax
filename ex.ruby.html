@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		
+		<link rel="stylesheet" href="jquery.syntax.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="example.css" type="text/css" media="screen" />
+	
+		<script src="jquery-1.4.1.js" type="text/javascript"></script>
+		<script src="jquery.syntax.js" type="text/javascript" charset='utf-8'></script>
+		<script src="jquery.syntax.cache.js" type="text/javascript" charset='utf-8'></script>
+		
+		<script type="text/javascript" language="JavaScript">
+		//<!--
+			$(function() {
+				$('pre.ruby').syntax({brush: 'ruby', layout: 'table', replace: true})
+			})
+		//-->
+		</script>
+ 
+	</head>
+	<body>
+		<h1>Syntax: Ruby</h1>
+		
+		<pre class="ruby">#!/usr/bin/env ruby
+
+# Copyright (c) 2009 Samuel Williams. Released under the GNU GPLv3.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+
+require 'rubygems'
+
+require 'rexec'
+require 'rexec/daemon'
+
+require 'rubygems'
+require 'rubydns'
+
+# To run this command, use the standard daemon syntax as root
+# ./daemon2.rb start
+
+# You should be able to see that the server has dropped priviledges
+#   # ps aux | grep daemon2.rb
+#   daemon   16555   0.4  0.0    81392   2024   ??  S     3:35am   0:00.28 ruby ../test/daemon2.rb start
+
+# Test using the following command
+# dig @localhost test.mydomain.org
+
+# You might need to change the user name &quot;daemon&quot;. This can be a user name or a user id.
+RUN_AS = &quot;daemon&quot;
+
+# UDP Socket does per packet reverse lookups unless this is set.
+UDPSocket.do_not_reverse_lookup = true
+
+# We need to be root in order to bind to privileged port
+if RExec.current_user != &quot;root&quot;
+  $stderr.puts &quot;Sorry, this command needs to be run as root!&quot;
+  exit 1
+end
+
+# The Daemon itself
+class Server &lt; RExec::Daemon::Base
+  @@var_directory = File.dirname(__FILE__)
+
+  def self.run
+    # Bind to port 53 (UDP)
+    socket = UDPSocket.new
+    socket.bind(&quot;0.0.0.0&quot;, 53)
+
+    # Drop priviledges
+    RExec.change_user(RUN_AS)
+
+    # Don't buffer output (for debug purposes)
+    $stderr.sync = true
+
+    # Use upstream DNS for name resolution (These ones are Orcon DNS in NZ)
+    $R = Resolv::DNS.new(:nameserver =&gt; [&quot;60.234.1.1&quot;, &quot;60.234.2.2&quot;])
+
+    # Start the RubyDNS server
+    RubyDNS::run_server(:listen =&gt; [socket]) do
+      match(&quot;test.mydomain.org&quot;, :A) do |transaction|
+        transaction.respond!(&quot;10.0.0.80&quot;)
+      end
+
+      # Default DNS handler
+      otherwise do |transaction|
+        logger.info &quot;Passthrough: #{transaction}&quot;
+        transaction.passthrough!($R)
+      end
+    end
+  end
+end
+
+# RExec daemon runner
+Server.daemonize</pre>
+
+	</body>
+</html>

@@ -58,6 +58,96 @@ unsigned columnMajorOffset(unsigned row, unsigned col, unsigned sz)
   return row + col * sz;
 }
 
+template &lt;typename _ValueT, unsigned _R, unsigned _C, bool _ColumnMajor&gt;
+class Matrix {
+protected:
+	enum { ColumnMajor = _ColumnMajor };
+	enum { R = _R };
+	enum { C = _C };
+
+	typedef _ValueT ValueT;
+
+	ValueT m_values[C*R];
+
+public:
+	const ValueT &amp; at (unsigned r, unsigned c) const
+	{
+		if (ColumnMajor)
+			return m_values[columnMajorOffset(r, c, R)];
+		else
+			return m_values[rowMajorOffset(r, c, C)];
+	}
+
+	ValueT &amp; at (unsigned r, unsigned c)
+	{
+		if (ColumnMajor)
+			return m_values[columnMajorOffset(r, c, R)];
+		else
+			return m_values[rowMajorOffset(r, c, C)];
+	}
+
+	void loadTestPattern ()
+	{
+		for (unsigned r = 0; r &lt; R; r += 1)
+			for (unsigned c = 0; c &lt; C; c += 1)
+				at(r, c) = (r+1) * 1000 + (c+1);
+	}
+
+	void debug ()
+	{
+		using namespace std;
+
+		if (ColumnMajor)
+			cout &lt;&lt; &quot;Column-Major Matrix &quot; &lt;&lt; &quot;(&quot; &lt;&lt; R &lt;&lt; &quot;,&quot; &lt;&lt; C &lt;&lt; &quot;)&quot; &lt;&lt; &quot; @ &quot; &lt;&lt; this &lt;&lt; endl;
+		else
+			cout &lt;&lt; &quot;Row-Major Matrix &quot; &lt;&lt; &quot;(&quot; &lt;&lt; R &lt;&lt; &quot;,&quot; &lt;&lt; C &lt;&lt; &quot;)&quot; &lt;&lt; &quot; @ &quot; &lt;&lt; this &lt;&lt; endl;
+
+		cout &lt;&lt; &quot;Memory Offset: &quot;;
+		for (unsigned i = 0; i &lt; (R*C); i += 1)
+			cout &lt;&lt; i &lt;&lt; &quot;    &quot;;
+		cout &lt;&lt; endl;
+
+		cout &lt;&lt; &quot;       Values: &quot;;	
+		for (unsigned i = 0; i &lt; (R*C); i += 1)
+			cout &lt;&lt; m_values[i] &lt;&lt; &quot; &quot;;
+		cout &lt;&lt; endl;
+
+		cout &lt;&lt; &quot;Standard Mathematical Notation:&quot; &lt;&lt; endl;
+		cout &lt;&lt; &quot;      &quot;;
+		for (unsigned c = 0; c &lt; C; c += 1)
+			cout &lt;&lt; &quot;Col &quot; &lt;&lt; c &lt;&lt; &quot; &quot;;
+		cout &lt;&lt; endl;
+
+		for (unsigned r = 0; r &lt; R; r += 1) {
+			cout &lt;&lt; &quot;Row &quot; &lt;&lt; r &lt;&lt; &quot; &quot;;
+			for (unsigned c = 0; c &lt; C; c += 1)
+				cout &lt;&lt; at(r, c) &lt;&lt; &quot;  &quot;;
+			cout &lt;&lt; endl;
+		}
+		cout &lt;&lt; endl;
+	}
+
+	Matrix&lt;ValueT, R, C, !ColumnMajor&gt; transposeStorage () const
+	{
+		Matrix&lt;ValueT, R, C, !ColumnMajor&gt; result;
+
+		for (unsigned r = 0; r &lt; R; r += 1)
+			for (unsigned c = 0; c &lt; C; c += 1)
+				result.at(r, c) = at(r, c);
+
+		return result;
+	}
+
+	Matrix&lt;ValueT, C, R, !ColumnMajor&gt; transposeMatrix () const
+	{
+		Matrix&lt;ValueT, C, R, !ColumnMajor&gt; result;
+
+		memcpy(&amp;result.at(0,0), m_values, sizeof(m_values));
+
+		return result;
+	}
+};
+
 int main (int argc, char * const argv[]) {
 	Matrix&lt;float, 4, 2, false&gt; rowMajorMatrix;
 	Matrix&lt;float, 4, 2, true&gt; columnMajorMatrix;

@@ -3,7 +3,7 @@
 
 // Brush Aliases
 Syntax.alias("clang", ["cpp", "c", "objective-c"]);
+Syntax.alias("ruby", []);
 
 // CSS Extensions
-Syntax.styles["jquery.syntax.brush.clang"] = "jquery.syntax.brush.clang.css";
 Syntax.styles["jquery.syntax.layout.table"] = "jquery.syntax.layout.table.css";
