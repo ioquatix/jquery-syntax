@@ -218,7 +218,7 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 		// Replace tabs => 4 spaces
 		node = node.replace(/\t/g, "    ")
 		// &nbsp; characters
-		node = node.replace(/ /g, "\u00a0")
+		node = node.replace(/  /g, "\u00a0 ")
 		
 		node = document.createTextNode(node)
 	} else {
@@ -317,52 +317,9 @@ Syntax.Match.prototype.insert = function (match) {
 	}
 }
 
-// I would like to remove this function but this recursive function solves the problem very 
-// Elegantly. It is slow, in that it has O(n^2) performance. However, typically the
-// main bisect function makes this bearable, since it has O(n) performance, and this function
-// is hardly ever called. It is mostly here for syntactical edge cases, to ensure that the
-// algorithm works as expected. Eventually it may be removed when I think of a better
-// algorithm.
 Syntax.Match.prototype.halfBisect = function(offset) {
 	if (offset > this.offset && offset < this.endOffset) {
-		var lhs = new Syntax.Match(this.offset, offset - this.offset, this.expression)
-		var rhs = new Syntax.Match(offset, this.endOffset - offset, this.expression)
-		
-		lhs.value = this.value.substr(0, lhs.length)
-		lhs.next = rhs
-		
-		rhs.value = this.value.substr(lhs.length, rhs.length)
-		
-		var i = 0
-		
-		if (this.children) {
-			for (; i < this.children.length; i += 1) {
-				if (!lhs.insert(this.children[i]))
-					break
-			}
-		
-			// This will normally only happen once.
-			for (; i < this.children.length; i += 1) {
-				var bisection = this.children[i].halfBisect(offset)
-			
-				if (bisection) {
-					lhs.insert(bisection[0])
-					rhs.insert(bisection[1])
-				} else {
-					break
-				}
-			}
-		
-			for (; i < this.children.length; i += 1) {
-				if (!rhs.insert(this.children[i]))
-					break
-			}
-		
-			if (i != this.children.length)
-				window.console.log("Did not bisect all children correctly:", this, "lhs", lhs, "rhs", rhs)
-		}
-		
-		return [lhs, rhs]
+		return this.bisectAtOffsets([offset, this.endOffset])
 	} else {
 		return null
 	}
@@ -375,7 +332,6 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
 		var offset = splits[i]
 		
 		if (offset < this.offset || offset > this.endOffset) {
-			window.console.log("Offset", offset, "out of range!")
 			break
 		}
 		
@@ -387,27 +343,34 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
 		
 		prev = match
 		
+		start = match.endOffset
+		parts.push(match)
+	}
+	
+	// We only need to split to produce the number of parts we have.
+	splits.length = parts.length
+	
+	for (var i = 0; i < parts.length; i += 1) {
+		var offset = splits.shift()
+		
 		while (children.length > 0) {
-			if (children[0].endOffset <= match.endOffset)
-				match.children.push(children.shift())
+			if (children[0].endOffset <= parts[i].endOffset)
+				parts[i].children.push(children.shift())
 			else
 				break
 		}
 		
 		if (children.length) {
+			// We may have an intersection
+			if (children[0].offset < parts[i].offset) {
+				children_parts = children.shift().bisectAtOffsets(splits)
 			
-			var bisection = children[0].halfBisect(offset)
-		
-			if (bisection) {
-				children.shift()
+				for (var j in children_parts)
+					parts[i+j].children.push(children_parts[j])
 				
-				match.children.push(bisection[0])
-				children.unshift(bisection[1])
+				// i += (j-1)
 			}
 		}
-		
-		start = match.endOffset
-		parts.push(match)
 	}
 	
 	if (children.length)
