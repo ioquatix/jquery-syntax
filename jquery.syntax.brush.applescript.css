@@ -1,0 +1,8 @@
+.syntax .applescript {
+	font-family: Geneva, Helvetica, sans-serif;
+}
+
+.syntax .applescript .keyword {
+	color: #00f;
+	font-weight: bold;
+}

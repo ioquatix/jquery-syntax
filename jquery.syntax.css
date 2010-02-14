@@ -3,27 +3,25 @@
 	font-family: Menlo;
 }
 
+/* These colors are common across several brushes, so are centralized in one place */
+
 .syntax .function {
 	color: #33f;
 	text-decoration: underline;
 }
 
-.syntax .arguments {
-	color: #55c;
-}
-
 .syntax .keyword {
 	color: #3c3;
+}
+
+.syntax .access {
+	color: #ffb600;
 	font-weight: bold;
 }
 
-.syntax .type,
-.syntax .template {
-	color: #3c3;
-}
-
-.syntax .typename {
-	color: #ff3;
+.syntax .type {
+	color: #191;
+	font-weight: bold;
 }
 
 .syntax .comment {
@@ -44,10 +42,11 @@
 	color: #c00;
 }
 
-.syntax .template {
-	font-style: italic;
+.syntax .href {
+	color: #00f;
+	text-decoration: underline;
 }
 
-.syntax .preprocessor {
-	text-decoration: underline;
+.syntax .variable {
+	font-style: italic;
 }

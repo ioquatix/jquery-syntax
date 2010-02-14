@@ -1,0 +1,36 @@
+.syntax .html .tag {
+	color: #00f;
+	font-weight: bold;
+}
+
+.syntax .html .attribute {
+	color: #00c;
+}
+
+.syntax .html .javascript {
+	font-style: italic;
+}
+
+.syntax .html .css {
+	font-style: italic;
+}
+
+.syntax .html .instruction {
+	color: #532;
+	font-style: italic;
+}
+
+.syntax .html .doctype {
+	font-weight: bold;
+	color: #938;
+}
+
+.syntax .html .entity,
+.syntax .html .percent-escape {
+	color: #888;
+	
+	font-size: 0.8em;
+	border: 1px solid #888;
+	margin: 1px;
+	padding: 1px;
+}

@@ -1,0 +1,15 @@
+
+.syntax .css .selector {
+	color: green;
+}
+
+.syntax .css .property {
+	color: red;
+}
+
+.syntax .css .properties {
+}
+
+.syntax .css .value {
+	font-style: italic;
+}
