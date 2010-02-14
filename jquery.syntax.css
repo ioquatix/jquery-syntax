@@ -1,10 +1,17 @@
+/* 
+	This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
 
+	See <jquery.syntax.js> for licensing details.
+
+	Copyright 2010 Samuel Williams. All rights reserved.
+*/
+
+/* Fixed width font by default */
 .syntax {
-	font-family: Menlo;
+	font-family: Menlo, Monaco, Consolas, monospace;
 }
 
 /* These colors are common across several brushes, so are centralized in one place */
-
 .syntax .function {
 	color: #33f;
 	text-decoration: underline;

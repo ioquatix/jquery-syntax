@@ -1,3 +1,11 @@
+/* 
+	This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
+
+	See <jquery.syntax.js> for licensing details.
+
+	Copyright 2010 Samuel Williams. All rights reserved.
+*/
+
 function createWindow (url, name, width, height, options) {
 	var x = (screen.width - width) / 2, y = (screen.height - height) / 2;
 		
