@@ -11,6 +11,10 @@ table.syntax {
 	-webkit-box-shadow: 5px 5px 5px #eee;
 }
 
+table.syntax tr.alt td.source {
+	background-color: #f6f6f6;
+}
+
 table.syntax td {
 	padding-left: 0.4em;
 	padding-right: 0.4em;
@@ -22,5 +26,14 @@ table.syntax td.number {
 	
 	width: 2.5em;
 	color: #555;
-	background-color: #dadada;
+	background-color: #e0e0e0;
+}
+
+table.syntax .toolbar {
+	float: right;
+}
+
+table.syntax .toolbar a {
+	margin-left: 1em;
+	margin-right: 1em;
 }
