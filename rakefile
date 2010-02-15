@@ -45,7 +45,7 @@ task :update_aliases do
 end
 
 task :clean_css do
-	Dir.glob(File.join(File.dirname(__FILE__), "jquery.syntax*.css")) do |path|
+	Dir.glob(File.join(File.dirname(__FILE__), "jquery.syntax.*.css")) do |path|
 		FileUtils.rm path, :verbose => true
 	end
 end
@@ -72,7 +72,7 @@ task :generate_css, [:theme,:override,:output] => [:clean_css] do |task, argumen
 		$stderr.puts "Could not find master/override #{override} in #{theme}."
 	end
 	
-	Dir.glob(File.join(theme, "jquery.syntax*.sass")) do |sass|
+	Dir.glob(File.join(theme, "jquery.syntax.*.sass")) do |sass|
 		output_path = File.join(output, File.basename(sass, ".sass") + ".css")
 		
 		puts "sass -I #{theme.dump} --stdin #{output_path}"
