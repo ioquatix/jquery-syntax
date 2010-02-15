@@ -19,4 +19,5 @@ Syntax.styles["jquery.syntax.brush.clang"] = "jquery.syntax.brush.clang.css";
 Syntax.styles["jquery.syntax.brush.css"] = "jquery.syntax.brush.css.css";
 Syntax.styles["jquery.syntax.brush.diff"] = "jquery.syntax.brush.diff.css";
 Syntax.styles["jquery.syntax.brush.html"] = "jquery.syntax.brush.html.css";
+Syntax.styles["jquery.syntax.core"] = "jquery.syntax.core.css";
 Syntax.styles["jquery.syntax.layout.table"] = "jquery.syntax.layout.table.css";
