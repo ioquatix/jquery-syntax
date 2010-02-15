@@ -157,7 +157,6 @@ var Syntax = {
 		var elements = this;
 		
 		Syntax.loader.get('core', function() {
-			console.log("Highlighting!");
 			Syntax.highlight(elements, options, callback);
 		});
 	};
