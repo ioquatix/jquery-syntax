@@ -81,7 +81,7 @@ Syntax.layouts.table = function(options, code, container) {
 	});
 	
 	toolbar.append(a);
-	toolbar.append($('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax/">About</a>'));
+	toolbar.append($('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax/" target="oriontransfer">?</a>'));
 	
 	$('td:eq(1)', table).prepend(toolbar);
 	
