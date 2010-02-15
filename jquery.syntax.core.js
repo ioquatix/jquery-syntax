@@ -332,7 +332,7 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
 	for (var i = 0; i < splits.length; i += 1) {
 		var offset = splits[i];
 		
-		if (offset < this.offset || offset > this.endOffset) {
+		if (offset < this.offset || offset > this.endOffset || (offset - start) == 0) {
 			break;
 		}
 		
