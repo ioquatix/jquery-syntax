@@ -1,16 +1,5 @@
-/* 
-	This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
-
-	See <jquery.syntax.js> for licensing details.
-
-	Copyright 2010 Samuel Williams. All rights reserved.
-*/
-
 .syntax .applescript {
-	font-family: Geneva, Helvetica, sans-serif;
-}
-
-.syntax .applescript .keyword {
-	color: #00f;
-	font-weight: bold;
-}
+  font-family: Geneva, Helvetica, sans-serif; }
+  .syntax .applescript .keyword {
+    color: #00f;
+    font-weight: bold; }
