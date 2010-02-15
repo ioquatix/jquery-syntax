@@ -7,6 +7,7 @@
 #
 
 require 'stringio'
+require 'fileutils'
 
 CACHE_FILE = "jquery.syntax.cache.js"
 
@@ -41,6 +42,50 @@ task :update_aliases do
 	
 	puts "Written updated cache file #{CACHE_FILE}:"
 	puts code.string
+end
+
+task :clean_css do
+	Dir.glob(File.join(File.dirname(__FILE__), "jquery.syntax.*.css")) do |path|
+		FileUtils.rm path, :verbose => true
+	end
+end
+
+task :generate_css, [:theme,:override,:output] => [:clean_css] do |task, arguments|
+	theme = arguments[:theme] || "clean"
+	override = arguments[:override] || "master.sass"
+	output = arguments[:output] || File.dirname(__FILE__)
+	
+	unless File.directory?(theme)
+		theme = File.join(File.dirname(__FILE__), "themes", theme)
+	end
+	
+	unless File.directory?(theme)
+		$stderr.puts "Could not find theme #{theme}!"
+		exit 1
+	end
+	
+	unless File.exist?(override)
+		override = File.join(theme, override)
+	end
+	
+	unless File.exist?(override)
+		$stderr.puts "Could not find master/override #{override} in #{theme}."
+	end
+	
+	Dir.glob(File.join(theme, "jquery.syntax.*.sass")) do |sass|
+		output_path = File.join(output, File.basename(sass, ".sass") + ".css")
+		
+		puts "sass -I #{theme.dump} --stdin #{output_path}"
+		
+		IO.popen("sass -I #{theme.dump} --stdin #{output_path}", "w") do |io|
+			io.puts("@import #{override}")
+			io.puts("@import #{File.basename(sass)}")
+			io.close_write
+		end
+	end
+	
+	Rake::Task[:update_aliases].reenable
+	Rake::Task[:update_aliases].invoke
 end
 
 task :default => :update_aliases
