@@ -195,13 +195,19 @@ Syntax.Match.prototype.reduce = function (append) {
 };
 
 Syntax.Match.prototype.canContain = function (match) {
-	if (this.complete || typeof(this.expression.allow) === 'undefined') {
+	// Can't add anything into complete trees.
+	if (this.complete) {
 		return false;
 	}
 	
 	// match.expression.only will be checked on insertion using this.canHaveChild(match)
 	if (match.expression.only) {
 		return true;
+	}
+	
+	// If allow is undefined, default behaviour is no children.
+	if (typeof(this.expression.allow) === 'undefined') {
+		return false;
 	}
 	
 	// false if {disallow: [..., klass, ...]}
@@ -550,15 +556,27 @@ Syntax.highlight = function (elements, options, callback) {
 			
 			var html = brush.process(text);
 			
+			if (options.linkify !== false) {
+				$('span.href', html).each(function(){
+					$(this).replaceWith($('<a>').attr('href', this.innerHTML).text(this.innerHTML));
+				});
+			}
+			
 			Syntax.layouts.get(options.layout, function(layout) {
 				html = layout(options, html, container);
 
-				if (callback) {
-					html = callback(options, html, container) || html;
+				if (brush.postprocess) {
+					html = brush.postprocess(options, html, container);
 				}
-				
+
+				if (callback) {
+					html = callback(options, html, container);
+				}
+
 				if (html && options.replace === true) {
-					container.replaceWith(html);
+					// IE6 requires html.clone(true). No other browser requires this line AFAIK.
+					// This could be removed once browser compatibility for IE6 is dropped.
+					container.replaceWith(html.clone(true));
 				}
 			});
 		});

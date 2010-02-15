@@ -51,10 +51,6 @@ Syntax.layouts.table = function(options, code, container) {
 		line = line + 1;
 	});
 	
-	$('.href', table).each(function(){
-		$(this).replaceWith($('<a>').attr('href', this.innerHTML).text(this.innerHTML));
-	});
-	
 	// Toolbar
 	var toolbar = $('<div class="toolbar"></div>');
 	
