@@ -20,7 +20,7 @@ Syntax.register('clang', function(brush) {
 	brush.push(access, {klass: 'access'});
 	
 	// Objective-C classes
-	brush.push({pattern: /\b[A-Z][\w]*\b/g, klass: 'type'});
+	brush.push({pattern: /\b[A-Z_][\w]*\b/g, klass: 'type'});
 	
 	brush.push({
 		pattern: /#.*$/gmi,
@@ -30,6 +30,7 @@ Syntax.register('clang', function(brush) {
 	
 	brush.push(Syntax.lib.cStyleComment);
 	brush.push(Syntax.lib.cppStyleComment);
+	brush.push(Syntax.lib.webLink);
 	
 	// Objective-C style functions
 	brush.push({pattern: /\w+:(?=.*(\]|;|\{))/g, klass: 'function'});

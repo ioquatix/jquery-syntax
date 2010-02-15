@@ -36,7 +36,7 @@ Syntax.register('css', function(brush) {
 	
 	brush.push({
 		pattern: /\:(.*?(?=\})|(.|\n)*?(?=(\}|\;)))/g,
-		matches: Syntax.extractMatches({klass: 'value', only: ['properties']})
+		matches: Syntax.extractMatches({klass: 'value', allow: ['color'], only: ['properties']})
 	});
 	
 	brush.push({pattern: /[\-\w]+:/g, klass: 'property'});
@@ -47,5 +47,17 @@ Syntax.register('css', function(brush) {
 	brush.push(Syntax.lib.stringEscape);
 	
 	brush.push(Syntax.lib.cStyleFunction);
+	
+	brush.postprocess = function(options, html, container) {
+		if (options.showColors === true) {
+			$('.color', html).each(function() {
+				var text = $(this).text();
+				var colorBox = $('<span style="font-size: 0.5em; margin: 4px; border: 1px solid black">&nbsp;&nbsp;</span>').css('background-color', text);
+				$(this).append(colorBox);
+			});
+		}
+		
+		return html;
+	};
 });
 
