@@ -17,14 +17,14 @@ Syntax.register('clang', function(brush) {
 	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">", "[", "]", "new", "delete"];
 	var values = ["this", "true", "false", /[0-9]+(\.[0-9]+)?/g];
 	
-	brush.push(values, {klass: 'constant', allow: []});
-	brush.push(types, {klass: 'type', allow: []});
-	brush.push(keywords, {klass: 'keyword', allow: []});
-	brush.push(operators, {klass: 'operator', allow: []});
-	brush.push(access, {klass: 'access', allow: []});
+	brush.push(values, {klass: 'constant'});
+	brush.push(types, {klass: 'type'});
+	brush.push(keywords, {klass: 'keyword'});
+	brush.push(operators, {klass: 'operator'});
+	brush.push(access, {klass: 'access'});
 	
 	// Objective-C classes
-	brush.push({pattern: /\b[A-Z][\w]*\b/g, klass: 'type', allow: []});
+	brush.push({pattern: /\b[A-Z][\w]*\b/g, klass: 'type'});
 	
 	brush.push({
 		pattern: /#.*$/gmi,
@@ -36,16 +36,16 @@ Syntax.register('clang', function(brush) {
 	brush.push(Syntax.lib.cppStyleComment);
 	
 	// Objective-C style functions
-	brush.push({pattern: /\w+:(?=.*(\]|;|\{))/g, klass: 'function', allow: []});
+	brush.push({pattern: /\w+:(?=.*(\]|;|\{))/g, klass: 'function'});
 	
 	brush.push({
 		pattern: /[^:\[]\s+(\w+)(?=\])/g,
-		matches: Syntax.singleMatchFunction(1, {klass: 'function', allow: []})
+		matches: Syntax.extractMatches({klass: 'function'})
 	});
 	
 	brush.push({
 		pattern: /-\s*(\(.+?\))?\s*(\w+)\s*\{/g,
-		matches: Syntax.singleMatchFunction(2, {klass: 'function', allow: []})
+		matches: Syntax.extractMatches({index: 2, klass: 'function'})
 	});
 	
 	// Strings

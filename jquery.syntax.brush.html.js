@@ -13,13 +13,15 @@ Syntax.brushes.dependency('html', 'css');
 
 Syntax.register('html', function(brush) {
 	brush.push({
-		pattern: /<script(.*?)type\=\"text\/javascript\"(.*?)>((.|\n)*?)<\/script>/gmi,
-		matches: Syntax.parseScriptFunction('javascript', 3)
+		pattern: /<script(.*?)type\=.?text\/javascript.?(.*?)>((.|\n)*?)<\/script>/gmi,
+		matches: Syntax.parseScriptFunction('javascript', 3),
+		allow: '*'
 	});
 	
 	brush.push({
-		pattern: /<style(.*?)type="text\/css"(.*?)>((.|\n)*?)<\/style>/gmi,
-		matches: Syntax.parseScriptFunction('css', 3)
+		pattern: /<style(.*?)type=.?text\/css.?(.*?)>((.|\n)*?)<\/style>/gmi,
+		matches: Syntax.parseScriptFunction('css', 3),
+		allow: '*'
 	});
 	
 	brush.push({
@@ -30,22 +32,23 @@ Syntax.register('html', function(brush) {
 	
 	brush.push({
 		pattern: /<\?(.*?)\?>/gm,
-		klass: 'instruction', allow: ['string']
+		klass: 'instruction',
+		allow: ['string']
 	});
 
 	brush.push({
 		pattern: /<(\!DOCTYPE(.*?))>/g,
-		matches: Syntax.singleMatchFunction(1, {klass: 'doctype', allow: []})
+		matches: Syntax.extractMatches({klass: 'doctype'})
 	});
 	
 	brush.push({
 		pattern: /<\W?(\w+).*?>/g,
-		matches: Syntax.singleMatchFunction(1, {klass: 'tag', allow: ['attribute']})
+		matches: Syntax.extractMatches({klass: 'tag', allow: ['attribute']})
 	});
 	
 	brush.push({
-		pattern: /\w+=/g,
-		klass: ['attribute']
+		pattern: /(\w+)=(".*?"|'.*?'|\S+)/g,
+		matches: Syntax.extractMatches({klass: 'attribute'}, {klass: 'string'})
 	});
 	
 	brush.push({
@@ -56,7 +59,6 @@ Syntax.register('html', function(brush) {
 	brush.push({
 		pattern: /(%[0-9a-f]{2})/gi,
 		klass: 'percent-escape',
-		allow: [],
 		only: ['html', 'string']
 	});
 

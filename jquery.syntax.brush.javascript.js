@@ -14,11 +14,11 @@ Syntax.register('javascript', function(brush) {
 	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">"];
 	var values = ["function", "this", "true", "false", "null", /[0-9]+(\.[0-9]+)?/g];
 		
-	brush.push(values, {klass: 'constant', allow: []});
-	brush.push(keywords, {klass: 'keyword', allow: []});
-	brush.push(operators, {klass: 'operator', allow: []});
+	brush.push(values, {klass: 'constant'});
+	brush.push(keywords, {klass: 'keyword'});
+	brush.push(operators, {klass: 'operator'});
 	
-	brush.push({pattern: /\b_*[A-Z][\w:]+/g, klass: 'type', allow: []});
+	brush.push({pattern: /\b_*[A-Z][\w:]+/g, klass: 'type'});
 	
 	brush.push(Syntax.lib.cStyleComment);
 	brush.push(Syntax.lib.cppStyleComment);

@@ -8,8 +8,8 @@
 	Copyright 2010 Samuel Williams. All rights reserved.
 */
 
-Syntax.lib.rubyStyleFunction = {pattern: /(?:def\s+|\.)([a-z_][a-z0-9_]+)/gi, matches: Syntax.singleMatchFunction(1, {klass: 'function', allow: []})};
-Syntax.lib.rubyStyleSymbol = {pattern: /:[\w]+/, klass: 'constant', allow: []};
+Syntax.lib.rubyStyleFunction = {pattern: /(?:def\s+|\.)([a-z_][a-z0-9_]+)/gi, matches: Syntax.extractMatches({klass: 'function'})};
+Syntax.lib.rubyStyleSymbol = {pattern: /:\w+/g, klass: 'constant'};
 
 Syntax.register('ruby', function(brush) {
 	var keywords = ["alias", "and", "begin", "break", "case", "class", "def", "define_method", "defined", "do", "each", "else", "elsif", "end", "ensure", "false", "for", "if", "in", "module", "new", "next", "nil", "not", "or", "raise", "redo", "rescue", "retry", "return", "self", "super", "then", "throw", "true", "undef", "unless", "until", "when", "while", "yield"];
@@ -19,14 +19,16 @@ Syntax.register('ruby', function(brush) {
 	
 	var access = ["private", "public"];
 	
-	brush.push(access, {klass: 'access', allow: []});
-	brush.push(values, {klass: 'constant', allow: []});
+	brush.push(access, {klass: 'access'});
+	brush.push(values, {klass: 'constant'});
 	
-	brush.push({pattern: /(@+|\$)[\w]+/g, klass: 'variable', allow: []});
+	brush.push({pattern: /(@+|\$)[\w]+/g, klass: 'variable'});
 	
-	brush.push({pattern: /_*[A-Z][\w:]+/g, klass: 'type', allow: []});
-	brush.push(keywords, {klass: 'keyword', allow: []});
-	brush.push(operators, {klass: 'operator', allow: []});
+	brush.push({pattern: /_*[A-Z][\w:]+/g, klass: 'type'});
+	brush.push(keywords, {klass: 'keyword'});
+	brush.push(operators, {klass: 'operator'});
+	
+	brush.push(Syntax.lib.rubyStyleSymbol);
 	
 	brush.push(Syntax.lib.perlStyleComment);
 	brush.push(Syntax.lib.webLink);
