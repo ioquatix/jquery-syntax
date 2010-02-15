@@ -1,12 +1,8 @@
 // brush: "clang" aliases: ["cpp", "c++", "c", "objective-c"]
 
-/* 
-	This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
-
-	See <jquery.syntax.js> for licensing details.
-
-	Copyright 2010 Samuel Williams. All rights reserved.
-*/
+//	This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
+//	Copyright 2010 Samuel Williams. All rights reserved.
+//	See <jquery.syntax.js> for licensing details.
 
 Syntax.register('clang', function(brush) {
 	var keywords = ["@interface", "@implementation", "@protocol", "@end", "@try", "@throw", "@catch", "@finally", "@class", "@selector", "@encode", "@synchronized", "@property", "struct", "break", "continue", "else", "for", "switch", "case", "default", "enum", "goto", "register", "sizeof", "typedef", "volatile", "do", "extern", "if", "return", "static", "union", "while", "asm", "dynamic_cast", "namespace", "reinterpret_cast", "try", "explicit", "static_cast", "typeid", "catch", "operator", "template", "class", "const_cast", "inline", "throw", "virtual", "mutable", "wchar_t"];
