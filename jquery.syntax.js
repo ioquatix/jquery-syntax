@@ -43,6 +43,37 @@ if (!Function.prototype.bind) {
 	};
 }
 
+// The jQuery version of this function is broken on IE6.
+// This version fixes it... for pre elements only. Other elements
+// in IE will have the whitespace manipulated.
+jQuery.getText = function ( elems ) {
+	var ret = "", elem;
+
+	for ( var i = 0; elems[i]; i++ ) {
+		elem = elems[i];
+
+		// Get the text from text nodes and CDATA nodes
+		if ( elem.nodeType === 3 || elem.nodeType === 4 ) {
+			ret += elem.nodeValue;
+		
+		// Use textContent || innerText for elements
+		} else if ( elem.nodeType === 1 ) {
+			if ( typeof(elem.textContent) === 'string' )
+				ret += elem.textContent;
+			else if ( typeof(elem.innerText) === 'string' )
+				ret += elem.innerText;
+			else
+				ret += getText( elem.childNodes );
+			
+		// Traverse everything else, except comment nodes
+		} else if ( elem.nodeType !== 8 ) {
+			ret += getText( elem.childNodes );
+		}
+	}
+
+	return ret;
+}
+
 function ResourceLoader (loader) {
 	this.dependencies = {};
 	this.loading = {};
@@ -192,7 +223,7 @@ var Syntax = {
 	},
 	
 	convertTabsToSpaces: function (text, tabSize) {
-		var space = [], pattern = /(\r|\n|\t)/g, tabOffset = 0;
+		var space = [], pattern = /\r|\n|\t/g, tabOffset = 0;
 		
 		for (var i = ""; i.length <= tabSize; i = i + " ") {
 			space.push(i);
@@ -200,9 +231,9 @@ var Syntax = {
 
 		text = text.replace(pattern, function(match) {
 			var offset = arguments[arguments.length - 2];
-			if (match[0] === "\r" || match[0] === "\n") {
+			if (match === "\r" || match === "\n") {
 				tabOffset = -(offset + 1);
-				return match[0];
+				return match;
 			} else {
 				var width = tabSize - ((tabOffset + offset) % tabSize);
 				tabOffset += width - 1;
@@ -267,7 +298,7 @@ var Syntax = {
 				
 				Syntax.layouts.get(options.layout, function(layout) {
 					html = layout(options, html, container);
-					
+
 					if (callback) {
 						html = callback(options, html, container) || html;
 					}
@@ -309,9 +340,22 @@ Syntax.layouts.plain = function (options, html, container) {
 	return html;
 };
 
-Syntax.singleMatchFunction = function(index, rule) {
+Syntax.extractMatches = function() {
+	var rules = arguments;
+	
 	return function(match) {
-		return new Syntax.Match(RegExp.indexOf(match, index), match[index].length, rule, match[index]);
+		var matches = [];
+		
+		for (var i = 0; i < rules.length; i += 1) {
+			var rule = rules[i];
+			var index = rule.index || (i+1);
+			
+			if (match[index].length > 0) {
+				matches.push(new Syntax.Match(RegExp.indexOf(match, index), match[index].length, rule, match[index]));
+			}
+		}
+		
+		return matches;
 	};
 };
 
@@ -325,15 +369,15 @@ Syntax.lib.cStyleComment = {pattern: /\/\*[\s\S]*?\*\//gm, klass: 'comment', all
 Syntax.lib.cppStyleComment = {pattern: /\/\/.*$/gm, klass: 'comment', allow: ['href']};
 Syntax.lib.perlStyleComment = {pattern: /#.*$/gm, klass: 'comment', allow: ['href']};
 
-Syntax.lib.cStyleFunction = {pattern: /([a-z_][a-z0-9_]+)\s*\(/gi, matches: Syntax.singleMatchFunction(1, {klass: 'function', allow: []})};
+Syntax.lib.cStyleFunction = {pattern: /([a-z_][a-z0-9_]+)\s*\(/gi, matches: Syntax.extractMatches({klass: 'function'})};
 
 Syntax.lib.xmlComment = {pattern: /(&lt;|<)!--[\s\S]*?--(&gt;|>)/gm, klass: 'comment'};
 Syntax.lib.webLink = {pattern: /\w+:\/\/[\w\-.\/?%&=@:;#]*/g, klass: 'href'};
 
-Syntax.lib.doubleQuotedString = {pattern: /"([^\\"\n]|\\.)*"/g, klass: 'string', allow: []};
-Syntax.lib.singleQuotedString = {pattern: /'([^\\'\n]|\\.)*'/g, klass: 'string', allow: []};
-Syntax.lib.multiLineDoubleQuotedString = {pattern: /"([^\\"]|\\.)*"/g, klass: 'string', allow: []};
-Syntax.lib.multiLineSingleQuotedString = {pattern: /'([^\\']|\\.)*'/g, klass: 'string', allow: []};
+Syntax.lib.doubleQuotedString = {pattern: /"([^\\"\n]|\\.)*"/g, klass: 'string'};
+Syntax.lib.singleQuotedString = {pattern: /'([^\\'\n]|\\.)*'/g, klass: 'string'};
+Syntax.lib.multiLineDoubleQuotedString = {pattern: /"([^\\"]|\\.)*"/g, klass: 'string'};
+Syntax.lib.multiLineSingleQuotedString = {pattern: /'([^\\']|\\.)*'/g, klass: 'string'};
 Syntax.lib.stringEscape = {pattern: /\\./g, klass: 'escape', only: ['string']};
 
 Syntax.Match = function (offset, length, expr, value) {
@@ -379,7 +423,7 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 
 Syntax.Match.prototype.reduce = function (append) {
 	var start = this.offset;
-	var container = $('<span>');
+	var container = $('<span></span>');
 	
 	append = append || Syntax.Match.defaultReduceCallback;
 	
@@ -409,31 +453,37 @@ Syntax.Match.prototype.reduce = function (append) {
 };
 
 Syntax.Match.prototype.canContain = function (match) {
-	if (this.complete) {
+	if (this.complete || typeof(this.expression.allow) === 'undefined') {
 		return false;
 	}
 	
-	// The match will be checked on insertion using this.canHaveChild(match)
+	// match.expression.only will be checked on insertion using this.canHaveChild(match)
 	if (match.expression.only) {
 		return true;
 	}
 	
-	if (this.expression.disallow && $.inArray(match.expression.klass, this.expression.disallow) !== -1) {
+	// false if {disallow: [..., klass, ...]}
+	if ($.isArray(this.expression.disallow) && $.inArray(match.expression.klass, this.expression.disallow) !== -1) {
 		return false;
 	}
 	
-	if (this.expression.allow && $.inArray(match.expression.klass, this.expression.allow) !== -1) {
+	// true if {allow: '*'}
+	if (this.expression.allow === '*') {
 		return true;
 	}
 	
-	if (this.expression.allow) {
-		return false;
-	} else {
+	// true if {allow: [..., klass, ...]}
+	if ($.isArray(this.expression.allow) && $.inArray(match.expression.klass, this.expression.allow) !== -1) {
 		return true;
 	}
+	
+	// else, false.
+	return false;
 };
 
 Syntax.Match.prototype.canHaveChild = function (match) {
+	var only = match.expression.only;
+	
 	// This condition is fairly slow
 	if (match.expression.only) {
 		var cur = this;
@@ -583,7 +633,7 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
 	}
 	
 	if (children.length) {
-		alert("Syntax Error: Children nodes not consumed, " + children.lenght + " remaining!");
+		alert("Syntax Error: Children nodes not consumed, " + children.length + " remaining!");
 	}
 	
 	return parts;
@@ -631,7 +681,11 @@ Syntax.Brush.prototype.push = function () {
 			}
 			
 			
-			rule.pattern = rule.pattern = new RegExp(prefix + RegExp.escape(rule.pattern) + postfix, rule.options || 'g');
+			rule.pattern = new RegExp(prefix + RegExp.escape(rule.pattern) + postfix, rule.options || 'g');
+		}
+
+		if (typeof(XRegExp) !== 'undefined') {
+			rule.pattern = new XRegExp(rule.pattern);
 		}
 
 		if (rule.pattern.global) {
@@ -655,8 +709,11 @@ Syntax.Brush.prototype.getMatches = function(text, offset) {
 Syntax.Brush.prototype.buildTree = function(text, offset) {
 	offset = offset || 0;
 	
+	// Fixes code that uses \r\n for line endings. /$/ matches both \r\n, which is a problem..
+	text = text.replace(/\r/g, "");
+	
 	var matches = this.getMatches(text, offset);
-	var top = new Syntax.Match(offset, text.length, {klass: this.klass}, text);
+	var top = new Syntax.Match(offset, text.length, {klass: this.klass, allow: '*'}, text);
 
 	// This sort is absolutely key to the functioning of the tree insertion algorithm.
 	matches.sort(Syntax.Match.sort);
@@ -675,7 +732,7 @@ Syntax.Brush.prototype.process = function(text) {
 	
 	var lines = top.split(/\n/g);
 	
-	var html = $('<pre>').addClass('syntax');
+	var html = $('<pre class="syntax"></pre>');
 	
 	for (var i = 0; i < lines.length; i += 1) {
 		var line = lines[i].reduce();
