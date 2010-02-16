@@ -13,6 +13,8 @@ table.syntax {
   table.syntax td {
     padding-left: 0.4em;
     padding-right: 0.4em; }
+    table.syntax td.source {
+      word-wrap: break-word; }
     table.syntax td.number {
       border-right: 1px solid #aaa;
       text-align: right;

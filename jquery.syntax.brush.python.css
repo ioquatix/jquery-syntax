@@ -1,6 +1,6 @@
 .syntax .python .decorator {
   color: #ffb600;
   font-weight: bold; }
-.syntax .python .function {
+.syntax .python .builtin {
   color: #33f;
   font-style: italic; }
