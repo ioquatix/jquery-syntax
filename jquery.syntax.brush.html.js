@@ -6,19 +6,29 @@
 
 Syntax.brushes.dependency('html', 'javascript');
 Syntax.brushes.dependency('html', 'css');
+Syntax.brushes.dependency('html', 'php');
+Syntax.brushes.dependency('html', 'ruby');
 
 Syntax.register('html', function(brush) {
 	brush.push({
-		pattern: /<script(.*?)type\=.?text\/javascript.?(.*?)>((.|\n)*?)<\/script>/gmi,
-		matches: Syntax.parseScriptFunction('javascript', 3),
-		allow: '*'
+		pattern: /<script.*?type\=.?text\/javascript.*?>((.|\n)*?)<\/script>/gmi,
+		matches: Syntax.extractMatches({brush: 'javascript'}),
 	});
 	
 	brush.push({
-		pattern: /<style(.*?)type=.?text\/css.?(.*?)>((.|\n)*?)<\/style>/gmi,
-		matches: Syntax.parseScriptFunction('css', 3),
-		allow: '*'
+		pattern: /<style.*?type=.?text\/css.*?>((.|\n)*?)<\/style>/gmi,
+		matches: Syntax.extractMatches({brush: 'css'}),
 	});
+	
+	brush.push({
+		pattern: /<\?(php)((.|\n)*?)\?>/gm,
+		matches: Syntax.extractMatches({klass: 'access'}, {brush: 'php'}),
+	})
+	
+	brush.push({
+		pattern: /<\?(rb?)((.|\n)*?)\?>/gm,
+		matches: Syntax.extractMatches({klass: 'access'}, {brush: 'ruby'}),
+	})
 	
 	brush.push({
 		pattern: /<%=?(.*?)(%>)/g,
@@ -26,11 +36,10 @@ Syntax.register('html', function(brush) {
 		allow: ['string']
 	});
 	
-	brush.push({
-		pattern: /<\?(.*?)\?>/gm,
-		klass: 'instruction',
-		allow: ['string']
-	});
+	//brush.push({
+	//	pattern: /<(\?((.|\n)*?)\?)>/gm,
+	//	matches: Syntax.extractMatches({klass: 'instruction', allow: ['string']})
+	//});
 
 	brush.push({
 		pattern: /<(\!DOCTYPE(.*?))>/g,
@@ -38,7 +47,7 @@ Syntax.register('html', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /<\W?(\w+).*?>/g,
+		pattern: /<\/?(\w+).*?>/g,
 		matches: Syntax.extractMatches({klass: 'tag', allow: ['attribute']})
 	});
 	

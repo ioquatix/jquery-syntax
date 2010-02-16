@@ -86,17 +86,14 @@ Syntax.extractMatches = function() {
 			var index = rule.index || (i+1);
 			
 			if (match[index].length > 0) {
-				matches.push(new Syntax.Match(RegExp.indexOf(match, index), match[index].length, rule, match[index]));
+				if (rule.brush)
+					matches.push(Syntax.brushes[rule.brush].buildTree(match[index], RegExp.indexOf(match, index)));
+				else
+					matches.push(new Syntax.Match(RegExp.indexOf(match, index), match[index].length, rule, match[index]));
 			}
 		}
 		
 		return matches;
-	};
-};
-
-Syntax.parseScriptFunction = function(brush, index) {
-	return function(match) {
-		return Syntax.brushes[brush].buildTree(match[index], RegExp.indexOf(match, index));
 	};
 };
 
@@ -112,6 +109,7 @@ Syntax.lib.cppStyleComment = {pattern: /\/\/.*$/gm, klass: 'comment', allow: ['h
 Syntax.lib.perlStyleComment = {pattern: /#.*$/gm, klass: 'comment', allow: ['href']};
 
 Syntax.lib.cStyleFunction = {pattern: /([a-z_][a-z0-9_]+)\s*\(/gi, matches: Syntax.extractMatches({klass: 'function'})};
+Syntax.lib.camelCaseType = {pattern: /\b_*[A-Z_][\w]*\b/g, klass: 'type'};
 
 Syntax.lib.xmlComment = {pattern: /(&lt;|<)!--[\s\S]*?--(&gt;|>)/gm, klass: 'comment'};
 Syntax.lib.webLink = {pattern: /\w+:\/\/[\w\-.\/?%&=@:;#]*/g, klass: 'href'};

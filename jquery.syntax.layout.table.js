@@ -59,7 +59,7 @@ Syntax.layouts.table = function(options, code, container) {
 	a.click(function() {
 		var win = createWindow('#', '_blank', 700, 500, 'location=0, resizable=1, menubar=0, scrollbars=1');
 
-		win.document.write('<html><head><base href="' + dirname(window.location.href) + '/" /></head><body><pre class="syntax">' + code.html() + '</pre></body></html>');
+		win.document.write('<html><head><base href="' + dirname(window.location.href) + '/" /></head><body id="syntax-raw"><pre class="syntax">' + code.html() + '</pre></body></html>');
 
 		win.document.close();
 

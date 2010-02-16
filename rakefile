@@ -21,7 +21,7 @@ task :update_aliases do
 	code.puts "// Brush Aliases"
 	Dir["jquery.syntax.brush.*.js"].each do |path|
 		File.open(path, "r") do |f|
-			first_line = f.readline
+			first_line = f.readline rescue ""
 			
 			if first_line.match(/^\/\/ brush: (.+?) aliases: (.+)$/)
 				code.puts "Syntax.alias(#{$1}, #{$2});"

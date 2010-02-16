@@ -139,7 +139,7 @@ var Syntax = {
 		var basename = prefix + "." + name;
 		
 		if (this.styles[basename]) {
-			this.getStyles(this.root + basename + '.css');
+			this.getStyles(this.root + this.styles[basename]);
 		}
 		
 		Syntax.getScript(this.root + basename + '.js', callback);

@@ -5,6 +5,8 @@ table.syntax {
   padding: 0px;
   width: 95%;
   margin: auto;
+  margin-top: 2em;
+  margin-bottom: 2em;
   -webkit-box-shadow: 5px 5px 5px #eee; }
   table.syntax tr.alt td.source {
     background-color: #f6f6f6; }
