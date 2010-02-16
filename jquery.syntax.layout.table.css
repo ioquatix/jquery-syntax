@@ -26,3 +26,15 @@ table.syntax {
     table.syntax .toolbar a {
       margin-left: 1em;
       margin-right: 1em; }
+
+#syntax-raw {
+  padding: 0px;
+  margin: 0px; }
+  #syntax-raw pre {
+    padding: 1em;
+    margin: 0px;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px; }
