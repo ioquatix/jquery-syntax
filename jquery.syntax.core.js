@@ -114,6 +114,9 @@ Syntax.lib.camelCaseType = {pattern: /\b_*[A-Z_][\w]*\b/g, klass: 'type'};
 Syntax.lib.xmlComment = {pattern: /(&lt;|<)!--[\s\S]*?--(&gt;|>)/gm, klass: 'comment'};
 Syntax.lib.webLink = {pattern: /\w+:\/\/[\w\-.\/?%&=@:;#]*/g, klass: 'href'};
 
+Syntax.lib.hexNumber = {pattern: /0x[0-9a-fA-F]+/g, klass: 'constant'};
+Syntax.lib.decimalNumber = {pattern: /[0-9]+(\.[0-9]+)?/g, klass: 'constant'};
+
 Syntax.lib.doubleQuotedString = {pattern: /"([^\\"\n]|\\.)*"/g, klass: 'string'};
 Syntax.lib.singleQuotedString = {pattern: /'([^\\'\n]|\\.)*'/g, klass: 'string'};
 Syntax.lib.multiLineDoubleQuotedString = {pattern: /"([^\\"]|\\.)*"/g, klass: 'string'};

@@ -12,6 +12,7 @@ Syntax.alias("css", []);
 Syntax.alias("diff", ["patch"]);
 Syntax.alias("html", ["xml"]);
 Syntax.alias("javascript", ["js", "actionscript"]);
+Syntax.alias("ooc", []);
 Syntax.alias("php", []);
 Syntax.alias("plain", ["text"]);
 Syntax.alias("python", []);
