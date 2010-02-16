@@ -50,10 +50,10 @@ Syntax.register('css', function(brush) {
 	
 	brush.postprocess = function(options, html, container) {
 		if (options.showColors === true) {
-			$('.color', html).each(function() {
-				var text = $(this).text();
-				var colorBox = $('<span style="font-size: 0.5em; margin: 4px; border: 1px solid black">&nbsp;&nbsp;</span>').css('background-color', text);
-				$(this).append(colorBox);
+			jQuery('.color', html).each(function() {
+				var text = jQuery(this).text();
+				var colorBox = jQuery('<span style="font-size: 0.5em; margin: 4px; border: 1px solid black">&nbsp;&nbsp;</span>').css('background-color', text);
+				jQuery(this).append(colorBox);
 			});
 		}
 		

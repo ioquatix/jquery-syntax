@@ -151,7 +151,7 @@ Syntax.Match.prototype.contains = function (match) {
 
 Syntax.Match.defaultReduceCallback = function (node, container) {
 	// We avoid using jQuery in this function since it is incredibly performance sensitive.
-	// Using jQuery $.fn.append() can reduce performance by as much as 1/3rd.
+	// Using jQuery jQuery.fn.append() can reduce performance by as much as 1/3rd.
 	if (typeof(node) === 'string') {
 		// &nbsp; characters
 		node = node.replace(/[ ]{2}/g, "\u00a0\u00a0");
@@ -166,7 +166,7 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 
 Syntax.Match.prototype.reduce = function (append) {
 	var start = this.offset;
-	var container = $('<span></span>');
+	var container = jQuery('<span></span>');
 	
 	append = append || Syntax.Match.defaultReduceCallback;
 	
@@ -212,7 +212,7 @@ Syntax.Match.prototype.canContain = function (match) {
 	}
 	
 	// false if {disallow: [..., klass, ...]}
-	if ($.isArray(this.expression.disallow) && $.inArray(match.expression.klass, this.expression.disallow) !== -1) {
+	if (jQuery.isArray(this.expression.disallow) && jQuery.inArray(match.expression.klass, this.expression.disallow) !== -1) {
 		return false;
 	}
 	
@@ -222,7 +222,7 @@ Syntax.Match.prototype.canContain = function (match) {
 	}
 	
 	// true if {allow: [..., klass, ...]}
-	if ($.isArray(this.expression.allow) && $.inArray(match.expression.klass, this.expression.allow) !== -1) {
+	if (jQuery.isArray(this.expression.allow) && jQuery.inArray(match.expression.klass, this.expression.allow) !== -1) {
 		return true;
 	}
 	
@@ -238,7 +238,7 @@ Syntax.Match.prototype.canHaveChild = function (match) {
 		var cur = this;
 		
 		while (cur !== null) {
-			if ($.inArray(cur.expression.klass, match.expression.only) !== -1) {
+			if (jQuery.inArray(cur.expression.klass, match.expression.only) !== -1) {
 				return true;
 			}
 			
@@ -321,7 +321,7 @@ Syntax.Match.prototype.halfBisect = function(offset) {
 };
 
 Syntax.Match.prototype.bisectAtOffsets = function(splits) {
-	var parts = [], start = this.offset, prev = null, children = $.merge([], this.children);
+	var parts = [], start = this.offset, prev = null, children = jQuery.merge([], this.children);
 	
 	// Copy the array so we can modify it.
 	splits = splits.slice(0);
@@ -404,11 +404,11 @@ Syntax.Brush = function () {
 };
 
 Syntax.Brush.prototype.push = function () {
-	if ($.isArray(arguments[0])) {
+	if (jQuery.isArray(arguments[0])) {
 		var patterns = arguments[0], rule = arguments[1];
 		
 		for (var i = 0; i < patterns.length; i += 1) {
-			this.push($.extend({pattern: patterns[i]}, rule));
+			this.push(jQuery.extend({pattern: patterns[i]}, rule));
 		}
 	} else {
 		var rule = arguments[0];
@@ -501,7 +501,7 @@ Syntax.Brush.prototype.process = function(text) {
 	
 	var lines = top.split(/\n/g);
 	
-	var html = $('<pre class="syntax"></pre>');
+	var html = jQuery('<pre class="syntax"></pre>');
 	
 	for (var i = 0; i < lines.length; i += 1) {
 		var line = lines[i].reduce();
@@ -524,7 +524,7 @@ Syntax.highlight = function (elements, options, callback) {
 	}
 	
 	elements.each(function () {
-		var container = $(this);
+		var container = jQuery(this);
 		
 		var text = container.text();
 
@@ -558,8 +558,8 @@ Syntax.highlight = function (elements, options, callback) {
 			var html = brush.process(text);
 			
 			if (options.linkify !== false) {
-				$('span.href', html).each(function(){
-					$(this).replaceWith($('<a>').attr('href', this.innerHTML).text(this.innerHTML));
+				jQuery('span.href', html).each(function(){
+					jQuery(this).replaceWith(jQuery('<a>').attr('href', this.innerHTML).text(this.innerHTML));
 				});
 			}
 			

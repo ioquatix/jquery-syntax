@@ -33,8 +33,8 @@ Syntax.register('bash-script', function(brush) {
 	brush.push({pattern: /\s\-+\w+/g, klass: 'option'})
 
 	brush.push(Syntax.lib.perlStyleComment);
-	brush.push($.extend(Syntax.lib.singleQuotedString, {allow: '*'}));
-	brush.push($.extend(Syntax.lib.doubleQuotedString, {allow: '*'}));
+	brush.push(jQuery.extend(Syntax.lib.singleQuotedString, {allow: '*'}));
+	brush.push(jQuery.extend(Syntax.lib.doubleQuotedString, {allow: '*'}));
 
 	brush.push(Syntax.lib.webLink);
 });

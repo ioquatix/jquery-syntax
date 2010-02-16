@@ -24,7 +24,7 @@ function dirname(path) {
 }
 
 Syntax.layouts.table = function(options, code, container) {
-	var table = $('<table class="syntax"></table>'), tr = null, td = null, a = null
+	var table = jQuery('<table class="syntax"></table>'), tr = null, td = null, a = null
 	var line = 1;
 	
 	// Source code
@@ -52,9 +52,9 @@ Syntax.layouts.table = function(options, code, container) {
 	});
 	
 	// Toolbar
-	var toolbar = $('<div class="toolbar"></div>');
+	var toolbar = jQuery('<div class="toolbar"></div>');
 	
-	a = $('<a href="#">View Raw Code</a>');
+	a = jQuery('<a href="#">View Raw Code</a>');
 	
 	a.click(function() {
 		var win = createWindow('#', '_blank', 700, 500, 'location=0, resizable=1, menubar=0, scrollbars=1');
@@ -63,27 +63,27 @@ Syntax.layouts.table = function(options, code, container) {
 
 		win.document.close();
 
-		$('link').each(function(){
+		jQuery('link').each(function(){
 			if (this.rel != 'stylesheet') {
 				return;
 			}
 			
-			var link = $('<link rel="stylesheet">', win.document);
+			var link = jQuery('<link rel="stylesheet">', win.document);
 			
 			link.attr('type', this.type);
 			link.attr('href', this.href);
 			link.attr('media', this.media);
 			
-			$("head", win.document).append(link);
+			jQuery("head", win.document).append(link);
 		});
 		
 		return false;
 	});
 	
 	toolbar.append(a);
-	toolbar.append($('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax/" target="oriontransfer">?</a>'));
+	toolbar.append(jQuery('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax/" target="oriontransfer">?</a>'));
 	
-	$('td:eq(1)', table).prepend(toolbar);
+	jQuery('td:eq(1)', table).prepend(toolbar);
 	
 	return table;
 };

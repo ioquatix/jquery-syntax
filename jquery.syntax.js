@@ -112,8 +112,8 @@ var Syntax = {
 	}),
 	
 	getStyles: function (path) {
-		var link = $('<link>');
-		$("head").append(link);
+		var link = jQuery('<link>');
+		jQuery("head").append(link);
 
 		link.attr({
 			rel: "stylesheet",
@@ -123,7 +123,7 @@ var Syntax = {
 	},
 	
 	getScript: function (path, callback) {
-		$.ajax({
+		jQuery.ajax({
 			async: false,
 			type: "GET",
 			url: path,
@@ -152,36 +152,34 @@ var Syntax = {
 	}
 };
 
-(function ($) {
-	$.fn.syntax = function (options, callback) {
-		var elements = this;
-		
-		Syntax.loader.get('core', function() {
-			Syntax.highlight(elements, options, callback);
-		});
-	};
+jQuery.fn.syntax = function (options, callback) {
+	var elements = this;
 	
-	$.syntax = function (options, callback) {
-		// Some useful defaults
-		var selector = (options.selector || 'pre.syntax');
+	Syntax.loader.get('core', function() {
+		Syntax.highlight(elements, options, callback);
+	});
+};
+
+jQuery.syntax = function (options, callback) {
+	// Some useful defaults
+	var selector = (options.selector || 'pre.syntax');
+	
+	if (typeof(options.replace) === 'undefined') {
+		options.replace = true;
+	}
+	
+	if (typeof(options.layout) === 'undefined'){
+		options.layout = 'table';
+	}
+	
+	jQuery(selector).each(function(){
+		var match = this.className.match(/brush-([\w\-]+)/);
+		var brush;
 		
-		if (typeof(options.replace) === 'undefined') {
-			options.replace = true;
+		if (match) {
+			brush = match[1];
 		}
 		
-		if (typeof(options.layout) === 'undefined'){
-			options.layout = 'table';
-		}
-		
-		$(selector).each(function(){
-			var match = this.className.match(/brush-([\w\-]+)/);
-			var brush;
-			
-			if (match) {
-				brush = match[1];
-			}
-			
-			$(this).syntax($.extend({brush: brush}, options), callback);
-		});
-	};
-}(jQuery));
+		jQuery(this).syntax(jQuery.extend({brush: brush}, options), callback);
+	});
+};
