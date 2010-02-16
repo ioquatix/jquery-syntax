@@ -11,4 +11,6 @@ Syntax.register('bash', function(brush) {
 		pattern: /^([\w@:~\s]*?[\$|\#])(.*?)$/gm,
 		matches: Syntax.extractMatches({klass: 'prompt'}, {brush: 'bash-script'})
 	});
+	
+	brush.push(Syntax.lib.webLink);
 });

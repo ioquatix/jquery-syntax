@@ -23,4 +23,5 @@ Syntax.register('asm', function(brush) {
 	brush.push({pattern: /%\w+/g, klass: 'register'});
 	
 	brush.push(Syntax.lib.perlStyleComment);
+	brush.push(Syntax.lib.webLink);
 });

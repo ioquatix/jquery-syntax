@@ -71,5 +71,7 @@ Syntax.register('html', function(brush) {
 
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
+	
+	brush.push(Syntax.lib.webLink);
 });
 

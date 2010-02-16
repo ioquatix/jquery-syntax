@@ -18,5 +18,7 @@ Syntax.register('apache', function(brush) {
 	brush.push(Syntax.lib.perlStyleComment);
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
+	
+	brush.push(Syntax.lib.webLink);
 });
 
