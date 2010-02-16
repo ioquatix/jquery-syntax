@@ -5,7 +5,7 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.register('ooc', function(brush) {
-	var keywords = ["class", "interface", "implement", "abstract", "extends", "from", "new", "const", "final", "static", "import", "use", "extern", "inline", "proto", "break", "continue", "fallthrough", "operator", "if", "else", "for", "while", "do", "switch", "case", "as", "in", "version", "return", "include", "cover", "func"];
+	var keywords = ["class", "interface", "implement", "abstract", "extends", "from", "const", "final", "static", "import", "use", "extern", "inline", "proto", "break", "continue", "fallthrough", "operator", "if", "else", "for", "while", "do", "switch", "case", "as", "in", "version", "return", "include", "cover", "func"];
 	
 	var types = ["Int", "Int8", "Int16", "Int32", "Int64", "Int80", "Int128", "UInt", "UInt8", "UInt16", "UInt32", "UInt64", "UInt80", "UInt128", "Octet", "Short", "UShort", "Long", "ULong", "LLong", "ULLong", "Float", "Double", "LDouble", "Float32", "Float64", "Float128", "Char", "UChar", "WChar", "String", "Void", "Pointer", "Bool", "SizeT", "This"];
 	
@@ -39,5 +39,16 @@ Syntax.register('ooc', function(brush) {
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
+	
+	brush.postprocess = function (options, html, container) {
+		var queryURI = "http://docs.ooc-lang.org/search.html?q=";
+		
+		$('.function', html).each(function() {
+			var text = $(this).text();
+			$(this).replaceWith($('<a>').attr('href', queryURI + encodeURIComponent(text)).text(text));
+		});
+		
+		return html;
+	};
 });
 
