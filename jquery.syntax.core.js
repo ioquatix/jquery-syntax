@@ -374,7 +374,8 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
 				}
 				
 				// Skip any parts which have been populated already
-				i += (children_parts.length-1)
+				i += (children_parts.length-1);
+				splits.splice(0, children_parts.length-1);
 			}
 		}
 		
