@@ -374,7 +374,7 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
 				}
 				
 				// Skip any parts which have been populated already
-				// i += (children_parts.length-1)
+				i += (children_parts.length-1)
 			}
 		}
 		
@@ -547,6 +547,7 @@ Syntax.highlight = function (elements, options, callback) {
 		}
 		
 		var brushName = options.brush || 'plain';
+		brushName = Syntax.aliases[brushName] || brushName;
 		
 		Syntax.brushes.get(brushName, function(brush) {
 			container.addClass('syntax');
