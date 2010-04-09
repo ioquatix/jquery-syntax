@@ -49,13 +49,11 @@ Syntax.register('css', function(brush) {
 	brush.push(Syntax.lib.cStyleFunction);
 	
 	brush.postprocess = function(options, html, container) {
-		if (options.showColors === true) {
-			jQuery('.color', html).each(function() {
-				var text = jQuery(this).text();
-				var colorBox = jQuery('<span style="font-size: 0.5em; margin: 4px; border: 1px solid black">&nbsp;&nbsp;</span>').css('background-color', text);
-				jQuery(this).append(colorBox);
-			});
-		}
+		jQuery('.color', html).each(function() {
+			var text = jQuery(this).text();
+			var colorBox = jQuery('<span style="font-size: 0.5em; margin: 4px; border: 1px solid black">&nbsp;&nbsp;</span>').css('background-color', text);
+			jQuery(this).append(colorBox);
+		});
 		
 		return html;
 	};
