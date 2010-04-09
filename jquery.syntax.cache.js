@@ -7,16 +7,19 @@ Syntax.alias("applescript", []);
 Syntax.alias("asm", []);
 Syntax.alias("bash-script", []);
 Syntax.alias("bash", []);
+Syntax.alias("basic", ['vb']);
 Syntax.alias("clang", ["cpp", "c++", "c", "objective-c"]);
 Syntax.alias("css", []);
 Syntax.alias("diff", ["patch"]);
 Syntax.alias("html", ["xml"]);
 Syntax.alias("javascript", ["js", "actionscript"]);
+Syntax.alias("lisp", ['scheme']);
 Syntax.alias("ooc", []);
 Syntax.alias("php", []);
 Syntax.alias("plain", ["text"]);
 Syntax.alias("python", []);
 Syntax.alias("ruby", []);
+Syntax.alias("sql", []);
 
 // CSS Extensions
 Syntax.styles["jquery.syntax.brush.apache"] = "jquery.syntax.brush.apache.css";
