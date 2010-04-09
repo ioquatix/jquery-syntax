@@ -9,7 +9,7 @@ Syntax.register('bash-script', function(brush) {
 	
 	brush.push(keywords, {klass: 'keyword'});
 	
-	var operators = ["&", "|", ">", "<", "+", "-", "*", "/", "%", "="]
+	var operators = ["&", "|", ">", "<", "="];
 	
 	brush.push(operators, {klass: 'operator'});
 	
