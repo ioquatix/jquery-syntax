@@ -14,10 +14,10 @@ if (!RegExp.prototype.escape) {
 	};
 }
 
-// The jQuery version of this function is broken on IE6.
+// The jQuery version of container.text() is broken on IE6.
 // This version fixes it... for pre elements only. Other elements
 // in IE will have the whitespace manipulated.
-jQuery.getText = function ( elems ) {
+Syntax.getCDATA = function ( elems ) {
 	var ret = "", elem;
 
 	for ( var i = 0; elems[i]; i++ ) {
@@ -527,7 +527,7 @@ Syntax.highlight = function (elements, options, callback) {
 	elements.each(function () {
 		var container = jQuery(this);
 		
-		var text = container.text();
+		var text = Syntax.getCDATA(container);
 
 		var match = text.match(/-\*- mode: (.+?);(.*?)-\*-/i);
 		var endOfSecondLine = text.indexOf("\n", text.indexOf("\n") + 1);
