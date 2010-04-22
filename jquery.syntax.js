@@ -95,7 +95,7 @@ ResourceLoader.prototype.get = function (name, callback) {
 };
 
 var Syntax = {
-	root: './', aliases: {}, styles: {}, lib: {},
+	root: './', aliases: {}, brushNames: [], styles: {}, lib: {},
 	
 	brushes: new ResourceLoader(function(name, callback) {
 		name = Syntax.aliases[name] || name;
@@ -146,6 +146,8 @@ var Syntax = {
 	},
 	
 	alias: function (name, aliases) {
+		Syntax.brushNames.push(name);
+		
 		for (var i = 0; i < aliases.length; i += 1) {
 			Syntax.aliases[aliases[i]] = name;
 		}
