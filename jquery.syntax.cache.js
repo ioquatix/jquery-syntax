@@ -20,6 +20,7 @@ Syntax.alias("plain", ["text"]);
 Syntax.alias("python", []);
 Syntax.alias("ruby", []);
 Syntax.alias("sql", []);
+Syntax.alias("yaml", []);
 
 // CSS Extensions
 Syntax.styles["jquery.syntax.brush.apache"] = "jquery.syntax.brush.apache.css";
