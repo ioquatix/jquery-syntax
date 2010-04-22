@@ -151,6 +151,22 @@ var Syntax = {
 		for (var i = 0; i < aliases.length; i += 1) {
 			Syntax.aliases[aliases[i]] = name;
 		}
+	},
+	
+	extractBrushName: function (className) {
+		var match = className.match(/brush-([\w\-]+)/);
+		
+		if (match) {
+			return match[1];
+		} else {
+			var classes = className.split(/ /);
+			
+			if (classes.length == 2 && classes[0] == 'syntax' && jQuery.inArray(classes[1], Syntax.brushNames)) {
+				return classes[1];
+			}
+		}
+		
+		return null;
 	}
 };
 
@@ -163,25 +179,29 @@ jQuery.fn.syntax = function (options, callback) {
 };
 
 jQuery.syntax = function (options, callback) {
-	// Some useful defaults
-	var selector = (options.selector || 'pre.syntax');
+	options = options || {};
 	
-	if (typeof(options.replace) === 'undefined') {
-		options.replace = true;
+	if (options.root) {
+		Syntax.root = options.root;
 	}
 	
-	if (typeof(options.layout) === 'undefined'){
-		options.layout = 'table';
-	}
+	options.blockSelector = options.blockSelector || 'pre.syntax';
+	options.inlineSelector = options.inlineSelector || 'code.syntax';
 	
-	jQuery(selector).each(function(){
-		var match = this.className.match(/brush-([\w\-]+)/);
-		var brush;
+	options.blockLayout = options.blockLayout || 'table';
+	options.inlineLayout = options.inlineLayout || 'inline';
+	
+	options.replace = true;
+	
+	jQuery(options.blockSelector).each(function(){
+		var brush = Syntax.extractBrushName(this.className) || 'plain';
 		
-		if (match) {
-			brush = match[1];
-		}
+		jQuery(this).syntax(jQuery.extend({brush: brush, layout: options.blockLayout}, options), callback);
+	});
+	
+	jQuery(options.inlineSelector).each(function() {
+		var brush = Syntax.extractBrushName(this.className) || 'plain';
 		
-		jQuery(this).syntax(jQuery.extend({brush: brush}, options), callback);
+		jQuery(this).syntax(jQuery.extend({brush: brush, layout: options.inlineLayout}, options), callback);
 	});
 };
