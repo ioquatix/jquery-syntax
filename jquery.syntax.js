@@ -194,14 +194,16 @@ jQuery.syntax = function (options, callback) {
 	options.replace = true;
 	
 	jQuery(options.blockSelector).each(function(){
-		var brush = Syntax.extractBrushName(this.className) || 'plain';
-		
-		jQuery(this).syntax(jQuery.extend({brush: brush, layout: options.blockLayout}, options), callback);
+		jQuery(this).syntax(jQuery.extend({
+			brush: Syntax.extractBrushName(this.className),
+			layout: options.blockLayout
+		}, options), callback);
 	});
 	
 	jQuery(options.inlineSelector).each(function() {
-		var brush = Syntax.extractBrushName(this.className) || 'plain';
-		
-		jQuery(this).syntax(jQuery.extend({brush: brush, layout: options.inlineLayout}, options), callback);
+		jQuery(this).syntax(jQuery.extend({
+			brush: Syntax.extractBrushName(this.className),
+			layout: options.inlineLayout
+		}, options), callback);
 	});
 };
