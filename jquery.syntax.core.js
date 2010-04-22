@@ -328,7 +328,10 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
 	
 	// We need to split including the last part.
 	splits.push(this.endOffset);
-	splits.sort(function(a,b){return a-b;});
+	
+	splits.sort(function (a,b) {
+		return a-b;
+	});
 	
 	for (var i = 0; i < splits.length; i += 1) {
 		var offset = splits[i];
@@ -369,13 +372,16 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
 			if (children[0].offset < parts[i].endOffset) {
 				var children_parts = children.shift().bisectAtOffsets(splits), j = 0;
 			
+				// children_parts are the bisected children which need to be merged with parts
+				// in a linear fashion
 				for (; j < children_parts.length; j += 1) {
 					parts[i+j].children.push(children_parts[j]);
 				}
 				
 				// Skip any parts which have been populated already
-				i += (children_parts.length-1);
-				splits.splice(0, children_parts.length-1);
+				// (i is incremented at the start of the loop, splits shifted at the end)
+				i += (children_parts.length-2);
+				splits.splice(0, children_parts.length-2);
 			}
 		}
 		
