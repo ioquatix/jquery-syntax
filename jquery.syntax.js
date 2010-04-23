@@ -95,7 +95,7 @@ ResourceLoader.prototype.get = function (name, callback) {
 };
 
 var Syntax = {
-	root: './', aliases: {}, brushNames: [], styles: {}, lib: {},
+	root: './', aliases: {}, styles: {}, lib: {},
 	
 	brushes: new ResourceLoader(function(name, callback) {
 		name = Syntax.aliases[name] || name;
@@ -146,11 +146,22 @@ var Syntax = {
 	},
 	
 	alias: function (name, aliases) {
-		Syntax.brushNames.push(name);
+		Syntax.aliases[name] = name;
 		
 		for (var i = 0; i < aliases.length; i += 1) {
 			Syntax.aliases[aliases[i]] = name;
 		}
+	},
+	
+	brushNames: function () {
+		var names = [];
+		
+		for (var name in Syntax.aliases) {
+			if (name === Syntax.aliases[name])
+				names.push(name);
+		}
+		
+		return names;
 	},
 	
 	extractBrushName: function (className) {
@@ -161,8 +172,14 @@ var Syntax = {
 		} else {
 			var classes = className.split(/ /);
 			
-			if (classes.length == 2 && classes[0] == 'syntax' && jQuery.inArray(classes[1], Syntax.brushNames)) {
-				return classes[1];
+			if (jQuery.inArray("syntax", classes) !== -1) {
+				for (var i = 0; i < classes.length; i += 1) {
+					var name = Syntax.aliases[classes[i]];
+					
+					if (name) {
+						return name;
+					}
+				}
 			}
 		}
 		
