@@ -38,7 +38,9 @@ Syntax.layouts.table = function(options, code, container) {
 		
 		td = document.createElement('td');
 		td.className = "number";
-		td.innerHTML = line;
+		number = document.createElement('span');
+		number.innerHTML = line;
+		td.appendChild(number);
 		tr.appendChild(td);
 		
 		td = document.createElement('td');
