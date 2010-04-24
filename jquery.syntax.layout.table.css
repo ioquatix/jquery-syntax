@@ -7,7 +7,8 @@ table.syntax {
   margin: auto;
   margin-top: 2em;
   margin-bottom: 2em;
-  -webkit-box-shadow: 5px 5px 5px #eee; }
+  -webkit-box-shadow: 5px 5px 5px #eee;
+  -moz-box-shadow: 5px 5px 5px #eee; }
   table.syntax tr.alt td.source {
     background-color: #f6f6f6; }
   table.syntax td {
