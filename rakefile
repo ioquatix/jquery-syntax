@@ -9,7 +9,9 @@
 require 'stringio'
 require 'fileutils'
 
+JSMIN_EXEC = File.dirname(__FILE__) + "/ext/jsmin.rb"
 CACHE_FILE = "jquery.syntax.cache.js"
+MINIFIED_FILE = "jquery.syntax.min.js"
 
 task :update_aliases do
 	code = StringIO.new
@@ -88,4 +90,38 @@ task :generate_css, [:theme,:override,:output] => [:clean_css] do |task, argumen
 	Rake::Task[:update_aliases].invoke
 end
 
-task :default => :update_aliases
+# This builds a combined jquery.syntax.js and jquery.syntax.cache.js and minifies the result
+task :build_combined => [:update_aliases] do
+	IO.popen(JSMIN_EXEC, "r+") do |min|
+		["jquery.syntax.js", "jquery.syntax.cache.js"].each do |path|
+			min.write(File.read(path))
+		end
+	
+		min.close_write
+	
+		buf = min.read
+	
+		File.open(MINIFIED_FILE, "w") do |fp|
+			fp.write(buf)
+		end
+	end
+end
+
+# Note... this is one way !
+task :compress_all => [:build_combined] do
+	files = Dir[File.dirname(__FILE__) + "/jquery.syntax.*.js"]
+	
+	files.each do |path|
+		IO.popen(JSMIN_EXEC, "r+") do |min|
+			min.write(File.read(path))
+			
+			min.close_write
+			
+			File.open(path, "w") do |fp|
+				fp.write(min.read)
+			end
+		end
+	end
+end
+
+task :default => :build_combined
