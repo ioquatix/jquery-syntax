@@ -17,16 +17,20 @@
 	program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*global Function: true, ResourceLoader: true, Syntax: true, alert: false, jQuery: true */
+
 // ECMAScript 5! Why wasn't this done before!?
 if (!Function.prototype.bind) {
-	Function.prototype.bind = function(target) {
+	Function.prototype.bind = function (target) {
 		var args = [], fn = this;
 
 		for (var n = 1; n < arguments.length; n += 1) {
 			args.push(arguments[n]);
 		}
 
-		return function () { return fn.apply(target, args); };
+		return function () {
+			return fn.apply(target, args);
+		};
 	};
 }
 
@@ -70,7 +74,7 @@ ResourceLoader.prototype._loaded = function (name) {
 	}
 };
 
-ResourceLoader.prototype.dependency = function(current, next) {
+ResourceLoader.prototype.dependency = function (current, next) {
 	 // if it is already loaded, it isn't a dependency
 	if (this[next]) {
 		return;
@@ -95,20 +99,23 @@ ResourceLoader.prototype.get = function (name, callback) {
 };
 
 var Syntax = {
-	root: './', aliases: {}, styles: {}, lib: {},
+	root: './', 
+	aliases: {},
+	styles: {},
+	lib: {},
 	
-	brushes: new ResourceLoader(function(name, callback) {
+	brushes: new ResourceLoader(function (name, callback) {
 		name = Syntax.aliases[name] || name;
 		
 		Syntax.getResource('jquery.syntax.brush', name, callback);
 	}),
 	
-	layouts: new ResourceLoader(function(name, callback) {
+	layouts: new ResourceLoader(function (name, callback) {
 		Syntax.getResource('jquery.syntax.layout', name, callback);
 	}),
 	
-	loader: new ResourceLoader(function(name, callback) {
-		Syntax.getResource('jquery.syntax', name, callback)
+	loader: new ResourceLoader(function (name, callback) {
+		Syntax.getResource('jquery.syntax', name, callback);
 	}),
 	
 	getStyles: function (path) {
@@ -127,7 +134,7 @@ var Syntax = {
 			async: false,
 			type: "GET",
 			url: path,
-			success: function() {
+			success: function () {
 				callback();
 			},
 			dataType: "script",
@@ -169,8 +176,9 @@ var Syntax = {
 		var names = [];
 		
 		for (var name in Syntax.aliases) {
-			if (name === Syntax.aliases[name])
+			if (name === Syntax.aliases[name]) {
 				names.push(name);
+			}
 		}
 		
 		return names;
@@ -202,7 +210,7 @@ var Syntax = {
 jQuery.fn.syntax = function (options, callback) {
 	var elements = this;
 	
-	Syntax.loader.get('core', function() {
+	Syntax.loader.get('core', function () {
 		Syntax.highlight(elements, options, callback);
 	});
 };
@@ -222,14 +230,14 @@ jQuery.syntax = function (options, callback) {
 	
 	options.replace = true;
 	
-	jQuery(options.blockSelector).each(function(){
+	jQuery(options.blockSelector).each(function () {
 		jQuery(this).syntax(jQuery.extend({}, options, {
 			brush: Syntax.extractBrushName(this.className),
 			layout: options.blockLayout
 		}), callback);
 	});
 	
-	jQuery(options.inlineSelector).each(function() {
+	jQuery(options.inlineSelector).each(function () {
 		jQuery(this).syntax(jQuery.extend({}, options, {
 			brush: Syntax.extractBrushName(this.className),
 			layout: options.inlineLayout
