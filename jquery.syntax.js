@@ -153,6 +153,18 @@ var Syntax = {
 		}
 	},
 	
+	brushAliases: function (brush) {
+		var aliases = [];
+		
+		for (var name in Syntax.aliases) {
+			if (Syntax.aliases[name] === brush) {
+				aliases.push(name);
+			}
+		}
+		
+		return aliases;
+	},
+	
 	brushNames: function () {
 		var names = [];
 		
