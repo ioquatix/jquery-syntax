@@ -12,22 +12,22 @@ Syntax.brushes.dependency('html', 'ruby');
 Syntax.register('html', function(brush) {
 	brush.push({
 		pattern: /<script.*?type\=.?text\/javascript.*?>((.|\n)*?)<\/script>/gmi,
-		matches: Syntax.extractMatches({brush: 'javascript'}),
+		matches: Syntax.extractMatches({brush: 'javascript'})
 	});
 	
 	brush.push({
 		pattern: /<style.*?type=.?text\/css.*?>((.|\n)*?)<\/style>/gmi,
-		matches: Syntax.extractMatches({brush: 'css'}),
+		matches: Syntax.extractMatches({brush: 'css'})
 	});
 	
 	brush.push({
 		pattern: /<\?(php)((.|\n)*?)\?>/gm,
-		matches: Syntax.extractMatches({klass: 'access'}, {brush: 'php'}),
+		matches: Syntax.extractMatches({klass: 'access'}, {brush: 'php'})
 	})
 	
 	brush.push({
 		pattern: /<\?(rb?)((.|\n)*?)\?>/gm,
-		matches: Syntax.extractMatches({klass: 'access'}, {brush: 'ruby'}),
+		matches: Syntax.extractMatches({klass: 'access'}, {brush: 'ruby'})
 	})
 	
 	brush.push({
@@ -36,11 +36,6 @@ Syntax.register('html', function(brush) {
 		allow: ['string']
 	});
 	
-	//brush.push({
-	//	pattern: /<(\?((.|\n)*?)\?)>/gm,
-	//	matches: Syntax.extractMatches({klass: 'instruction', allow: ['string']})
-	//});
-
 	brush.push({
 		pattern: /<(\!DOCTYPE(.*?))>/g,
 		matches: Syntax.extractMatches({klass: 'doctype'})
@@ -66,9 +61,9 @@ Syntax.register('html', function(brush) {
 		klass: 'percent-escape',
 		only: ['html', 'string']
 	});
-
+   
 	brush.push(Syntax.lib.xmlComment);
-
+   
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
 	
