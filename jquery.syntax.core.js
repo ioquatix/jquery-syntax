@@ -157,7 +157,7 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 		node = node.replace(/[ ]{2}/g, "\u00a0\u00a0");
 		
 		// Fixes a bug where a single space might be coalesced if it is at the start or end of an element.
-		node = node.replace(/(^[ ])|([ ]$)/g, "\u00a0");
+		node = node.replace(/(^[ ])/g, "\u00a0");
 		
 		node = document.createTextNode(node);
 	} else {
