@@ -6,9 +6,7 @@ table.syntax {
   width: 95%;
   margin: auto;
   margin-top: 2em;
-  margin-bottom: 2em;
-  -webkit-box-shadow: 5px 5px 5px #eee;
-  -moz-box-shadow: 5px 5px 5px #eee; }
+  margin-bottom: 2em; }
   table.syntax tr.alt td.source {
     background-color: #f6f6f6; }
   table.syntax td {
