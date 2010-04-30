@@ -40,15 +40,6 @@ Syntax.register('ooc', function(brush) {
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
 	
-	brush.postprocess = function (options, html, container) {
-		var queryURI = "http://docs.ooc-lang.org/search.html?q=";
-		
-		jQuery('.function', html).each(function() {
-			var text = jQuery(this).text();
-			jQuery(this).replaceWith(jQuery('<a>').attr('href', queryURI + encodeURIComponent(text)).text(text));
-		});
-		
-		return html;
-	};
+	brush.processes['function'] = Syntax.lib.webLinkProcess("http://docs.ooc-lang.org/search.html?q=");
 });
 

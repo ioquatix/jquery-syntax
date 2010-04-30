@@ -9,14 +9,12 @@ Syntax.register('php', function(brush) {
 	
 	var access = ["private", "protected", "public"];
 	
-	var types = ["array"];
-	
 	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">", "[", "]", "new"];
 	
 	var values = ["this", "true", "false", /[0-9]+(\.[0-9]+)?/g];
 	
 	brush.push(values, {klass: 'constant'});
-	brush.push(types, {klass: 'type'});
+	//brush.push(types, {klass: 'type'});
 	brush.push(keywords, {klass: 'keyword'});
 	brush.push(operators, {klass: 'operator'});
 	brush.push(access, {klass: 'access'});
@@ -34,5 +32,7 @@ Syntax.register('php', function(brush) {
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
+	
+	brush.processes['function'] = Syntax.lib.webLinkProcess("http://www.php.net/manual-lookup.php?pattern=");
 });
 

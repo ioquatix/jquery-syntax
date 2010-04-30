@@ -6,13 +6,26 @@
 
 Syntax.register('apache', function(brush) {
 	brush.push({
-		pattern: /<\/?(\w+).*?>/g,
+		pattern: /<(\w+).*?>/gi,
+		matches: Syntax.extractMatches({
+			klass: 'tag',
+			allow: ['attribute'],
+			process: Syntax.lib.webLinkProcess("site:http://httpd.apache.org/docs/trunk/ directive", true)
+		})
+	});
+
+	brush.push({
+		pattern: /<\/(\w+).*?>/gi,
 		matches: Syntax.extractMatches({klass: 'tag', allow: ['attribute']})
 	});
 
 	brush.push({
 		pattern: /^\s+([A-Z][\w]+)/gm,
-		matches: Syntax.extractMatches({klass: 'function', allow: ['attribute']})
+		matches: Syntax.extractMatches({
+			klass: 'function',
+			allow: ['attribute'],
+			process: Syntax.lib.webLinkProcess("site:http://httpd.apache.org/docs/trunk/ directive", true)
+		})
 	});
 
 	brush.push(Syntax.lib.perlStyleComment);

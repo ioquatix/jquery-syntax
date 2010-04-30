@@ -37,5 +37,7 @@ Syntax.register('java', function(brush) {
 	brush.push(Syntax.lib.stringEscape);
 	
 	brush.push(Syntax.lib.cStyleFunction);
+	
+	brush.processes['function'] = Syntax.lib.webLinkProcess('java "Developer Documentation"', true);
 });
 

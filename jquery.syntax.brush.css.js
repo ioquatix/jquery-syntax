@@ -22,7 +22,12 @@ Syntax.register('css', function(brush) {
 	
 	brush.push({
 		pattern: colorMatcher,
-		klass: 'color'
+		klass: 'color',
+		process: function (element, match) {
+			var text = jQuery(element).text();
+			var colorBox = jQuery('<span style="font-size: 0.5em; margin: 4px; border: 1px solid black">&nbsp;&nbsp;</span>').css('background-color', text);
+			return jQuery(element).append(colorBox);
+		}
 	});
 		
 	brush.push(Syntax.lib.cStyleComment);
@@ -39,7 +44,13 @@ Syntax.register('css', function(brush) {
 		matches: Syntax.extractMatches({klass: 'value', allow: ['color'], only: ['properties']})
 	});
 	
-	brush.push({pattern: /[\-\w]+:/g, klass: 'property'});
+	brush.push({
+		pattern: /([\-\w]+):/g,
+		matches: Syntax.extractMatches({
+			klass: 'property',
+			process: Syntax.lib.webLinkProcess("http://cssdocs.org/")
+		})
+	});
 	
 	// Strings
 	brush.push(Syntax.lib.singleQuotedString);
@@ -47,15 +58,5 @@ Syntax.register('css', function(brush) {
 	brush.push(Syntax.lib.stringEscape);
 	
 	brush.push(Syntax.lib.cStyleFunction);
-	
-	brush.postprocess = function(options, html, container) {
-		jQuery('.color', html).each(function() {
-			var text = jQuery(this).text();
-			var colorBox = jQuery('<span style="font-size: 0.5em; margin: 4px; border: 1px solid black">&nbsp;&nbsp;</span>').css('background-color', text);
-			jQuery(this).append(colorBox);
-		});
-		
-		return html;
-	};
 });
 

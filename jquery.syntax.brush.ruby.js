@@ -36,5 +36,8 @@ Syntax.register('ruby', function(brush) {
 	
 	brush.push(Syntax.lib.rubyStyleFunction);
 	brush.push(Syntax.lib.cStyleFunction);
+	
+	// brush.processes['function'] = Syntax.lib.webLinkProcess("ruby", true);
+	// brush.processes['type'] = Syntax.lib.webLinkProcess("ruby", true);
 });
 

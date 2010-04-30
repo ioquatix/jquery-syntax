@@ -78,22 +78,36 @@ Syntax.convertTabsToSpaces = function (text, tabSize) {
 Syntax.extractMatches = function() {
 	var rules = arguments;
 	
-	return function(match) {
+	return function(match, expr) {
 		var matches = [];
 		
 		for (var i = 0; i < rules.length; i += 1) {
 			var rule = rules[i];
+			
 			var index = rule.index || (i+1);
 			
 			if (match[index].length > 0) {
-				if (rule.brush)
+				if (rule.brush) {
 					matches.push(Syntax.brushes[rule.brush].buildTree(match[index], RegExp.indexOf(match, index)));
-				else
-					matches.push(new Syntax.Match(RegExp.indexOf(match, index), match[index].length, rule, match[index]));
+				} else {
+					var expression = jQuery.extend({owner: expr.owner}, rule);
+					
+					matches.push(new Syntax.Match(RegExp.indexOf(match, index), match[index].length, expression, match[index]));
+				}
 			}
 		}
 		
 		return matches;
+	};
+};
+
+Syntax.lib.webLinkProcess = function (queryURI, lucky) {
+	if (lucky) {
+		queryURI = "http://www.google.com/search?btnI=I&q=" + encodeURIComponent(queryURI + " ");
+	}
+	
+	return function (element, match) {
+		return jQuery('<a>').attr('href', queryURI + encodeURIComponent(element.text())).append(element);
 	};
 };
 
@@ -167,7 +181,7 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 	container[0].appendChild(node);
 };
 
-Syntax.Match.prototype.reduce = function (append) {
+Syntax.Match.prototype.reduce = function (append, process) {
 	var start = this.offset;
 	var container = jQuery('<span></span>');
 	
@@ -182,7 +196,7 @@ Syntax.Match.prototype.reduce = function (append) {
 		var text = this.value.substr(start - this.offset, end - start);
 		
 		append(text, container);
-		append(child.reduce(append), container);
+		append(child.reduce(append, process), container);
 		
 		start = child.endOffset;
 	}
@@ -193,6 +207,10 @@ Syntax.Match.prototype.reduce = function (append) {
 		append(this.value.substr(start - this.offset, this.endOffset - start), container);
 	} else if (start > this.endOffset) {
 		alert("Syntax Warning: Start position " + start + " exceeds end of value " + this.endOffset);
+	}
+	
+	if (process) {
+		container = process(container, this);
 	}
 	
 	return container;
@@ -411,6 +429,7 @@ Syntax.Match.prototype.split = function(pattern) {
 Syntax.Brush = function () {
 	this.klass = null;
 	this.rules = [];
+	this.processes = {};
 };
 
 Syntax.Brush.prototype.push = function () {
@@ -439,7 +458,6 @@ Syntax.Brush.prototype.push = function () {
 				}
 			}
 			
-			
 			rule.pattern = new RegExp(prefix + RegExp.escape(rule.pattern) + postfix, rule.options || 'g');
 		}
 
@@ -448,7 +466,7 @@ Syntax.Brush.prototype.push = function () {
 		}
 
 		if (rule.pattern.global) {
-			this.rules.push(rule);
+			this.rules.push(jQuery.extend({owner: this}, rule));
 		} else {
 			alert("Syntax Error: Malformed rule! All rules need to be global! " + rule);
 		}
@@ -492,7 +510,7 @@ Syntax.Brush.prototype.buildTree = function(text, offset) {
 	text = text.replace(/\r/g, "");
 	
 	var matches = this.getMatches(text, offset);
-	var top = new Syntax.Match(offset, text.length, {klass: this.klass, allow: '*'}, text);
+	var top = new Syntax.Match(offset, text.length, {klass: this.klass, allow: '*', owner: this}, text);
 
 	// This sort is absolutely key to the functioning of the tree insertion algorithm.
 	matches.sort(Syntax.Match.sort);
@@ -514,7 +532,20 @@ Syntax.Brush.prototype.process = function(text) {
 	var html = jQuery('<pre class="syntax"></pre>');
 	
 	for (var i = 0; i < lines.length; i += 1) {
-		var line = lines[i].reduce();
+		var line = lines[i].reduce(null, function (container, match) {
+			if (match.expression) {
+				if (match.expression.process) {
+					container = match.expression.process(container, match);
+				}
+				
+				var process = match.expression.owner.processes[match.expression.klass];
+				if (process) {
+					container = process(container, match);
+				}
+			}
+			return container;
+		});
+		
 		html.append(line);
 	}
 	

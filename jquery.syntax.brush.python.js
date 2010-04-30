@@ -32,5 +32,9 @@ Syntax.register('python', function(brush) {
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
+	
+	brush.processes['function'] = Syntax.lib.webLinkProcess("http://docs.python.org/search.html?q=");
+	brush.processes['type'] = Syntax.lib.webLinkProcess("http://docs.python.org/search.html?q=");
+	brush.processes['builtin'] = Syntax.lib.webLinkProcess("http://docs.python.org/search.html?q=");
 });
 
