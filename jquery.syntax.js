@@ -134,9 +134,7 @@ var Syntax = {
 			async: false,
 			type: "GET",
 			url: path,
-			success: function () {
-				callback();
-			},
+			success: callback,
 			dataType: "script",
 			cache: true
 		});
