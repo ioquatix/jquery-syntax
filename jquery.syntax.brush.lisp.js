@@ -4,7 +4,7 @@
 //	Copyright 2010 Samuel Williams. All rights reserved.
 //	See <jquery.syntax.js> for licensing details.
 
-Syntax.lib.lispStyleComment = {pattern: /; .*$/gm, klass: 'comment', allow: ['href']};
+Syntax.lib.lispStyleComment = {pattern: /(;+) .*$/gm, klass: 'comment', allow: ['href']};
 
 // This syntax is intentionally very sparse. This is because it is a general syntax for Lisp like languages.
 // It might be a good idea to make specific dialects (e.g. common lisp, scheme, clojure, etc)
@@ -21,6 +21,21 @@ Syntax.register('lisp', function(brush) {
 	
 	brush.push(Syntax.lib.decimalNumber);
 	brush.push(Syntax.lib.webLink);
+	
+	brush.push({
+		pattern: /\(([^\s\(\)]+)/gi,
+		matches: Syntax.extractMatches({klass: 'function'})
+	});
+	
+	brush.push({
+		pattern: /\(([^\s\(\)]+)/gi,
+		matches: Syntax.extractMatches({klass: 'function'})
+	});
+	
+	brush.push({
+		pattern: /#[a-z]+/gi,
+		klass: 'constant'
+	})
 	
 	// Strings
 	brush.push(Syntax.lib.doubleQuotedString);
