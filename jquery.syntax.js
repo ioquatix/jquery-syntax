@@ -136,7 +136,7 @@ var Syntax = {
 			url: path,
 			success: callback,
 			dataType: "script",
-			cache: false
+			cache: true
 		});
 	},
 	
