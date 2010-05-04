@@ -20,7 +20,7 @@ Syntax.register('clang', function(brush) {
 	brush.push(access, {klass: 'access'});
 	
 	// Objective-C classes
-	brush.push({pattern: /\b[A-Z_][\w]*\b/g, klass: 'type'});
+	brush.push(Syntax.lib.camelCaseType);
 	
 	brush.push({
 		pattern: /#.*$/gmi,
