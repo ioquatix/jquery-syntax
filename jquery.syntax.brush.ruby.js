@@ -20,7 +20,7 @@ Syntax.register('ruby', function(brush) {
 	
 	brush.push({pattern: /(@+|\$)[\w]+/g, klass: 'variable'});
 	
-	brush.push({pattern: /_*[A-Z][\w:]+/g, klass: 'type'});
+	brush.push(Syntax.lib.camelCaseType);
 	brush.push(keywords, {klass: 'keyword'});
 	brush.push(operators, {klass: 'operator'});
 	
