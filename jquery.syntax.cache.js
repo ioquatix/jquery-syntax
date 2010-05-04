@@ -17,6 +17,7 @@ Syntax.alias("java", []);
 Syntax.alias("javascript", ["js", "actionscript"]);
 Syntax.alias("lisp", ['scheme', 'clojure']);
 Syntax.alias("ooc", []);
+Syntax.alias("perl5", []);
 Syntax.alias("php", []);
 Syntax.alias("plain", ["text"]);
 Syntax.alias("python", []);
