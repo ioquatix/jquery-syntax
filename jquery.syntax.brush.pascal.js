@@ -10,7 +10,7 @@
 Syntax.register('pascal', function(brush) {
 	var keywords = ["absolute", "abstract", "all", "and_then", "as", "asm", "asmname", "attribute", "begin", "bindable", "c", "c_language", "case", "class", "const", "constructor", "destructor", "dispose", "do", "downto", "else", "end", "except", "exit", "export", "exports", "external", "far", "file", "finalization", "finally", "for", "forward", "function", "goto", "if", "implementation", "import", "inherited", "initialization", "inline", "interface", "interrupt", "is", "keywords", "label", "library", "module", "name", "near", "new", "object", "of", "on", "only", "operator", "or_else", "otherwise", "packed", "pascal", "pow", "private", "procedure", "program", "property", "protected", "public", "published", "qualified", "raise", "record", "repeat", "resident", "restricted", "segment", "set", "then", "threadvar", "to", "try", "type", "unit", "until", "uses", "value", "var", "view", "virtual", "while", "with"];
 
-	var operators = ["+", "-", "*", "/", "div", "mod", "and", "or", "xor", "shl", "shr", "not", "=", ">=", ">", "<>", "<=", "<", "in"];
+	var operators = ["+", "-", "*", "/", "div", "mod", "and", "or", "xor", "shl", "shr", "not", "=", ">=", ">", "<>", "<=", "<", "in", ":="];
 	
 	var values = ["true", "false", "nil", /[0-9]+(\.[0-9]+)?/g];
 	
