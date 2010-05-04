@@ -18,6 +18,9 @@ Syntax.register('haskell', function(brush) {
 	brush.push(keywords, {klass: 'keyword'});
 	brush.push(operators, {klass: 'operator'});
 	
+	// Camelcase Types
+	brush.push(Syntax.lib.camelCaseType);
+	
 	// Objective-C classes
 	brush.push(Syntax.lib.haskellSingleLineStyleComment);
 	brush.push(Syntax.lib.haskellMultiLineStyleComment);

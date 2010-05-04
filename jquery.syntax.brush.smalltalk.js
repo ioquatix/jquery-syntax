@@ -15,7 +15,8 @@ Syntax.register('smalltalk', function(brush) {
 	// Objective-C style functions
 	brush.push({pattern: /\w+:/g, klass: 'function'});
 	
-	brush.push
+	// Camelcase Types
+	brush.push(Syntax.lib.camelCaseType);
 	
 	// Strings
 	brush.push(Syntax.lib.singleQuotedString);
