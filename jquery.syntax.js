@@ -215,6 +215,7 @@ jQuery.fn.syntax = function (options, callback) {
 
 jQuery.syntax = function (options, callback) {
 	options = options || {};
+	var context = options.context;
 	
 	if (options.root) {
 		Syntax.root = options.root;
@@ -228,14 +229,14 @@ jQuery.syntax = function (options, callback) {
 	
 	options.replace = true;
 	
-	jQuery(options.blockSelector).each(function () {
+	jQuery(options.blockSelector, context).each(function () {
 		jQuery(this).syntax(jQuery.extend({}, options, {
 			brush: Syntax.extractBrushName(this.className),
 			layout: options.blockLayout
 		}), callback);
 	});
 	
-	jQuery(options.inlineSelector).each(function () {
+	jQuery(options.inlineSelector, context).each(function () {
 		jQuery(this).syntax(jQuery.extend({}, options, {
 			brush: Syntax.extractBrushName(this.className),
 			layout: options.inlineLayout

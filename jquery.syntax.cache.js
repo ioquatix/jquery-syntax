@@ -39,4 +39,5 @@ Syntax.styles["jquery.syntax.brush.diff"] = "jquery.syntax.brush.diff.css";
 Syntax.styles["jquery.syntax.brush.html"] = "jquery.syntax.brush.html.css";
 Syntax.styles["jquery.syntax.brush.python"] = "jquery.syntax.brush.python.css";
 Syntax.styles["jquery.syntax.core"] = "jquery.syntax.core.css";
+Syntax.styles["jquery.syntax.layout.inline"] = "jquery.syntax.layout.inline.css";
 Syntax.styles["jquery.syntax.layout.table"] = "jquery.syntax.layout.table.css";
