@@ -11,7 +11,7 @@ Syntax.alias("basic", ['vb']);
 Syntax.alias("clang", ["cpp", "c++", "c", "objective-c"]);
 Syntax.alias("css", []);
 Syntax.alias("diff", ["patch"]);
-Syntax.alias("haskell", [""]);
+Syntax.alias("haskell", []);
 Syntax.alias("html", ["xml"]);
 Syntax.alias("java", []);
 Syntax.alias("javascript", ["js", "actionscript"]);
