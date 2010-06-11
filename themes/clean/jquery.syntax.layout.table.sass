@@ -4,8 +4,8 @@
 
 table.syntax
   border-collapse: collapse
-  background-color: #f0f0f0
-  border: 1px solid #aaa
+  background-color: $background-primary
+  border: 1px solid $border-primary
   padding: 0px
   width: 95%
   margin: auto
@@ -13,7 +13,7 @@ table.syntax
   margin-bottom: 2em
 
   tr.alt td.source
-    background-color: #f6f6f6
+    background-color: lighten($background-primary, 2%)
 
   td
     padding-left: 0.4em
@@ -27,7 +27,7 @@ table.syntax
       text-align: right
       width: 2.5em
       color: #555
-      background-color: #e0e0e0
+      background-color: darken($background-primary, 5%)
 
   .toolbar
     float: right
