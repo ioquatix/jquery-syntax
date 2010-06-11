@@ -1,5 +1,5 @@
 .syntax .bash .prompt {
-  color: #0c0;
+  color: #00cc00;
   font-weight: bold; }
 .syntax .bash .command {
-  color: #030; }
+  color: #003300; }

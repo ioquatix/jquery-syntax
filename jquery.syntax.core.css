@@ -1,27 +1,26 @@
 .syntax {
   font-family: Menlo, Monaco, Consolas, monospace; }
   .syntax .function {
-    color: #33f;
-    text-decoration: underline; }
+    color: #3333ff; }
   .syntax .keyword {
-    color: #3c3; }
+    color: #33cc33; }
   .syntax .access {
     color: #ffb600;
     font-weight: bold; }
   .syntax .type {
-    color: #191;
+    color: #119911;
     font-weight: bold; }
   .syntax .comment {
-    color: #6ac;
+    color: #66aacc;
     font-style: italic; }
   .syntax .string, .syntax .constant {
-    color: #f33; }
+    color: #ff3333; }
   .syntax .string .escape {
-    color: #f99; }
+    color: #ff9999; }
   .syntax .operator {
-    color: #c00; }
+    color: #cc0000; }
   .syntax .href {
-    color: #00f;
+    color: blue;
     text-decoration: underline; }
   .syntax .variable {
     font-style: italic; }

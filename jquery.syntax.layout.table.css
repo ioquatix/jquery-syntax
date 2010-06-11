@@ -1,25 +1,25 @@
 table.syntax {
   border-collapse: collapse;
   background-color: #f0f0f0;
-  border: 1px solid #aaa;
+  border: 1px solid #aaaaaa;
   padding: 0px;
   width: 95%;
   margin: auto;
   margin-top: 2em;
   margin-bottom: 2em; }
   table.syntax tr.alt td.source {
-    background-color: #f6f6f6; }
+    background-color: #f5f5f5; }
   table.syntax td {
     padding-left: 0.4em;
     padding-right: 0.4em; }
     table.syntax td.source {
       word-wrap: break-word; }
     table.syntax td.number {
-      border-right: 1px solid #aaa;
+      border-right: 1px solid #aaaaaa;
       text-align: right;
       width: 2.5em;
-      color: #555;
-      background-color: #e0e0e0; }
+      color: #555555;
+      background-color: #e3e3e3; }
   table.syntax .toolbar {
     float: right; }
     table.syntax .toolbar a {

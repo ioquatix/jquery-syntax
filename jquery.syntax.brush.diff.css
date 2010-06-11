@@ -4,13 +4,13 @@
   color: red; }
 .syntax .insert {
   color: green;
-  background-color: #cfc;
+  background-color: #ccffcc;
   display: block; }
 .syntax .remove {
   color: red;
-  background-color: #fcc;
+  background-color: #ffcccc;
   display: block; }
 .syntax .offset {
   color: blue;
-  background-color: #ccf;
+  background-color: #ccccff;
   display: block; }
