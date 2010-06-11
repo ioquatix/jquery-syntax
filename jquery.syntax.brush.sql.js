@@ -15,7 +15,7 @@ Syntax.register('sql', function(brush) {
 	
 	brush.push(Syntax.lib.sqlStyleComment);
 	
-	brush.push(keywords, {klass: 'keyword'});
+	brush.push(keywords, {klass: 'keyword', options: 'gi'});
 	
 	brush.push(Syntax.lib.webLink);
 });
