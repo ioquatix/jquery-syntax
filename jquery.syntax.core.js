@@ -14,6 +14,12 @@ if (!RegExp.prototype.escape) {
 	};
 }
 
+if (!String.prototype.repeat) {
+	String.prototype.repeat = function(l) {
+		return new Array(l+1).join(this);
+	};
+}
+
 // The jQuery version of container.text() is broken on IE6.
 // This version fixes it... for pre elements only. Other elements
 // in IE will have the whitespace manipulated.
@@ -167,8 +173,10 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 	// We avoid using jQuery in this function since it is incredibly performance sensitive.
 	// Using jQuery jQuery.fn.append() can reduce performance by as much as 1/3rd.
 	if (typeof(node) === 'string') {
-		// Add &nbsp; characters, 2 at a time, to retain line wrapping behaviour
-		node = node.replace(/[ ]{2}/g, "\u00a0 ");
+		// Add &nbsp; characters, to retain line wrapping behaviour
+		node = node.replace(/[ ]{2,}/g, function(m) {
+			return "\u00a0 ".repeat(Math.ceil(m.length / 2)).substr(0, m.length);
+		});
 		
 		node = document.createTextNode(node);
 	} else {
