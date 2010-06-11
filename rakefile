@@ -55,6 +55,9 @@ end
 task :generate_css, [:theme,:override,:output] => [:clean_css] do |task, arguments|
 	theme = arguments[:theme] || "clean"
 	override = arguments[:override] || "master.sass"
+	
+	puts "Building CSS: #{theme}/#{override}"
+	
 	output = arguments[:output] || File.dirname(__FILE__)
 	
 	unless File.directory?(theme)
