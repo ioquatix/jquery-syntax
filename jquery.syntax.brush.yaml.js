@@ -6,9 +6,11 @@
 
 Syntax.register('yaml', function(brush) {
 	brush.push({
-		pattern: /^\s*#.*$/gm,
-		klass: 'comment',
-		allow: ['href']
+		pattern: /^\s*(#.*)$/gm,
+		matches: Syntax.extractMatches({
+			klass: 'comment',
+			allow: ['href']
+		})
 	});
 	
 	brush.push(Syntax.lib.singleQuotedString);
