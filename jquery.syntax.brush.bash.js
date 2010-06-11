@@ -12,5 +12,11 @@ Syntax.register('bash', function(brush) {
 		matches: Syntax.extractMatches({klass: 'prompt'}, {brush: 'bash-script'})
 	});
 	
+	brush.push({
+		pattern: /\-\- .*$/gm,
+		klass: 'comment',
+		allow: ['href']
+	});
+	
 	brush.push(Syntax.lib.webLink);
 });
