@@ -1,0 +1,14 @@
+ol.syntax {
+  background-color: #e3e3e3;
+  border: 1px solid #aaaaaa;
+  padding-left: 5em; }
+  ol.syntax li {
+    background-color: #f0f0f0;
+    border-top: 1px solid #f5f5f5;
+    border-left: 1px solid #aaaaaa;
+    padding: 0 5px 0;
+    margin-left: 5px; }
+  ol.syntax li.alt {
+    background-color: #f5f5f5; }
+  ol.syntax li.first {
+    border-top: 0; }
