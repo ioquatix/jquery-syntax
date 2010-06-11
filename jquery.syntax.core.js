@@ -167,11 +167,8 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 	// We avoid using jQuery in this function since it is incredibly performance sensitive.
 	// Using jQuery jQuery.fn.append() can reduce performance by as much as 1/3rd.
 	if (typeof(node) === 'string') {
-		// Add &nbsp; characters
-		node = node.replace(/[ ]{2}/g, "\u00a0\u00a0");
-		
-		// Fixes a bug where a single space might be coalesced if it is at the start or end of an element.
-		node = node.replace(/(^[ ])/g, "\u00a0");
+		// Add &nbsp; characters, 2 at a time, to retain line wrapping behaviour
+		node = node.replace(/[ ]{2}/g, "\u00a0 ");
 		
 		node = document.createTextNode(node);
 	} else {
@@ -508,6 +505,9 @@ Syntax.Brush.prototype.buildTree = function(text, offset) {
 	
 	// Fixes code that uses \r\n for line endings. /$/ matches both \r\n, which is a problem..
 	text = text.replace(/\r/g, "");
+	
+	// Add a start of line nbsp; so that when inserted into a block element whitespace is preserved correctly.
+	text = text.replace(/\n /, "\n\u00a0");
 	
 	var matches = this.getMatches(text, offset);
 	var top = new Syntax.Match(offset, text.length, {klass: this.klass, allow: '*', owner: this}, text);
