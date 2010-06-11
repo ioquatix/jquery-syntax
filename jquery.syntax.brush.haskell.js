@@ -4,7 +4,7 @@
 //	Copyright 2010 Samuel Williams. All rights reserved.
 //	See <jquery.syntax.js> for licensing details.
 
-Syntax.lib.haskellSingleLineStyleComment = {pattern: /\-\- .*$/gm, klass: 'comment', allow: ['href']};
+Syntax.lib.haskellSingleLineStyleComment = {pattern: /\-\-.*$/gm, klass: 'comment', allow: ['href']};
 Syntax.lib.haskellMultiLineStyleComment = {pattern: /\{\-[\s\S]*?\-\}/gm, klass: 'comment', allow: ['href']};
 
 Syntax.register('haskell', function(brush) {
