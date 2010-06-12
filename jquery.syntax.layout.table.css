@@ -13,12 +13,13 @@ table.syntax {
     padding-left: 0.4em;
     padding-right: 0.4em; }
     table.syntax td.source {
+      color: #333333;
       word-wrap: break-word; }
     table.syntax td.number {
       border-right: 1px solid #aaaaaa;
       text-align: right;
       width: 2.5em;
-      color: #555555;
+      color: #979797;
       background-color: #e3e3e3; }
   table.syntax .toolbar {
     float: right; }

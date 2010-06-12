@@ -1,14 +1,21 @@
 ol.syntax {
   background-color: #e3e3e3;
   border: 1px solid #aaaaaa;
-  padding: 0 0 0 5em !important; }
+  padding: 0 0 0 5em !important;
+  margin-left: 2.5%;
+  margin-right: 2.5%;
+  margin-top: 2em;
+  margin-bottom: 2em; }
   ol.syntax li {
-    background-color: #f0f0f0;
-    border-top: 1px solid #f5f5f5;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #979797;
+    background-color: #e3e3e3; }
+  ol.syntax li > .source {
+    color: #333333;
+    margin-left: -0.5em;
     border-left: 1px solid #aaaaaa;
-    padding: 0 5px 0 !important;
-    margin: 0 0 0 5px !important; }
-  ol.syntax li.alt {
+    background-color: #f0f0f0;
+    padding: 0.1em 0.4em 0.1em; }
+  ol.syntax li.alt > .source {
     background-color: #f5f5f5; }
-  ol.syntax li.first {
-    border-top: 0; }
