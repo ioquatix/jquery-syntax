@@ -16,6 +16,9 @@ table.syntax {
       color: #333333;
       word-wrap: break-word; }
     table.syntax td.number {
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-select: none;
       border-right: 1px solid #aaaaaa;
       text-align: right;
       width: 2.5em;
