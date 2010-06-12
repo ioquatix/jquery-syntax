@@ -33,7 +33,7 @@ Syntax.register('clang', function(brush) {
 	brush.push(Syntax.lib.webLink);
 	
 	// Objective-C style functions
-	brush.push({pattern: /\w+:(?=.*(\]|;|\{))/g, klass: 'function'});
+	brush.push({pattern: /\w+:(?=.*(\]|;|\{))(?!:)/g, klass: 'function'});
 	
 	brush.push({
 		pattern: /[^:\[]\s+(\w+)(?=\])/g,
