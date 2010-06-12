@@ -224,7 +224,7 @@ jQuery.syntax = function (options, callback) {
 	options.blockSelector = options.blockSelector || 'pre.syntax';
 	options.inlineSelector = options.inlineSelector || 'code.syntax';
 	
-	options.blockLayout = options.blockLayout || 'list';
+	options.blockLayout = options.blockLayout || 'table';
 	options.inlineLayout = options.inlineLayout || 'inline';
 	
 	options.replace = true;
