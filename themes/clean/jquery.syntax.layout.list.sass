@@ -6,16 +6,23 @@ ol.syntax
   background-color: darken($background-primary, 5%)
   border: 1px solid $border-primary
   padding: 0 0 0 5em !important
+  margin-left: 2.5%
+  margin-right: 2.5%
+  margin-top: 2em
+  margin-bottom: 2em
 
   li
-    background-color: $background-primary
-    border-top: 1px solid lighten($background-primary, 2%)
+    padding: 0 !important
+    margin: 0 !important
+    color: darken($background-primary, 35%)
+    background-color: darken($background-primary, 5%)
+  
+  li > .source
+    color: $code-primary
+    margin-left: -0.5em
     border-left: 1px solid $border-primary
-    padding: 0 5px 0 !important
-    margin: 0 0 0 5px !important
-
-  li.alt
+    background-color: $background-primary
+    padding: 0.1em 0.4em 0.1em
+  
+  li.alt > .source
     background-color: lighten($background-primary, 2%)
-
-  li.first
-    border-top: 0
