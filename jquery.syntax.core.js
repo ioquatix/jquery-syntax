@@ -174,9 +174,7 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 	// Using jQuery jQuery.fn.append() can reduce performance by as much as 1/3rd.
 	if (typeof(node) === 'string') {
 		// Add &nbsp; characters, to retain line wrapping behaviour
-		node = node.replace(/[ ]{2,}/g, function(m) {
-			return "\u00a0 ".repeat(Math.ceil(m.length / 2)).substr(0, m.length);
-		});
+		node = node.replace(/[ ]/g, "\u00a0")
 		
 		node = document.createTextNode(node);
 	} else {

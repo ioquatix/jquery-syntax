@@ -38,6 +38,7 @@ Syntax.layouts.table = function(options, code, container) {
 		
 		td = document.createElement('td');
 		td.className = "number";
+		
 		number = document.createElement('span');
 		number.innerHTML = line;
 		td.appendChild(number);
@@ -46,7 +47,7 @@ Syntax.layouts.table = function(options, code, container) {
 		td = document.createElement('td');
 		td.className = "source " + this.className;
 		
-		td.innerHTML += this.innerHTML;
+		td.innerHTML += this.innerHTML.replace(/&nbsp;/g, "\u00a0\u200b");
 		tr.appendChild(td);
 		
 		table[0].appendChild(tr);
