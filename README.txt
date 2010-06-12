@@ -1,4 +1,4 @@
-*** jQuery.Syntax [release-2.0] ***
+*** jQuery.Syntax [release-2.1] ***
 
 jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamically loads external dependencies (js & css) when required. It uses jQuery to make it cross-browser compatible and to simplify integration.
 
@@ -13,10 +13,11 @@ For licensing details, please see the included LICENSE.txt.
 
 *** Change Log ***
 
-release-2.0
+release-2.1
  - Added support for Lua
- - Added new list layout which is now the default
- - Several bug fixes and enhancements
+ - Added new fixed and list layouts.
+ - Improvements to whitespace handling.
+ - Several bug fixes and enhancements.
 
 release-1.9.1
  - Added several new languages.
