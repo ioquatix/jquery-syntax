@@ -22,7 +22,7 @@ Syntax.layouts.list = function(options, code, container) {
 		div.className = "source "  + this.className;
 		
 		if (!this.innerHTML.match(space)) {
-			div.innerHTML = this.innerHTML;
+			div.innerHTML = this.innerHTML.replace(/&nbsp;/g, "\u00a0\u200b").replace(/\n/g, "<br/>");
 		} else {
 			div.innerHTML = "&nbsp;";
 		}
