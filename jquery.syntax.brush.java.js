@@ -11,21 +11,27 @@ Syntax.register('java', function(brush) {
 	
 	var types = ["void", "byte", "short", "int", "long", "float", "double", "boolean", "char"];
 	
-	var operators = ["++", "--", "++", "--", "+", "-", "~", "!", "*", "/", "%", "+", "-", "<<", ">>", ">>>", "<", ">", "<=", ">=", "==", "!=", "&", "^", "|", "&&", "||", "?", ":", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=", "<<=", ">>=", ">>>=", "instanceof", "new", "delete"];
+	var operators = ["++", "--", "++", "--", "+", "-", "~", "!", "*", "/", "%", "+", "-", "<<", ">>", ">>>", "<", ">", "<=", ">=", "==", "!=", "&", "^", "|", "&&", "||", "?", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=", "<<=", ">>=", ">>>=", "instanceof", "new", "delete"];
 	
-	var constants = ["this", "true", "false", /[0-9]+(\.[0-9]+)?/g];
+	var constants = ["this", "true", "false"];
 	
 	brush.push(constants, {klass: 'constant'});
 	brush.push(types, {klass: 'type'});
 	brush.push(keywords, {klass: 'keyword'});
 	brush.push(operators, {klass: 'operator'});
 	brush.push(access, {klass: 'access'});
-		
-	brush.push({pattern: /\b_*[A-Z][\w:]+/g, klass: 'type'});
 	
+	// Camel Case Types
+	brush.push(Syntax.lib.camelCaseType);
+	
+	// Comments
 	brush.push(Syntax.lib.cStyleComment);
 	brush.push(Syntax.lib.cppStyleComment);
 	brush.push(Syntax.lib.webLink);
+	
+	// Numbers
+	brush.push(Syntax.lib.decimalNumber);
+	brush.push(Syntax.lib.hexNumber);
 	
 	// Strings
 	brush.push(Syntax.lib.singleQuotedString);
