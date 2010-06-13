@@ -6,7 +6,7 @@
 
 Syntax.brushes.dependency('html', 'javascript');
 Syntax.brushes.dependency('html', 'css');
-Syntax.brushes.dependency('html', 'php');
+Syntax.brushes.dependency('html', 'php-script');
 Syntax.brushes.dependency('html', 'ruby');
 
 Syntax.register('html', function(brush) {
@@ -21,14 +21,14 @@ Syntax.register('html', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /<\?(php)((.|\n)*?)\?>/gm,
-		matches: Syntax.extractMatches({klass: 'access'}, {brush: 'php'})
-	})
+		pattern: /(<\?php)((.|\n)*?)(\?>)/gm,
+		matches: Syntax.extractMatches({klass: 'operator'}, {brush: 'php-script'}, null, {klass: 'operator'})
+	});
 	
 	brush.push({
-		pattern: /<\?(rb?)((.|\n)*?)\?>/gm,
-		matches: Syntax.extractMatches({klass: 'access'}, {brush: 'ruby'})
-	})
+		pattern: /(<\?rb?)((.|\n)*?)(\?>)/gm,
+		matches: Syntax.extractMatches({klass: 'operator'}, {brush: 'ruby'}, null, {klass: 'operator'})
+	});
 	
 	brush.push({
 		pattern: /<%=?(.*?)(%>)/g,

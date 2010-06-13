@@ -21,6 +21,7 @@ Syntax.alias("lua", []);
 Syntax.alias("ooc", []);
 Syntax.alias("pascal", ["delphi"]);
 Syntax.alias("perl5", []);
+Syntax.alias("php-script", []);
 Syntax.alias("php", []);
 Syntax.alias("plain", ["text"]);
 Syntax.alias("python", []);

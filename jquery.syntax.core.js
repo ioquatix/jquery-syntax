@@ -90,6 +90,10 @@ Syntax.extractMatches = function() {
 		for (var i = 0; i < rules.length; i += 1) {
 			var rule = rules[i];
 			
+			if (rule == null) {
+				continue;
+			}
+			
 			var index = rule.index || (i+1);
 			
 			if (match[index].length > 0) {
