@@ -23,7 +23,7 @@ if (!String.prototype.repeat) {
 // IE... doesn't understand zero width space correctly... thus this hodgepodge :/
 // One plus - its fairly much contained to this function.
 Syntax.breakWhitespace = function(s) {
-	if ($.browser.safari || $.browser.firefox) {
+	if (jQuery.browser.safari || jQuery.browser.firefox) {
 		// For browsers that have been tested and support zero width space
 		return s.replace(/&nbsp;/g, "&nbsp;&#x200B;").replace(/\n/g, "<br/>");
 	} else {
@@ -36,7 +36,7 @@ Syntax.breakWhitespace = function(s) {
 		}).replace(/\n/g, "<br/>").replace(/\u00a0/g, "&nbsp;");
 		
 		if (s.charCodeAt(0) == " ".charCodeAt(0)) {
-			s = s.replace(" ", "&nbsp;")
+			s = s.replace(" ", "&nbsp;");
 		} else {
 			s = s.replace(/> /, ">&nbsp;");
 		}
