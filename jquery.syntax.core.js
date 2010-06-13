@@ -501,10 +501,10 @@ Syntax.Brush.prototype.push = function () {
 			rule.pattern = new XRegExp(rule.pattern);
 		}
 
-		if (rule.pattern.global) {
+		if (rule.pattern && rule.pattern.global) {
 			this.rules.push(jQuery.extend({owner: this}, rule));
-		} else {
-			alert("Syntax Error: Malformed rule! All rules need to be global! " + rule);
+		} else if (typeof(console) != "undefined") {
+			console.log("Syntax Error: Malformed rule: ", rule);
 		}
 	}
 };
