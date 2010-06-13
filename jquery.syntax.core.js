@@ -119,6 +119,10 @@ Syntax.extractMatches = function() {
 				continue;
 			}
 			
+			if (rule.debug) {
+				alert("'" + match[1] + "' : " + match[1].charCodeAt(0));
+			}
+			
 			var index = rule.index || (i+1);
 			
 			if (match[index].length > 0) {
