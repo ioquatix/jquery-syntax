@@ -47,7 +47,8 @@ Syntax.layouts.table = function(options, code, container) {
 		td = document.createElement('td');
 		td.className = "source " + this.className;
 		
-		td.innerHTML += this.innerHTML.replace(/&nbsp;/g, "\u00a0\u200b");
+		td.innerHTML += Syntax.breakWhitespace(this.innerHTML);
+		
 		tr.appendChild(td);
 		
 		table[0].appendChild(tr);

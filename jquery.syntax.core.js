@@ -20,6 +20,31 @@ if (!String.prototype.repeat) {
 	};
 }
 
+// IE... doesn't understand zero width space correctly... thus this hodgepodge :/
+// One plus - its fairly much contained to this function.
+Syntax.breakWhitespace = function(s) {
+	if ($.browser.safari || $.browser.firefox) {
+		// For browsers that have been tested and support zero width space
+		return s.replace(/&nbsp;/g, "&nbsp;&#x200B;").replace(/\n/g, "<br/>");
+	} else {
+		s = s.replace(/&nbsp;/g, "\u00a0").replace(/[\u00a0 ]+/g, function(m) {
+			if (m.length == 1) {
+				return " ";
+			} else {
+				return "\u00a0 ".repeat(Math.ceil(m.length / 2)).substr(0, m.length);
+			}
+		}).replace(/\n/g, "<br/>").replace(/\u00a0/g, "&nbsp;");
+		
+		if (s.charCodeAt(0) == " ".charCodeAt(0)) {
+			s = s.replace(" ", "&nbsp;")
+		} else {
+			s = s.replace(/> /, ">&nbsp;");
+		}
+		
+		return s;
+	}
+}
+
 // The jQuery version of container.text() is broken on IE6.
 // This version fixes it... for pre elements only. Other elements
 // in IE will have the whitespace manipulated.
@@ -515,9 +540,6 @@ Syntax.Brush.prototype.buildTree = function(text, offset) {
 	
 	// Fixes code that uses \r\n for line endings. /$/ matches both \r\n, which is a problem..
 	text = text.replace(/\r/g, "");
-	
-	// Add a start of line nbsp; so that when inserted into a block element whitespace is preserved correctly.
-	text = text.replace(/\n /, "\n\u00a0");
 	
 	var matches = this.getMatches(text, offset);
 	var top = new Syntax.Match(offset, text.length, {klass: this.klass, allow: '*', owner: this}, text);
