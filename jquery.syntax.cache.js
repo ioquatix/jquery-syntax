@@ -9,7 +9,7 @@ Syntax.alias("bash-script", []);
 Syntax.alias("bash", []);
 Syntax.alias("basic", ['vb']);
 Syntax.alias("clang", ["cpp", "c++", "c", "objective-c"]);
-Syntax.alias("csharp", []);
+Syntax.alias("csharp", ["c#"]);
 Syntax.alias("css", []);
 Syntax.alias("diff", ["patch"]);
 Syntax.alias("haskell", []);
