@@ -183,7 +183,7 @@ var Syntax = {
 	},
 	
 	extractBrushName: function (className) {
-		var match = className.match(/brush-([\w\-]+)/);
+		var match = className.match(/brush-([\S]+)/);
 		
 		if (match) {
 			return match[1];

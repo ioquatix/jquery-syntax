@@ -583,7 +583,7 @@ Syntax.highlight = function (elements, options, callback) {
 		var endOfSecondLine = text.indexOf("\n", text.indexOf("\n") + 1);
 		
 		if (match && match.index < endOfSecondLine) {
-			options.brush = match[1].toLowerCase();
+			options.brush = match[1];
 			var modeline = match[2];
 			
 			var mode = /([a-z\-]+)\:(.*?)\;/gi;
@@ -597,7 +597,7 @@ Syntax.highlight = function (elements, options, callback) {
 			}
 		}
 		
-		var brushName = options.brush || 'plain';
+		var brushName = (options.brush || 'plain').toLowerCase();
 		brushName = Syntax.aliases[brushName] || brushName;
 		
 		Syntax.brushes.get(brushName, function(brush) {
