@@ -5,13 +5,15 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.register('clang', function(brush) {
-	var keywords = ["@interface", "@implementation", "@protocol", "@end", "@try", "@throw", "@catch", "@finally", "@class", "@selector", "@encode", "@synchronized", "@property", "struct", "break", "continue", "else", "for", "switch", "case", "default", "enum", "goto", "register", "sizeof", "typedef", "volatile", "do", "extern", "if", "return", "static", "union", "while", "asm", "dynamic_cast", "namespace", "reinterpret_cast", "try", "explicit", "static_cast", "typeid", "catch", "operator", "template", "class", "const_cast", "inline", "throw", "virtual", "mutable", "wchar_t"];
+	var keywords = ["@interface", "@implementation", "@protocol", "@end", "@try", "@throw", "@catch", "@finally", "@class", "@selector", "@encode", "@synchronized", "@property", "struct", "break", "continue", "else", "for", "switch", "case", "default", "enum", "goto", "register", "sizeof", "typedef", "volatile", "do", "extern", "if", "return", "static", "union", "while", "asm", "dynamic_cast", "namespace", "reinterpret_cast", "try", "explicit", "static_cast", "typeid", "catch", "operator", "template", "class", "const_cast", "inline", "throw", "virtual"];
 	
-	var access = ["@private", "@protected", "@public", "private:", "protected:", "public:", "friend", "using"];
+	var access = ["@private", "@protected", "@public", "private", "protected", "public", "friend", "using"];
 	
-	var types = ["auto", "const", "double", "float", "int", "short", "char", "long", "signed", "unsigned", "bool", "void", "typename", "id", "register"];
-	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">", "[", "]", "new", "delete"];
-	var values = ["this", "true", "false", /[0-9]+(\.[0-9]+)?/g];
+	var types = ["mutable", "auto", "const", "double", "float", "int", "short", "char", "long", "signed", "unsigned", "bool", "void", "typename", "id", "register", "wchar_t"];
+	
+	var operators = ["@", "+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">", "[", "]", "new", "delete"];
+	
+	var values = ["this", "true", "false", "NULL", "YES", "NO", "nil"];
 	
 	brush.push(values, {klass: 'constant'});
 	brush.push(types, {klass: 'type'});
@@ -49,6 +51,10 @@ Syntax.register('clang', function(brush) {
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
+	
+	// Numbers
+	brush.push(Syntax.lib.decimalNumber);
+	brush.push(Syntax.lib.hexNumber);
 	
 	brush.push(Syntax.lib.cStyleFunction);
 });
