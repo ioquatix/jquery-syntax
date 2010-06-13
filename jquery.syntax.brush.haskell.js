@@ -4,15 +4,12 @@
 //	Copyright 2010 Samuel Williams. All rights reserved.
 //	See <jquery.syntax.js> for licensing details.
 
-Syntax.lib.haskellSingleLineStyleComment = {pattern: /\-\-.*$/gm, klass: 'comment', allow: ['href']};
-Syntax.lib.haskellMultiLineStyleComment = {pattern: /\{\-[\s\S]*?\-\}/gm, klass: 'comment', allow: ['href']};
-
 Syntax.register('haskell', function(brush) {
 	var keywords = ["as", "case", "of", "class", "data", "data family", "data instance", "default", "deriving", "deriving instance", "do", "forall", "foreign", "hiding", "if", "then", "else", "import", "infix", "infixl", "infixr", "instance", "let", "in", "mdo", "module", "newtype", "proc", "qualified", "rec", "type", "type family", "type instance", "where"];
 	
 	var operators = ["`", "|", "\\", "-", "-<", "-<<", "->", "*", "?", "??", "#", "<-", "@", "!", "::", "_", "~", ">", ";", "{", "}"];
 	
-	var values = ["True", "False", /[0-9]+(\.[0-9]+)?/g];
+	var values = ["True", "False"];
 	
 	brush.push(values, {klass: 'constant'});
 	brush.push(keywords, {klass: 'keyword'});
@@ -21,9 +18,24 @@ Syntax.register('haskell', function(brush) {
 	// Camelcase Types
 	brush.push(Syntax.lib.camelCaseType);
 	
-	// Objective-C classes
-	brush.push(Syntax.lib.haskellSingleLineStyleComment);
-	brush.push(Syntax.lib.haskellMultiLineStyleComment);
+	// Comments
+	brush.push({
+		pattern: /\-\-.*$/gm,
+		klass: 'comment',
+		allow: ['href']
+	});
+	
+	brush.push({
+		pattern: /\{\-[\s\S]*?\-\}/gm,
+		klass: 'comment',
+		allow: ['href']
+	});
+	
+	brush.push(Syntax.lib.webLink);
+	
+	// Numbers
+	brush.push(Syntax.lib.decimalNumber);
+	brush.push(Syntax.lib.hexNumber);
 	
 	// Strings
 	brush.push(Syntax.lib.singleQuotedString);
