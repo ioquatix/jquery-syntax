@@ -11,7 +11,7 @@ Syntax.register('ooc', function(brush) {
 	
 	var operators = ["+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", ":=", "==", "!=", "!", "%", "?", ">", "<", ">=", "<=", "&&", "||", "&", "|", "^", ".", "~", "..", ">>", "<<", ">>>", "<<<", ">>=", "<<=", ">>>=", "<<<=", "%=", "^=", "@"];
 	
-	var values = ["this", "super", "true", "false", "null", /[A-Z][A-Z0-9_]+/g, ];
+	var values = ["this", "super", "true", "false", "null", /[A-Z][A-Z0-9_]+/g];
 	
 	brush.push(values, {klass: 'constant'});
 	brush.push(types, {klass: 'type'});

@@ -15,7 +15,7 @@ Syntax.register('basic', function(brush) {
 	
 	var operators = ["+", "-", "*", "/", "+=", "-=", "*=", "/=", "=", ":=", "==", "!=", "!", "%", "?", ">", "<", ">=", "<=", "&&", "||", "&", "|", "^", ".", "~", "..", ">>", "<<", ">>>", "<<<", ">>=", "<<=", ">>>=", "<<<=", "%=", "^=", "@"];
 	
-	var values = ["Me", "MyClass", "MyBase", "super", "True", "False", "Nothing", /[A-Z][A-Z0-9_]+/g, ];
+	var values = ["Me", "MyClass", "MyBase", "super", "True", "False", "Nothing", /[A-Z][A-Z0-9_]+/g];
 	
 	var access = ["Public", "Protected", "Private", "Shared", "Friend", "Shadows", "MustInherit", "NotInheritable", "NotOverridable"];
 
