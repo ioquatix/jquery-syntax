@@ -51,25 +51,25 @@ Syntax.breakWhitespace = function(s) {
 Syntax.getCDATA = function ( elems ) {
 	var ret = "", elem;
 
-	for ( var i = 0; elems[i]; i++ ) {
+	for (var i = 0; elems[i]; i++) {
 		elem = elems[i];
 
 		// Get the text from text nodes and CDATA nodes
-		if ( elem.nodeType === 3 || elem.nodeType === 4 ) {
+		if (elem.nodeType === 3 || elem.nodeType === 4) {
 			ret += elem.nodeValue;
 		
 		// Use textContent || innerText for elements
-		} else if ( elem.nodeType === 1 ) {
-			if ( typeof(elem.textContent) === 'string' )
+		} else if (elem.nodeType === 1) {
+			if (typeof(elem.textContent) === 'string')
 				ret += elem.textContent;
-			else if ( typeof(elem.innerText) === 'string' )
+			else if (typeof(elem.innerText) === 'string')
 				ret += elem.innerText;
 			else
-				ret += getText( elem.childNodes );
+				ret += getText(elem.childNodes);
 			
 		// Traverse everything else, except comment nodes
-		} else if ( elem.nodeType !== 8 ) {
-			ret += getText( elem.childNodes );
+		} else if (elem.nodeType !== 8) {
+			ret += getText(elem.childNodes);
 		}
 	}
 
