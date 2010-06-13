@@ -12,7 +12,7 @@ Syntax.register('pascal', function(brush) {
 
 	var operators = ["+", "-", "*", "/", "div", "mod", "and", "or", "xor", "shl", "shr", "not", "=", ">=", ">", "<>", "<=", "<", "in", ":="];
 	
-	var values = ["true", "false", "nil", /[0-9]+(\.[0-9]+)?/g];
+	var values = ["true", "false", "nil"];
 	
 	// Keywords are case insensitive
 	brush.push(values, {klass: 'constant', options: 'gi'});
@@ -41,6 +41,11 @@ Syntax.register('pascal', function(brush) {
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
 	
+	// Numbers
+	brush.push(Syntax.lib.decimalNumber);
+	brush.push(Syntax.lib.hexNumber);
+	
+	// Functions
 	brush.push(Syntax.lib.cStyleFunction);
 });
 

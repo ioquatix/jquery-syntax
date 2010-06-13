@@ -11,7 +11,7 @@ Syntax.register('php', function(brush) {
 	
 	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">", "[", "]", "new"];
 	
-	var values = ["this", "true", "false", /[0-9]+(\.[0-9]+)?/g];
+	var values = ["this", "true", "false"];
 	
 	brush.push(values, {klass: 'constant'});
 	//brush.push(types, {klass: 'type'});
@@ -23,6 +23,7 @@ Syntax.register('php', function(brush) {
 	brush.push(Syntax.lib.camelCaseType);
 	brush.push(Syntax.lib.cStyleFunction);
 	
+	// Comments
 	brush.push(Syntax.lib.cStyleComment);
 	brush.push(Syntax.lib.cppStyleComment);
 	brush.push(Syntax.lib.perlStyleComment);
@@ -32,6 +33,10 @@ Syntax.register('php', function(brush) {
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
+	
+	// Numbers
+	brush.push(Syntax.lib.decimalNumber);
+	brush.push(Syntax.lib.hexNumber);
 	
 	brush.processes['function'] = Syntax.lib.webLinkProcess("http://www.php.net/manual-lookup.php?pattern=");
 });

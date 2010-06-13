@@ -11,16 +11,18 @@ Syntax.register('perl5', function(brush) {
 	
 	var operators = ["->", "++", "--", "**", "!", "~", "\\", "+", "-", "=~", "!~", "*", "/", "%", "x", "+", "-", ".", "<<", ">>", "<", ">", "<=", ">=", "lt", "gt", "le", "ge", "==", "!=", "<=>", "eq", "ne", "cmp", "~~", "&", "|", "^", "&&", "||", "//", "..", "...", "?:", "=", ",", "=>", "not", "and", "or", "xor"];
 	
-	var values = ["this", "true", "false", /[0-9]+(\.[0-9]+)?/g];
+	var values = ["this", "true", "false"];
 	
 	brush.push(values, {klass: 'constant'});
 	brush.push(keywords, {klass: 'keyword'});
 	brush.push(operators, {klass: 'operator'});
 	brush.push(builtins, {klass: 'function'});
 	
+	// Comments
 	brush.push(Syntax.lib.perlStyleComment);
 	brush.push(Syntax.lib.webLink);
 	
+	// Variables
 	brush.push({
 		pattern: /(\$|@|%)\w+/gi,
 		klass: 'variable'
@@ -31,6 +33,11 @@ Syntax.register('perl5', function(brush) {
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
 	
+	// Numbers
+	brush.push(Syntax.lib.decimalNumber);
+	brush.push(Syntax.lib.hexNumber);
+	
+	// Functions
 	brush.push(Syntax.lib.cStyleFunction);
 });
 

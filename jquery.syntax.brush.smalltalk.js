@@ -7,7 +7,7 @@
 Syntax.register('smalltalk', function(brush) {
 	var operators = ["[", "]", "|", ":=", "."];
 	
-	var values = ["self", "super", "true", "false", "nil", /[0-9]+(\.[0-9]+)?/g];
+	var values = ["self", "super", "true", "false", "nil"];
 	
 	brush.push(values, {klass: 'constant'});
 	brush.push(operators, {klass: 'operator'});
@@ -22,4 +22,8 @@ Syntax.register('smalltalk', function(brush) {
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
+	
+	// Numbers
+	brush.push(Syntax.lib.decimalNumber);
+	brush.push(Syntax.lib.hexNumber);
 });

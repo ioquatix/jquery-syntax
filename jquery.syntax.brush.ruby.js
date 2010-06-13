@@ -11,7 +11,7 @@ Syntax.register('ruby', function(brush) {
 	var keywords = ["alias", "and", "begin", "break", "case", "class", "def", "define_method", "defined", "do", "each", "else", "elsif", "end", "ensure", "false", "for", "if", "in", "module", "new", "next", "nil", "not", "or", "raise", "redo", "rescue", "retry", "return", "self", "super", "then", "throw", "true", "undef", "unless", "until", "when", "while", "yield"];
 	
 	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">"];
-	var values = ["this", "true", "false", "nil", /[0-9]+(\.[0-9]+)?/g];
+	var values = ["this", "true", "false", "nil"];
 	
 	var access = ["private", "public"];
 	
@@ -26,6 +26,7 @@ Syntax.register('ruby', function(brush) {
 	
 	brush.push(Syntax.lib.rubyStyleSymbol);
 	
+	// Comments
 	brush.push(Syntax.lib.perlStyleComment);
 	brush.push(Syntax.lib.webLink);
 	
@@ -34,6 +35,11 @@ Syntax.register('ruby', function(brush) {
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
 	
+	// Numbers
+	brush.push(Syntax.lib.decimalNumber);
+	brush.push(Syntax.lib.hexNumber);
+	
+	// Functions
 	brush.push(Syntax.lib.rubyStyleFunction);
 	brush.push(Syntax.lib.cStyleFunction);
 	
