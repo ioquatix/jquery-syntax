@@ -1,12 +1,8 @@
 // brush: "java" aliases: []
 
-/* 
-	This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
-
-	See <jquery.syntax.js> for licensing details.
-
-	Copyright 2010 Samuel Williams. All rights reserved.
-*/
+//	This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
+//	Copyright 2010 Samuel Williams. All rights reserved.
+//	See <jquery.syntax.js> for licensing details.
 
 Syntax.register('java', function(brush) {
 	var keywords = ["abstract", "continue", "for", "switch", "assert", "default", "goto", "synchronized", "do", "if", "break", "implements", "throw", "else", "import", "throws", "case", "enum", "return", "transient", "catch", "extends", "try", "final", "interface", "static", "class", "finally", "strictfp", "volatile", "const", "native", "super", "while"];
