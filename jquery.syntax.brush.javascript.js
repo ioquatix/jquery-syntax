@@ -27,6 +27,11 @@ Syntax.register('javascript', function(brush) {
 	brush.push(Syntax.lib.doubleQuotedString);
 	brush.push(Syntax.lib.stringEscape);
 	
+	// Numbers
+	brush.push(Syntax.lib.decimalNumber);
+	brush.push(Syntax.lib.hexNumber);
+	
+	// Functions
 	brush.push(Syntax.lib.cStyleFunction);
 });
 
