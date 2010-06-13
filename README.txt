@@ -11,7 +11,31 @@ There are several plugins available (source code - for stable releases see the m
 
 For licensing details, please see the included LICENSE.txt.
 
+*** License ***
+
+The "jQuery.Syntax" is licensed under the GNU AGPLv3.
+Copyright 2010 Samuel Williams. All rights reserved.
+
+For more information, please see http://www.oriontransfer.co.nz/software/jquery-syntax
+
+This program is free software: you can redistribute it and/or modify it under the terms
+of the GNU Affero General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this
+program. If not, see <http://www.gnu.org/licenses/>.
+
+Additional Permissions (as per Section 7 of the AGPLv3)
+	Any HTML file which merely makes function calls to this code, and for that purpose includes it by reference shall be deemed a separate work for copyright law purposes. If you modify this code, you must extend this exception to your version of the code.
+
 *** Change Log ***
+
+release-2.2.2
+ - Major Internet Exploder bugfix.
 
 release-2.2
  - Added support for Lua, C#
