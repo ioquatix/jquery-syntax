@@ -34,7 +34,7 @@ program. If not, see <http://www.gnu.org/licenses/>.
 	includes it by reference shall be deemed a separate work for copyright law purposes.
 	
 	2. You may distribute non-source (e.g., minimized or compacted) forms of that code 
-	without the copy of the GNU GPL normally required by section 4, provided you include
+	without the copy of the GNU AGPL normally required by section 4, provided you include
 	this license notice and a URL through which recipients can access the Corresponding
 	Source.
 
