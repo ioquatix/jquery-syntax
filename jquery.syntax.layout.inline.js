@@ -3,7 +3,7 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.layouts.inline = function(options, code, container) {
-	var inline = jQuery('<code class="syntax"></code>');
+	var inline = jQuery('<code class="syntax highlighted"></code>');
 	
 	inline.append(code.children());
 	

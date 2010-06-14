@@ -3,7 +3,7 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.layouts.list = function(options, code, container) {
-	var list = jQuery('<ol class="syntax"></ol>'), line = 1, space = /^\s*$/;
+	var list = jQuery('<ol class="syntax highlighted"></ol>'), line = 1, space = /^\s*$/;
 	
 	// Source code
 	code.children().each(function() {

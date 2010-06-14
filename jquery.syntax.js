@@ -221,8 +221,8 @@ jQuery.syntax = function (options, callback) {
 		Syntax.root = options.root;
 	}
 	
-	options.blockSelector = options.blockSelector || 'pre.syntax';
-	options.inlineSelector = options.inlineSelector || 'code.syntax';
+	options.blockSelector = options.blockSelector || 'pre.syntax:not(.highlighted)';
+	options.inlineSelector = options.inlineSelector || 'code.syntax:not(.highlighted)';
 	
 	options.blockLayout = options.blockLayout || 'table';
 	options.inlineLayout = options.inlineLayout || 'inline';

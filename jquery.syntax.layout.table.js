@@ -24,7 +24,7 @@ function dirname(path) {
 }
 
 Syntax.layouts.table = function(options, code, container) {
-	var table = jQuery('<table class="syntax"></table>'), tr = null, td = null, a = null
+	var table = jQuery('<table class="syntax highlighted"></table>'), tr = null, td = null, a = null
 	var line = 1;
 	
 	// Source code

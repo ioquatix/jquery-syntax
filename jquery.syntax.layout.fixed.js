@@ -3,7 +3,7 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.layouts.fixed = function(options, code, container) {
-	var fixed = jQuery('<div class="fixed syntax"></div>'), line = 1, space = /^\s*$/;
+	var fixed = jQuery('<div class="fixed syntax highlighted"></div>'), line = 1, space = /^\s*$/;
 	
 	var codeTable = document.createElement('table');
 	
