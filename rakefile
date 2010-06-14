@@ -12,6 +12,11 @@ require 'fileutils'
 JSMIN_EXEC = File.dirname(__FILE__) + "/ext/jsmin.rb"
 CACHE_FILE = "jquery.syntax.cache.js"
 MINIFIED_FILE = "jquery.syntax.min.js"
+LICENSE = <<EOF
+// This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
+// Copyright 2010 Samuel Williams. All rights reserved.
+// For more information, please see <http://www.oriontransfer.co.nz/software/jquery-syntax>
+EOF
 
 task :update_aliases do
 	code = StringIO.new
@@ -105,6 +110,7 @@ task :build_combined => [:update_aliases] do
 		buf = min.read
 	
 		File.open(MINIFIED_FILE, "w") do |fp|
+			fp.write(LICENSE)
 			fp.write(buf)
 		end
 	end
@@ -121,6 +127,7 @@ task :compress_all => [:build_combined] do
 			min.close_write
 			
 			File.open(path, "w") do |fp|
+				fp.write(LICENSE)
 				fp.write(min.read)
 			end
 		end

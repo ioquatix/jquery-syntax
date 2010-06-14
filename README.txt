@@ -13,7 +13,7 @@ For licensing details, please see the included LICENSE.txt.
 
 *** License ***
 
-The "jQuery.Syntax" is licensed under the GNU AGPLv3.
+The "jQuery.Syntax" project is licensed under the GNU AGPLv3.
 Copyright 2010 Samuel Williams. All rights reserved.
 
 For more information, please see http://www.oriontransfer.co.nz/software/jquery-syntax
@@ -29,8 +29,17 @@ See the GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License along with this
 program. If not, see <http://www.gnu.org/licenses/>.
 
-Additional Permissions (as per Section 7 of the AGPLv3)
-	Any HTML file which merely makes function calls to this code, and for that purpose includes it by reference shall be deemed a separate work for copyright law purposes. If you modify this code, you must extend this exception to your version of the code.
+"Additional permissions" (as per Section 7 of the AGPLv3)
+	1. Any HTML file which merely makes function calls to this code, and for that purpose 
+	includes it by reference shall be deemed a separate work for copyright law purposes.
+	
+	2. You may distribute non-source (e.g., minimized or compacted) forms of that code 
+	without the copy of the GNU GPL normally required by section 4, provided you include
+	this license notice and a URL through which recipients can access the Corresponding
+	Source.
+
+If you modify this code, you must include these "Additional permissions" in your version 
+of the code.
 
 *** Change Log ***
 
