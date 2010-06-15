@@ -183,6 +183,9 @@ var Syntax = {
 	},
 	
 	extractBrushName: function (className) {
+		// brush names are by default lower case - normalize so we can detect it.
+		className = className.toLowerCase();
+		
 		var match = className.match(/brush-([\S]+)/);
 		
 		if (match) {
