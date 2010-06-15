@@ -42,8 +42,8 @@ Syntax.register('html', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /<\/?(\w+).*?>/g,
-		matches: Syntax.extractMatches({klass: 'tag', allow: ['attribute']})
+		pattern: /<\/?((?:[\w]+:)?)([\w]+).*?>/g,
+		matches: Syntax.extractMatches({klass: 'namespace', allow: ['attribute']}, {klass: 'tag', allow: ['attribute']})
 	});
 	
 	brush.push({
