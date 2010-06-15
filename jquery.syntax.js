@@ -22,11 +22,7 @@
 // ECMAScript 5! Why wasn't this done before!?
 if (!Function.prototype.bind) {
 	Function.prototype.bind = function (target) {
-		var args = [], fn = this;
-
-		for (var n = 1; n < arguments.length; n += 1) {
-			args.push(arguments[n]);
-		}
+		var args = Array.prototype.slice.call(arguments, 1), fn = this;
 
 		return function () {
 			return fn.apply(target, args);
