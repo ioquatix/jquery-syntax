@@ -24,8 +24,12 @@ function dirname(path) {
 }
 
 Syntax.layouts.table = function(options, code, container) {
-	var table = jQuery('<table class="syntax highlighted"></table>'), tr = null, td = null, a = null
-	var line = 1;
+	var table = jQuery('<table class="syntax highlighted"></table>'), tr = null, td = null, a = null, line = 1;
+	var thead = document.createElement('thead'), tbody = document.createElement('tbody');
+	
+	// Grab a copy of the HTML..
+	var codeHTML = code.html();
+	alert(codeHTML);
 	
 	// Source code
 	code.children().each(function() {
@@ -45,13 +49,12 @@ Syntax.layouts.table = function(options, code, container) {
 		tr.appendChild(td);
 		
 		td = document.createElement('td');
-		td.className = "source " + this.className;
+		td.className = "source";
 		
-		td.innerHTML += Syntax.breakWhitespace(this.innerHTML);
-		
+		td.appendChild(this);
 		tr.appendChild(td);
 		
-		table[0].appendChild(tr);
+		tbody.appendChild(tr);
 		line = line + 1;
 	});
 	
@@ -63,8 +66,7 @@ Syntax.layouts.table = function(options, code, container) {
 	a.click(function() {
 		var win = createWindow('#', '_blank', 700, 500, 'location=0, resizable=1, menubar=0, scrollbars=1');
 
-		win.document.write('<html><head><base href="' + dirname(window.location.href) + '/" /></head><body id="syntax-raw"><pre class="syntax">' + code.html() + '</pre></body></html>');
-
+		win.document.write('<html><head><base href="' + dirname(window.location.href) + '/" /></head><body id="syntax-raw"><pre class="syntax">' + codeHTML + '</pre></body></html>');
 		win.document.close();
 
 		jQuery('link').each(function(){
@@ -85,9 +87,18 @@ Syntax.layouts.table = function(options, code, container) {
 	});
 	
 	toolbar.append(a);
-	toolbar.append(jQuery('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax/" target="oriontransfer">?</a>'));
+	toolbar.append(jQuery('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax" target="oriontransfer">?</a>'));
 	
-	jQuery('td:eq(1)', table).prepend(toolbar);
+	tr = document.createElement('tr');
+	td = document.createElement('td');
+	td.colSpan = 2;
+	
+	td.appendChild(toolbar[0]);
+	tr.appendChild(td);
+	thead.appendChild(tr);
+	
+	table.append(thead);
+	table.append(tbody);
 	
 	return table;
 };

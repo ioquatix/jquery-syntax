@@ -2,10 +2,10 @@
 //	Copyright 2010 Samuel Williams. All rights reserved.
 //	See <jquery.syntax.js> for licensing details.
 
+@import "_layout"
+
 table.syntax
   border-collapse: collapse
-  background-color: $background-primary
-  border: 1px solid $border-primary
   padding: 0px
   width: 95%
   margin: auto
@@ -15,30 +15,35 @@ table.syntax
   tr.alt td.source
     background-color: lighten($background-primary, 2%)
 
-  td
-    padding-left: 0.4em
-    padding-right: 0.4em
-    
-    &.source
-      color: $code-primary
-      word-wrap: break-word
-    
-    &.number
-      user-select: none
-      -moz-user-select: none
-      -webkit-user-select: none
-      border-right: 1px solid #aaa
+  thead
+    .toolbar
+      font-size: 80%
       text-align: right
-      width: 2.5em
-      color: darken($background-primary, 35%)
-      background-color: darken($background-primary, 5%)
-
-  .toolbar
-    float: right
 
     a
       margin-left: 1em
-      margin-right: 1em
+
+  tbody
+    background-color: $background-primary
+    border: 1px solid $border-primary
+  
+    td
+      padding-left: 0.4em
+      padding-right: 0.4em
+      
+      &.source
+        color: $code-primary
+        +pre-wrap
+      
+      &.number
+        user-select: none
+        -moz-user-select: none
+        -webkit-user-select: none
+        border-right: 1px solid #aaa
+        text-align: right
+        width: 2.5em
+        color: darken($background-primary, 35%)
+        background-color: darken($background-primary, 5%)
 
 #syntax-raw
   padding: 0px

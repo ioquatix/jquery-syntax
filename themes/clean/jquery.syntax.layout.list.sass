@@ -2,6 +2,8 @@
 //	Copyright 2010 Samuel Williams. All rights reserved.
 //	See <jquery.syntax.js> for licensing details.
 
+@import "_layout"
+
 ol.syntax
   background-color: darken($background-primary, 5%)
   border: 1px solid $border-primary
@@ -23,6 +25,7 @@ ol.syntax
     border-left: 1px solid $border-primary
     background-color: $background-primary
     padding: 0.1em 0.4em 0.1em
+    +pre-wrap
   
   li.alt > .source
     background-color: lighten($background-primary, 2%)

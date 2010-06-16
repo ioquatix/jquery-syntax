@@ -20,31 +20,6 @@ if (!String.prototype.repeat) {
 	};
 }
 
-// IE... doesn't understand zero width space correctly... thus this hodgepodge :/
-// One plus - its fairly much contained to this function.
-Syntax.breakWhitespace = function(s) {
-	if (jQuery.browser.safari || jQuery.browser.firefox) {
-		// For browsers that have been tested and support zero width space
-		return s.replace(/&nbsp;/g, "&nbsp;&#x200B;").replace(/\n/g, "<br/>");
-	} else {
-		s = s.replace(/&nbsp;/g, "\u00a0").replace(/[\u00a0 ]+/g, function(m) {
-			if (m.length == 1) {
-				return " ";
-			} else {
-				return "\u00a0 ".repeat(Math.ceil(m.length / 2)).substr(0, m.length);
-			}
-		}).replace(/\n/g, "<br/>").replace(/\u00a0/g, "&nbsp;");
-		
-		if (s.charCodeAt(0) == " ".charCodeAt(0)) {
-			s = s.replace(" ", "&nbsp;");
-		} else {
-			s = s.replace(/> /, ">&nbsp;");
-		}
-		
-		return s;
-	}
-}
-
 // The jQuery version of container.text() is broken on IE6.
 // This version fixes it... for pre elements only. Other elements
 // in IE will have the whitespace manipulated.
@@ -206,9 +181,6 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 	// We avoid using jQuery in this function since it is incredibly performance sensitive.
 	// Using jQuery jQuery.fn.append() can reduce performance by as much as 1/3rd.
 	if (typeof(node) === 'string') {
-		// Add &nbsp; characters, to retain line wrapping behaviour
-		node = node.replace(/[ ]/g, "\u00a0")
-		
 		node = document.createTextNode(node);
 	} else {
 		node = node[0];
@@ -653,9 +625,7 @@ Syntax.highlight = function (elements, options, callback) {
 				}
 
 				if (html && options.replace === true) {
-					// IE6 requires html.clone(true). No other browser requires this line AFAIK.
-					// This could be removed once browser compatibility for IE6 is dropped.
-					container.replaceWith(html.clone(true));
+					container.replaceWith(html);
 				}
 			});
 		});
