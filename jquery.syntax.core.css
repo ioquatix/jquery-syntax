@@ -1,5 +1,6 @@
 .syntax {
-  font-family: Menlo, Monaco, Consolas, monospace; }
+  font-family: Menlo, Monaco, Consolas, monospace;
+  line-height: 1.5em; }
   .syntax .function {
     color: #3333ff; }
   .syntax .keyword {
@@ -24,3 +25,18 @@
     text-decoration: underline; }
   .syntax .variable {
     font-style: italic; }
+
+.syntax-container {
+  padding: 1em 2em 1em;
+  position: relative; }
+  .syntax-container .toolbar {
+    font-size: 80%;
+    text-align: right;
+    padding: 0 0.2em 0; }
+    .syntax-container .toolbar a {
+      margin-left: 1em; }
+  .syntax-container textarea {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: inherit !important;
+    width: 100% !important; }

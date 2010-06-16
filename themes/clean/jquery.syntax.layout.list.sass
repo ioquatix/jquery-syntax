@@ -8,45 +8,41 @@ ol.syntax
   background-color: darken($background-primary, 5%)
   border: 1px solid $border-primary
   padding: 0 0 0 5em !important
-  margin-left: 2.5%
-  margin-right: 2.5%
-  margin-top: 2em
-  margin-bottom: 2em
+  margin: 0 !important
 
   li
     padding: 0 !important
     margin: 0 !important
     color: darken($background-primary, 35%)
-    background-color: darken($background-primary, 5%)
+    +pre-wrap
   
   li > .source
     color: $code-primary
     margin-left: -0.5em
     border-left: 1px solid $border-primary
     background-color: $background-primary
-    padding: 0.1em 0.4em 0.1em
-    +pre-wrap
+    padding: 0 0.4em 0 !important
   
   li.alt > .source
     background-color: lighten($background-primary, 2%)
 
 ul.syntax
+  background-color: darken($background-primary, 5%)
   border: 1px solid $border-primary
   padding: 0 !important
-  margin-left: 2.5%
-  margin-right: 2.5%
-  margin-top: 2em
-  margin-bottom: 2em
+  margin: 0 !important
   list-style-type: none
 
   li
-    list-style-type: none
+    padding: 0 !important
+    margin: 0 !important
+    +pre-wrap
 
   li > .source
     margin: 0 !important
     color: $code-primary
     background-color: $background-primary
-    padding: 0.1em 0.4em 0.1em !important
+    padding: 0 0.4em 0 !important
   
   li.alt > .source
     background-color: lighten($background-primary, 2%)

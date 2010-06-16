@@ -4,56 +4,30 @@
 
 @import "_layout"
 
-table.syntax
-  border-collapse: collapse
-  padding: 0px
-  width: 95%
-  margin: auto
-  margin-top: 2em
-  margin-bottom: 2em
-
-  tr.alt td.source
-    background-color: lighten($background-primary, 2%)
-
-  thead
-    .toolbar
-      font-size: 80%
-      text-align: right
-
-    a
-      margin-left: 1em
-
-  tbody
+.syntax-container
+  table.syntax
+    border-collapse: collapse
     background-color: $background-primary
     border: 1px solid $border-primary
+    padding: 0
+    width: 100%
+
+    tr.alt td.source
+      background-color: lighten($background-primary, 2%)
   
-    td
-      padding-left: 0.4em
-      padding-right: 0.4em
+    td.source
+      padding: 0 0.4em 0
+      color: $code-primary
+      +pre-wrap
       
-      &.source
-        color: $code-primary
-        +pre-wrap
-      
-      &.number
-        user-select: none
-        -moz-user-select: none
-        -webkit-user-select: none
-        border-right: 1px solid #aaa
-        text-align: right
-        width: 2.5em
-        color: darken($background-primary, 35%)
-        background-color: darken($background-primary, 5%)
-
-#syntax-raw
-  padding: 0px
-  margin: 0px
-
-  pre
-    padding: 1em
-    margin: 0px
-    position: absolute
-    top: 0px
-    bottom: 0px
-    left: 0px
-    right: 0px
+    td.number
+      padding: 0 0.4em 0
+      user-select: none
+      -moz-user-select: none
+      -webkit-user-select: none
+      border-right: 1px solid #aaa
+      text-align: right
+      width: 2.5em
+      color: darken($background-primary, 35%)
+      background-color: darken($background-primary, 5%)
+  

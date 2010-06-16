@@ -2,34 +2,13 @@
 //	Copyright 2010 Samuel Williams. All rights reserved.
 //	See <jquery.syntax.js> for licensing details.
 
-function createWindow (url, name, width, height, options) {
-	var x = (screen.width - width) / 2, y = (screen.height - height) / 2;
-		
-	options +=	',left=' + x +
-					',top=' + y +
-					',width=' + width +
-					',height=' + height;
-					
-	options = options.replace(/^,/, '');
-
-	var win = window.open(url, name, options);
-	
-	win.focus();
-	
-	return win;
-}
-
-function dirname(path) {
-	return path.replace(/\\/g,'/').replace(/\/[^\/]*$/, '');
-}
-
 Syntax.layouts.table = function(options, code, container) {
 	var table = jQuery('<table class="syntax highlighted"></table>'), tr = null, td = null, a = null, line = 1;
-	var thead = document.createElement('thead'), tbody = document.createElement('tbody');
+	var tbody = document.createElement('tbody');
+	var toolbar = jQuery('<div class="toolbar"></div>');
 	
 	// Grab a copy of the HTML..
-	var codeHTML = code.html();
-	alert(codeHTML);
+	var codeText = Syntax.getCDATA(container);
 	
 	// Source code
 	code.children().each(function() {
@@ -58,47 +37,23 @@ Syntax.layouts.table = function(options, code, container) {
 		line = line + 1;
 	});
 	
-	// Toolbar
-	var toolbar = jQuery('<div class="toolbar"></div>');
+	table.append(tbody);
+	
+	var rawCode = jQuery('<div class="raw"><textarea class="syntax">');
+	$('textarea', rawCode).text(codeText);
 	
 	a = jQuery('<a href="#">View Raw Code</a>');
-	
-	a.click(function() {
-		var win = createWindow('#', '_blank', 700, 500, 'location=0, resizable=1, menubar=0, scrollbars=1');
-
-		win.document.write('<html><head><base href="' + dirname(window.location.href) + '/" /></head><body id="syntax-raw"><pre class="syntax">' + codeHTML + '</pre></body></html>');
-		win.document.close();
-
-		jQuery('link').each(function(){
-			if (this.rel != 'stylesheet') {
-				return;
-			}
-			
-			var link = jQuery('<link rel="stylesheet">', win.document);
-			
-			link.attr('type', this.type);
-			link.attr('href', this.href);
-			link.attr('media', this.media);
-			
-			jQuery("head", win.document).append(link);
-		});
-		
-		return false;
+	a.click(function () {
+		if ($(table).is(':visible')) {
+			$('textarea', rawCode).height($(table).height());
+			$(table).replaceWith(rawCode);
+		} else {
+			$(rawCode).replaceWith(table);
+		}
 	});
 	
 	toolbar.append(a);
-	toolbar.append(jQuery('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax" target="oriontransfer">?</a>'));
+	toolbar.append('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax" target="oriontransfer">?</a>');
 	
-	tr = document.createElement('tr');
-	td = document.createElement('td');
-	td.colSpan = 2;
-	
-	td.appendChild(toolbar[0]);
-	tr.appendChild(td);
-	thead.appendChild(tr);
-	
-	table.append(thead);
-	table.append(tbody);
-	
-	return table;
+	return jQuery('<div class="syntax-container">').append(toolbar).append(table);
 };

@@ -1,51 +1,29 @@
-table.syntax {
+.syntax-container table.syntax {
   border-collapse: collapse;
-  padding: 0px;
-  width: 95%;
-  margin: auto;
-  margin-top: 2em;
-  margin-bottom: 2em; }
-  table.syntax tr.alt td.source {
+  background-color: #f0f0f0;
+  border: 1px solid #aaaaaa;
+  padding: 0;
+  width: 100%; }
+  .syntax-container table.syntax tr.alt td.source {
     background-color: #f5f5f5; }
-  table.syntax thead .toolbar {
-    font-size: 80%;
-    text-align: right; }
-  table.syntax thead a {
-    margin-left: 1em; }
-  table.syntax tbody {
-    background-color: #f0f0f0;
-    border: 1px solid #aaaaaa; }
-    table.syntax tbody td {
-      padding-left: 0.4em;
-      padding-right: 0.4em; }
-      table.syntax tbody td.source {
-        color: #333333;
-        white-space: pre-wrap;
-        /* CSS2.1 */
-        white-space: -moz-pre-wrap;
-        /* Mozilla, since 1999 */
-        white-space: -o-pre-wrap;
-        /* Opera 7 */
-        word-wrap: break-word;
-        /* Internet Explorer 5.5+ */ }
-      table.syntax tbody td.number {
-        user-select: none;
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        border-right: 1px solid #aaaaaa;
-        text-align: right;
-        width: 2.5em;
-        color: #979797;
-        background-color: #e3e3e3; }
-
-#syntax-raw {
-  padding: 0px;
-  margin: 0px; }
-  #syntax-raw pre {
-    padding: 1em;
-    margin: 0px;
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px; }
+  .syntax-container table.syntax td.source {
+    padding: 0 0.4em 0;
+    color: #333333;
+    white-space: pre-wrap;
+    /* CSS2.1 */
+    white-space: -moz-pre-wrap;
+    /* Mozilla, since 1999 */
+    white-space: -o-pre-wrap;
+    /* Opera 7 */
+    word-wrap: break-word;
+    /* Internet Explorer 5.5+ */ }
+  .syntax-container table.syntax td.number {
+    padding: 0 0.4em 0;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    border-right: 1px solid #aaaaaa;
+    text-align: right;
+    width: 2.5em;
+    color: #979797;
+    background-color: #e3e3e3; }

@@ -3,7 +3,13 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.layouts.list = function(options, code, container) {
-	var list = jQuery('<ol class="syntax highlighted"></ol>'), line = 1, space = /^\s*$/;
+	var listTag = options.listTag || 'ol';
+
+	var list = jQuery('<' + listTag + ' class="syntax highlighted">'), line = 1, space = /^\s*$/;
+	var toolbar = jQuery('<div class="toolbar">');
+
+	// Grab a copy of the HTML..
+	var codeText = Syntax.getCDATA(container);
 	
 	// Source code
 	code.children().each(function() {
@@ -21,11 +27,7 @@ Syntax.layouts.list = function(options, code, container) {
 		var div = document.createElement('div');
 		div.className = "source "  + this.className;
 		
-		if (!this.innerHTML.match(space)) {
-			div.innerHTML = Syntax.breakWhitespace(this.innerHTML);
-		} else {
-			div.innerHTML = "&nbsp;";
-		}
+		div.appendChild(this);
 		
 		li.appendChild(div);
 		list[0].appendChild(li);
@@ -33,5 +35,21 @@ Syntax.layouts.list = function(options, code, container) {
 		line = line + 1;
 	});
 	
-	return list;
+	var rawCode = jQuery('<div class="raw"><textarea class="syntax">');
+	$('textarea', rawCode).text(codeText);
+	
+	a = jQuery('<a href="#">View Raw Code</a>');
+	a.click(function () {
+		if ($(list).is(':visible')) {
+			$('textarea', rawCode).height($(list).height());
+			$(list).replaceWith(rawCode);
+		} else {
+			$(rawCode).replaceWith(list);
+		}
+	});
+	
+	toolbar.append(a);
+	toolbar.append('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax" target="oriontransfer">?</a>');
+	
+	return jQuery('<div class="syntax-container">').append(toolbar).append(list);
 };

@@ -3,8 +3,12 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.layouts.fixed = function(options, code, container) {
-	var fixed = jQuery('<div class="fixed syntax highlighted"></div>'), line = 1, space = /^\s*$/;
-	
+	var fixed = jQuery('<div class="fixed syntax highlighted">'), line = 1, space = /^\s*$/;
+	var toolbar = jQuery('<div class="toolbar">');
+
+	// Grab a copy of the HTML..
+	var codeText = Syntax.getCDATA(container);
+
 	var codeTable = document.createElement('table');
 	
 	var numbersColumn = document.createElement('div');
@@ -42,8 +46,24 @@ Syntax.layouts.fixed = function(options, code, container) {
 	
 	codeColumn.appendChild(codeTable);
 	
-	fixed[0].appendChild(numbersColumn);
-	fixed[0].appendChild(codeColumn);
+	fixed.append(numbersColumn);
+	fixed.append(codeColumn);
 	
-	return fixed;
+	var rawCode = jQuery('<div class="raw"><textarea class="syntax">');
+	$('textarea', rawCode).text(codeText);
+	
+	a = jQuery('<a href="#">View Raw Code</a>');
+	a.click(function () {
+		if ($(fixed).is(':visible')) {
+			$('textarea', rawCode).height($(fixed).height());
+			$(fixed).replaceWith(rawCode);
+		} else {
+			$(rawCode).replaceWith(fixed);
+		}
+	});
+	
+	toolbar.append(a);
+	toolbar.append('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax" target="oriontransfer">?</a>');
+	
+	return jQuery('<div class="syntax-container">').append(toolbar).append(fixed);
 };

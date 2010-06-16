@@ -15,7 +15,5 @@
   color: #993388; }
 .syntax .html .entity, .syntax .html .percent-escape {
   color: #888888;
-  font-size: 0.8em;
-  border: 1px solid #888888;
-  margin: 1px;
-  padding: 1px; }
+  border: 1px solid #aaaaaa;
+  margin: -1px; }

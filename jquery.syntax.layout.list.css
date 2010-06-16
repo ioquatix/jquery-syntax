@@ -2,21 +2,11 @@ ol.syntax {
   background-color: #e3e3e3;
   border: 1px solid #aaaaaa;
   padding: 0 0 0 5em !important;
-  margin-left: 2.5%;
-  margin-right: 2.5%;
-  margin-top: 2em;
-  margin-bottom: 2em; }
+  margin: 0 !important; }
   ol.syntax li {
     padding: 0 !important;
     margin: 0 !important;
     color: #979797;
-    background-color: #e3e3e3; }
-  ol.syntax li > .source {
-    color: #333333;
-    margin-left: -0.5em;
-    border-left: 1px solid #aaaaaa;
-    background-color: #f0f0f0;
-    padding: 0.1em 0.4em 0.1em;
     white-space: pre-wrap;
     /* CSS2.1 */
     white-space: -moz-pre-wrap;
@@ -25,23 +15,36 @@ ol.syntax {
     /* Opera 7 */
     word-wrap: break-word;
     /* Internet Explorer 5.5+ */ }
+  ol.syntax li > .source {
+    color: #333333;
+    margin-left: -0.5em;
+    border-left: 1px solid #aaaaaa;
+    background-color: #f0f0f0;
+    padding: 0 0.4em 0 !important; }
   ol.syntax li.alt > .source {
     background-color: #f5f5f5; }
 
 ul.syntax {
+  background-color: #e3e3e3;
   border: 1px solid #aaaaaa;
   padding: 0 !important;
-  margin-left: 2.5%;
-  margin-right: 2.5%;
-  margin-top: 2em;
-  margin-bottom: 2em;
+  margin: 0 !important;
   list-style-type: none; }
   ul.syntax li {
-    list-style-type: none; }
+    padding: 0 !important;
+    margin: 0 !important;
+    white-space: pre-wrap;
+    /* CSS2.1 */
+    white-space: -moz-pre-wrap;
+    /* Mozilla, since 1999 */
+    white-space: -o-pre-wrap;
+    /* Opera 7 */
+    word-wrap: break-word;
+    /* Internet Explorer 5.5+ */ }
   ul.syntax li > .source {
     margin: 0 !important;
     color: #333333;
     background-color: #f0f0f0;
-    padding: 0.1em 0.4em 0.1em !important; }
+    padding: 0 0.4em 0 !important; }
   ul.syntax li.alt > .source {
     background-color: #f5f5f5; }

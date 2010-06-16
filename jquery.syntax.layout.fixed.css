@@ -1,10 +1,6 @@
 div.fixed.syntax {
   background-color: #e3e3e3;
-  border: 1px solid #aaaaaa;
-  margin-left: 2.5%;
-  margin-right: 2.5%;
-  margin-top: 2em;
-  margin-bottom: 2em; }
+  border: 1px solid #aaaaaa; }
   div.fixed.syntax .numbers-column {
     float: left;
     text-align: right;
@@ -13,7 +9,7 @@ div.fixed.syntax {
     color: #979797;
     background-color: #e3e3e3; }
     div.fixed.syntax .numbers-column div {
-      padding: 0.1em 0.4em 0.1em !important; }
+      padding: 0 0.4em 0 !important; }
   div.fixed.syntax .code-column {
     border-left: 1px solid #aaaaaa;
     overflow: auto;
@@ -21,10 +17,10 @@ div.fixed.syntax {
     div.fixed.syntax .code-column table {
       border-collapse: collapse;
       width: 100%;
-      white-space: nowrap; }
+      white-space: pre; }
     div.fixed.syntax .code-column .source {
       margin: auto !important;
       color: #333333;
-      padding: 0.1em 0.4em 0.1em !important; }
+      padding: 0 0.4em 0 !important; }
     div.fixed.syntax .code-column .source.alt {
       background-color: #f5f5f5; }
