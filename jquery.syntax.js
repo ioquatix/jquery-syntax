@@ -99,6 +99,9 @@ var Syntax = {
 	aliases: {},
 	styles: {},
 	lib: {},
+	defaultOptions: {
+		cacheScripts: true
+	},
 	
 	brushes: new ResourceLoader(function (name, callback) {
 		name = Syntax.aliases[name] || name;
@@ -132,7 +135,7 @@ var Syntax = {
 			url: path,
 			success: callback,
 			dataType: "script",
-			cache: true
+			cache: Syntax.defaultOptions.cacheScripts
 		});
 	},
 	
@@ -220,10 +223,12 @@ jQuery.syntax = function (options, callback) {
 		Syntax.root = options.root;
 	}
 	
+	options = jQuery.extend(Syntax.defaultOptions, options)
+	
 	options.blockSelector = options.blockSelector || 'pre.syntax:not(.highlighted)';
 	options.inlineSelector = options.inlineSelector || 'code.syntax:not(.highlighted)';
 	
-	options.blockLayout = options.blockLayout || 'table';
+	options.blockLayout = options.blockLayout || 'list';
 	options.inlineLayout = options.inlineLayout || 'inline';
 	
 	options.replace = true;
