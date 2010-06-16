@@ -53,7 +53,9 @@ Syntax.layouts.fixed = function(options, code, container) {
 	$('textarea', rawCode).text(codeText);
 	
 	a = jQuery('<a href="#">View Raw Code</a>');
-	a.click(function () {
+	a.click(function (event) {
+		event.preventDefault();
+		
 		if ($(fixed).is(':visible')) {
 			$('textarea', rawCode).height($(fixed).height());
 			$(fixed).replaceWith(rawCode);

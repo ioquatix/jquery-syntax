@@ -39,7 +39,9 @@ Syntax.layouts.list = function(options, code, container) {
 	$('textarea', rawCode).text(codeText);
 	
 	a = jQuery('<a href="#">View Raw Code</a>');
-	a.click(function () {
+	a.click(function (event) {
+		event.preventDefault();
+		
 		if ($(list).is(':visible')) {
 			$('textarea', rawCode).height($(list).height());
 			$(list).replaceWith(rawCode);
