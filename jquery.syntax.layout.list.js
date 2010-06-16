@@ -7,9 +7,9 @@ Syntax.layouts.list = function(options, code, container) {
 
 	var list = jQuery('<' + listTag + ' class="syntax highlighted">'), line = 1, space = /^\s*$/;
 	var toolbar = jQuery('<div class="toolbar">');
-
-	// Grab a copy of the HTML..
-	var codeText = Syntax.getCDATA(container);
+	
+	var rawCode = container.clone();
+	rawCode.addClass("raw syntax highlighted");
 	
 	// Source code
 	code.children().each(function() {
@@ -35,15 +35,12 @@ Syntax.layouts.list = function(options, code, container) {
 		line = line + 1;
 	});
 	
-	var rawCode = jQuery('<div class="raw"><textarea class="syntax">');
-	$('textarea', rawCode).text(codeText);
-	
 	a = jQuery('<a href="#">View Raw Code</a>');
 	a.click(function (event) {
 		event.preventDefault();
 		
 		if ($(list).is(':visible')) {
-			$('textarea', rawCode).height($(list).height());
+			rawCode.height($(list).height());
 			$(list).replaceWith(rawCode);
 		} else {
 			$(rawCode).replaceWith(list);

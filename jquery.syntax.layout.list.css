@@ -7,21 +7,22 @@ ol.syntax {
     padding: 0 !important;
     margin: 0 !important;
     color: #979797;
-    white-space: pre-wrap;
     /* CSS2.1 */
-    white-space: -moz-pre-wrap;
+    white-space: pre-wrap;
     /* Mozilla, since 1999 */
-    white-space: -o-pre-wrap;
+    white-space: -moz-pre-wrap;
     /* Opera 7 */
+    white-space: -o-pre-wrap;
+    /* Internet Explorer 5.5+ */
     word-wrap: break-word;
-    /* Internet Explorer 5.5+ */ }
-  ol.syntax li > .source {
+    _white-space: pre; }
+  ol.syntax li div.source {
     color: #333333;
     margin-left: -0.5em;
     border-left: 1px solid #aaaaaa;
     background-color: #f0f0f0;
     padding: 0 0.4em 0 !important; }
-  ol.syntax li.alt > .source {
+  ol.syntax li.alt div.source {
     background-color: #f5f5f5; }
 
 ul.syntax {
@@ -33,18 +34,19 @@ ul.syntax {
   ul.syntax li {
     padding: 0 !important;
     margin: 0 !important;
-    white-space: pre-wrap;
     /* CSS2.1 */
-    white-space: -moz-pre-wrap;
+    white-space: pre-wrap;
     /* Mozilla, since 1999 */
-    white-space: -o-pre-wrap;
+    white-space: -moz-pre-wrap;
     /* Opera 7 */
+    white-space: -o-pre-wrap;
+    /* Internet Explorer 5.5+ */
     word-wrap: break-word;
-    /* Internet Explorer 5.5+ */ }
-  ul.syntax li > .source {
+    _white-space: pre; }
+  ul.syntax li div.source {
     margin: 0 !important;
     color: #333333;
     background-color: #f0f0f0;
     padding: 0 0.4em 0 !important; }
-  ul.syntax li.alt > .source {
+  ul.syntax li.alt div.source {
     background-color: #f5f5f5; }

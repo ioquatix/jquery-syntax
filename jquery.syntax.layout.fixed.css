@@ -1,6 +1,8 @@
 div.fixed.syntax {
   background-color: #e3e3e3;
-  border: 1px solid #aaaaaa; }
+  border: 1px solid #aaaaaa;
+  padding: 0 !important;
+  margin: 0 !important; }
   div.fixed.syntax .numbers-column {
     float: left;
     text-align: right;

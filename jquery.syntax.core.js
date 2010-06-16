@@ -23,32 +23,34 @@ if (!String.prototype.repeat) {
 // The jQuery version of container.text() is broken on IE6.
 // This version fixes it... for pre elements only. Other elements
 // in IE will have the whitespace manipulated.
-Syntax.getCDATA = function ( elems ) {
-	var ret = "", elem;
+Syntax.getCDATA = function (elems) {
+	var cdata = "", elem;
+	
+	(function (elems) {
+		for (var i = 0; elems[i]; i++) {
+			elem = elems[i];
 
-	for (var i = 0; elems[i]; i++) {
-		elem = elems[i];
-
-		// Get the text from text nodes and CDATA nodes
-		if (elem.nodeType === 3 || elem.nodeType === 4) {
-			ret += elem.nodeValue;
+			// Get the text from text nodes and CDATA nodes
+			if (elem.nodeType === 3 || elem.nodeType === 4) {
+				cdata += elem.nodeValue;
 		
-		// Use textContent || innerText for elements
-		} else if (elem.nodeType === 1) {
-			if (typeof(elem.textContent) === 'string')
-				ret += elem.textContent;
-			else if (typeof(elem.innerText) === 'string')
-				ret += elem.innerText;
-			else
-				ret += getText(elem.childNodes);
+			// Use textContent || innerText for elements
+			} else if (elem.nodeType === 1) {
+				if (typeof(elem.textContent) === 'string')
+					cdata += elem.textContent;
+				else if (typeof(elem.innerText) === 'string')
+					cdata += elem.innerText;
+				else
+					arguments.callee(elem.childNodes);
 			
-		// Traverse everything else, except comment nodes
-		} else if (elem.nodeType !== 8) {
-			ret += getText(elem.childNodes);
+			// Traverse everything else, except comment nodes
+			} else if (elem.nodeType !== 8) {
+				arguments.callee(elem.childNodes);
+			}
 		}
-	}
-
-	return ret;
+	})(elems);
+	
+	return cdata.replace(/\r\n?/g, "\n");
 }
 
 Syntax.layouts.plain = function (options, html, container) {

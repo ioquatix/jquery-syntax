@@ -7,8 +7,8 @@ Syntax.layouts.table = function(options, code, container) {
 	var tbody = document.createElement('tbody');
 	var toolbar = jQuery('<div class="toolbar"></div>');
 	
-	// Grab a copy of the HTML..
-	var codeText = Syntax.getCDATA(container);
+	var rawCode = container.clone();
+	rawCode.addClass("raw syntax highlighted");
 	
 	// Source code
 	code.children().each(function() {
@@ -39,15 +39,12 @@ Syntax.layouts.table = function(options, code, container) {
 	
 	table.append(tbody);
 	
-	var rawCode = jQuery('<div class="raw"><textarea class="syntax">');
-	$('textarea', rawCode).text(codeText);
-	
 	a = jQuery('<a href="#">View Raw Code</a>');
 	a.click(function (event) {
 		event.preventDefault();
 		
 		if ($(table).is(':visible')) {
-			$('textarea', rawCode).height($(table).height());
+			rawCode.height($(table).height());
 			$(table).replaceWith(rawCode);
 		} else {
 			$(rawCode).replaceWith(table);

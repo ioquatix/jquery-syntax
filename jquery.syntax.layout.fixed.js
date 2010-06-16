@@ -2,26 +2,28 @@
 //	Copyright 2010 Samuel Williams. All rights reserved.
 //	See <jquery.syntax.js> for licensing details.
 
+// This layout doesn't work correctly in IE6, but is fine in all other tested browsers.
 Syntax.layouts.fixed = function(options, code, container) {
 	var fixed = jQuery('<div class="fixed syntax highlighted">'), line = 1, space = /^\s*$/;
 	var toolbar = jQuery('<div class="toolbar">');
 
-	// Grab a copy of the HTML..
-	var codeText = Syntax.getCDATA(container);
+	var rawCode = container.clone();
+	rawCode.addClass("raw syntax highlighted");
 
 	var codeTable = document.createElement('table');
 	
-	var numbersColumn = document.createElement('div');
-	numbersColumn.className = "numbers-column";
-	var codeColumn = document.createElement('div');
-	codeColumn.className = "code-column";
+	var codeTableBody = document.createElement('tbody');
+	codeTable.appendChild(codeTableBody);
+	
+	var numbersColumn = jQuery('<div class="numbers-column">');
+	var codeColumn = jQuery('<div class="code-column">');
 	
 	// Source code
 	code.children().each(function() {
 		var lineNumber = document.createElement('div');
 		lineNumber.className = "line ln" + line
 		lineNumber.innerHTML = line;
-		numbersColumn.appendChild(lineNumber);
+		numbersColumn.append(lineNumber);
 		
 		var lineCode = document.createElement('td');
 		lineCode.className = "source "  + this.className;
@@ -35,29 +37,26 @@ Syntax.layouts.fixed = function(options, code, container) {
 		}
 		
 		// Thanks to Michael for suggesting the obvious :)
-		lineCode.innerHTML = this.innerHTML.replace(/\n/g, "<br/>");
+		lineCode.appendChild(this);
 		
 		var tr = document.createElement('tr');
 		tr.appendChild(lineCode);
-		codeTable.appendChild(tr);
+		codeTableBody.appendChild(tr);
 		
 		line = line + 1;
 	});
 	
-	codeColumn.appendChild(codeTable);
+	codeColumn.append(codeTable);
 	
 	fixed.append(numbersColumn);
 	fixed.append(codeColumn);
-	
-	var rawCode = jQuery('<div class="raw"><textarea class="syntax">');
-	$('textarea', rawCode).text(codeText);
 	
 	a = jQuery('<a href="#">View Raw Code</a>');
 	a.click(function (event) {
 		event.preventDefault();
 		
 		if ($(fixed).is(':visible')) {
-			$('textarea', rawCode).height($(fixed).height());
+			rawCode.height($(fixed).height());
 			$(fixed).replaceWith(rawCode);
 		} else {
 			$(rawCode).replaceWith(fixed);
