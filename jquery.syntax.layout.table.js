@@ -43,11 +43,11 @@ Syntax.layouts.table = function(options, code, container) {
 	a.click(function (event) {
 		event.preventDefault();
 		
-		if ($(table).is(':visible')) {
-			rawCode.height($(table).height());
-			$(table).replaceWith(rawCode);
+		if (jQuery(table).is(':visible')) {
+			rawCode.height(jQuery(table).height());
+			jQuery(table).replaceWith(rawCode);
 		} else {
-			$(rawCode).replaceWith(table);
+			jQuery(rawCode).replaceWith(table);
 		}
 	});
 	

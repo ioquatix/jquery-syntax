@@ -55,11 +55,11 @@ Syntax.layouts.fixed = function(options, code, container) {
 	a.click(function (event) {
 		event.preventDefault();
 		
-		if ($(fixed).is(':visible')) {
-			rawCode.height($(fixed).height());
-			$(fixed).replaceWith(rawCode);
+		if (jQuery(fixed).is(':visible')) {
+			rawCode.height(jQuery(fixed).height());
+			jQuery(fixed).replaceWith(rawCode);
 		} else {
-			$(rawCode).replaceWith(fixed);
+			jQuery(rawCode).replaceWith(fixed);
 		}
 	});
 	
