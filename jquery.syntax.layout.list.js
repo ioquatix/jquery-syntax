@@ -39,11 +39,11 @@ Syntax.layouts.list = function(options, code, container) {
 	a.click(function (event) {
 		event.preventDefault();
 		
-		if ($(list).is(':visible')) {
-			rawCode.height($(list).height());
-			$(list).replaceWith(rawCode);
+		if (jQuery(list).is(':visible')) {
+			rawCode.height(jQuery(list).height());
+			jQuery(list).replaceWith(rawCode);
 		} else {
-			$(rawCode).replaceWith(list);
+			jQuery(rawCode).replaceWith(list);
 		}
 	});
 	
