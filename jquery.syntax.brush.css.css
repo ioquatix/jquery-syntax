@@ -4,3 +4,7 @@
   color: red; }
 .syntax .css .value {
   font-style: italic; }
+.syntax .css .color-box {
+  font-size: 0.5em;
+  margin: 4px;
+  border: 1px solid black; }
