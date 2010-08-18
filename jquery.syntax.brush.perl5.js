@@ -27,7 +27,13 @@ Syntax.register('perl5', function(brush) {
 		pattern: /(\$|@|%)\w+/gi,
 		klass: 'variable'
 	});
-		
+	
+	// Enddoc
+	brush.push({
+		pattern: /__END__[\s\S]*/gm,
+		klass: 'comment'
+	});
+	
 	// Strings
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
