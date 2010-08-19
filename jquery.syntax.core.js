@@ -123,7 +123,10 @@ Syntax.lib.webLinkProcess = function (queryURI, lucky) {
 	}
 	
 	return function (element, match) {
-		return jQuery('<a>').attr('href', queryURI + encodeURIComponent(element.text())).append(element);
+		return jQuery('<a>').
+			attr('href', queryURI + encodeURIComponent(element.text())).
+			attr('class', element.attr('class')).
+			append(element.contents());
 	};
 };
 
@@ -442,6 +445,27 @@ Syntax.Brush = function () {
 	this.processes = {};
 };
 
+Syntax.Brush.convertStringToTokenPattern = function (pattern, escape) {
+	var prefix = "\\b", postfix = "\\b";
+	
+	if (!pattern.match(/^\w/)) {
+		if (!pattern.match(/\w$/)) {
+			prefix = postfix = "";
+		} else {
+			prefix = "\\B";
+		}
+	} else {
+		if (!pattern.match(/\w$/)) {
+			postfix = "\\B";
+		}
+	}
+	
+	if (escape)
+		pattern = RegExp.escape(pattern)
+	
+	return prefix + pattern + postfix;
+}
+
 Syntax.Brush.prototype.push = function () {
 	if (jQuery.isArray(arguments[0])) {
 		var patterns = arguments[0], rule = arguments[1];
@@ -454,21 +478,7 @@ Syntax.Brush.prototype.push = function () {
 		
 		if (typeof(rule.pattern) === 'string') {
 			rule.string = rule.pattern;
-			var prefix = "\\b", postfix = "\\b";
-			
-			if (!rule.pattern.match(/^\w/)) {
-				if (!rule.pattern.match(/\w$/)) {
-					prefix = postfix = "";
-				} else {
-					prefix = "\\B";
-				}
-			} else {
-				if (!rule.pattern.match(/\w$/)) {
-					postfix = "\\B";
-				}
-			}
-			
-			rule.pattern = new RegExp(prefix + RegExp.escape(rule.pattern) + postfix, rule.options || 'g');
+			rule.pattern = new RegExp(Syntax.Brush.convertStringToTokenPattern(rule.string, true), rule.options || 'g')
 		}
 
 		if (typeof(XRegExp) !== 'undefined') {
