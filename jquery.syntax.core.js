@@ -260,7 +260,6 @@ Syntax.Match.prototype.canContain = function (match) {
 		return true;
 	}
 	
-	// else, false.
 	return false;
 };
 
