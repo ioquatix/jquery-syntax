@@ -9,7 +9,7 @@ Syntax.register('javascript', function(brush) {
 	
 	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">"];
 	var values = ["function", "this", "true", "false", "null"];
-		
+	
 	brush.push(values, {klass: 'constant'});
 	brush.push(keywords, {klass: 'keyword'});
 	brush.push(operators, {klass: 'operator'});
