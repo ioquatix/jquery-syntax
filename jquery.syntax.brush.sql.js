@@ -17,6 +17,10 @@ Syntax.register('sql', function(brush) {
 	
 	brush.push(keywords, {klass: 'keyword', options: 'gi'});
 	
+	brush.push(Syntax.lib.singleQuotedString);
+	brush.push(Syntax.lib.doubleQuotedString);
+	brush.push(Syntax.lib.stringEscape);
+	
 	brush.push(Syntax.lib.webLink);
 });
 
