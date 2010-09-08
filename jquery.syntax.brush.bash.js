@@ -13,7 +13,7 @@ Syntax.register('bash', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /\-\- .*$/gm,
+		pattern: /^\-\- .*$/gm,
 		klass: 'comment',
 		allow: ['href']
 	});
