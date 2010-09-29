@@ -1,4 +1,4 @@
-// brush: "lisp" aliases: ['scheme', 'clojure', 'kai']
+// brush: "lisp" aliases: ['scheme', 'clojure']
 
 //	This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
 //	Copyright 2010 Samuel Williams. All rights reserved.

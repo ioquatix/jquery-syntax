@@ -16,6 +16,7 @@ Syntax.alias("haskell", []);
 Syntax.alias("html", ["xml"]);
 Syntax.alias("java", []);
 Syntax.alias("javascript", ["js", "actionscript"]);
+Syntax.alias("kai", []);
 Syntax.alias("lisp", ['scheme', 'clojure']);
 Syntax.alias("lua", []);
 Syntax.alias("ooc", []);
