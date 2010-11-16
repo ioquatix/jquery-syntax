@@ -95,7 +95,7 @@ ResourceLoader.prototype.get = function (name, callback) {
 };
 
 var Syntax = {
-	root: './', 
+	root: null, 
 	aliases: {},
 	styles: {},
 	lib: {},
@@ -206,6 +206,25 @@ var Syntax = {
 		return null;
 	}
 };
+
+jQuery(function() {
+	if (Syntax.root == null) {
+		// Initialize root based on current script path.
+		var scripts = $('script').filter(function(){
+			return this.src.match(/jquery.syntax/);
+		});
+	
+		var first = scripts.get(0);
+	
+		if (first) {
+			// Calculate the basename for the given script src.
+			var root = first.src.match(/.*\//);
+			if (root) {
+				Syntax.root = root[0];
+			}
+		}
+	}
+});
 
 jQuery.fn.syntax = function (options, callback) {
 	var elements = this;
