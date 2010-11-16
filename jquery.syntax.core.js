@@ -53,7 +53,41 @@ Syntax.getCDATA = function (elems) {
 	return cdata.replace(/\r\n?/g, "\n");
 }
 
-Syntax.layouts.plain = function (options, html, container) {
+// Convert to stack based implementation
+Syntax.extractElementMatches = function (elems, offset, tabWidth) {
+	var matches = [], current = [elems];
+	offset = offset || 0;
+	tabWidth = tabWidth || 4;
+	
+	(function (elems) {
+		for (var i = 0; elems[i]; i++) {
+			var text = null, elem = elems[i];
+			
+			if (elem.nodeType === 3 || elem.nodeType === 4) {
+				offset += elem.nodeValue.length;
+			
+			} else if (elem.nodeType === 1) {
+				var text = Syntax.getCDATA(elem.childNodes);
+				var expr = {klass: elem.className, force: true, element: elem};
+				
+				matches.push(new Syntax.Match(offset, text.length, expr, text));
+			}
+			
+			// Traverse everything, except comment nodes
+			if (elem.nodeType !== 8) {
+				arguments.callee(elem.childNodes, offset);
+			}
+		}
+	})(elems);
+	
+	// Remove the top level element, since this will be recreated based on the supplied configuration.
+	// Maybe there is a better way to achieve this?
+	matches.shift();
+	
+	return matches;
+}
+
+Syntax.layouts.preformatted = function (options, html, container) {
 	return html;
 };
 
@@ -62,7 +96,8 @@ Syntax.modeLineOptions = {
 };
 
 Syntax.convertTabsToSpaces = function (text, tabSize) {
-	var space = [], pattern = /\r|\n|\t/g, tabOffset = 0;
+	var space = [], pattern = /\r|\n|\t/g, tabOffset = 0, offsets = [], totalOffset = 0;
+	tabSize = tabSize || 4
 	
 	for (var i = ""; i.length <= tabSize; i = i + " ") {
 		space.push(i);
@@ -76,11 +111,58 @@ Syntax.convertTabsToSpaces = function (text, tabSize) {
 		} else {
 			var width = tabSize - ((tabOffset + offset) % tabSize);
 			tabOffset += width - 1;
+			
+			// Any match after this offset has been shifted right by totalOffset
+			totalOffset += width - 1
+			offsets.push([offset, width, totalOffset]);
+			
 			return space[width];
 		}
 	});
 	
-	return text;
+	return {text: text, offsets: offsets};
+};
+
+Syntax.convertToLinearOffsets = function (offsets, length) {
+	var current = 0, changes = [];
+	
+	// Anything with offset after offset[current][0] but smaller than offset[current+1][0]
+	// has been shifted right by offset[current][2]
+	for (var i = 0; i < length; i++) {
+		if (offsets[current] && i > offsets[current][0]) {
+			if (offsets[current+1] && i <= offsets[current+1][0]) {
+				changes.push(offsets[current][2]);
+			} else {
+				current += 1;
+				i -= 1;
+			}
+		} else {
+			changes.push(changes[changes.length-1] || 0);
+		}
+	}
+	
+	return changes;
+}
+
+Syntax.updateMatchesWithOffsets = function (matches, linearOffsets, text) {
+	(function (matches) {
+		for (var i = 0; i < matches.length; i++) {
+			var match = matches[i];
+			
+			// Calculate the new start and end points
+			var offset = match.offset + linearOffsets[match.offset];
+			var end = match.offset + match.length;
+			end += linearOffsets[end];
+			
+			// Start, Length, Text
+			match.shift(linearOffsets[match.offset], end - offset, text);
+			
+			if (match.children.length > 0)
+				arguments.callee(match.children);
+		}
+	})(matches);
+	
+	return matches;
 };
 
 Syntax.extractMatches = function() {
@@ -169,9 +251,18 @@ Syntax.Match = function (offset, length, expr, value) {
 	this.next = null;
 };
 
-Syntax.Match.prototype.shift = function (x) {
-	this.offset += x;
-	this.endOffset += x;
+Syntax.Match.prototype.shift = function (offset, length, text) {
+	this.offset += offset;
+	this.endOffset += offset;
+	
+	if (length) {
+		this.length = length;
+		this.endOffset = this.offset + length;
+	}
+	
+	if (text) {
+		this.value = text.substr(this.offset, this.length);
+	}
 };
 
 Syntax.Match.sort = function (a,b) {
@@ -240,6 +331,10 @@ Syntax.Match.prototype.canContain = function (match) {
 		return true;
 	}
 	
+	if (match.expression.force) {
+		return true;
+	}
+	
 	// If allow is undefined, default behaviour is no children.
 	if (typeof(this.expression.allow) === 'undefined') {
 		return false;
@@ -293,6 +388,12 @@ Syntax.Match.prototype._splice = function(i, match) {
 	if (this.canHaveChild(match)) {
 		this.children.splice(i, 0, match);
 		match.parent = this;
+		
+		// For matches added using tags.
+		if (!match.expression.owner) {
+			match.expression.owner = this.expression.owner;
+		}
+		
 		return this;
 	} else {
 		return null;
@@ -522,13 +623,14 @@ Syntax.Brush.prototype.getMatches = function(text, offset) {
 	return matches;
 };
 
-Syntax.Brush.prototype.buildTree = function(text, offset) {
+Syntax.Brush.prototype.buildTree = function(text, matches, offset) {
 	offset = offset || 0;
+	matches = matches || [];
 	
 	// Fixes code that uses \r\n for line endings. /$/ matches both \r\n, which is a problem..
 	text = text.replace(/\r/g, "");
 	
-	var matches = this.getMatches(text, offset);
+	matches = matches.concat(this.getMatches(text, offset));
 	var top = new Syntax.Match(offset, text.length, {klass: this.klass, allow: '*', owner: this}, text);
 
 	// This sort is absolutely key to the functioning of the tree insertion algorithm.
@@ -543,8 +645,9 @@ Syntax.Brush.prototype.buildTree = function(text, offset) {
 	return top;
 };
 
-Syntax.Brush.prototype.process = function(text) {
-	var top = this.buildTree(text);
+// Matches is optional, and provides a set of pre-existing matches.
+Syntax.Brush.prototype.process = function(text, matches) {
+	var top = this.buildTree(text, matches);
 	
 	var lines = top.split(/\n/g);
 	
@@ -577,7 +680,7 @@ Syntax.highlight = function (elements, options, callback) {
 		options = {};
 	}
 	
-	options.layout = options.layout || 'plain';
+	options.layout = options.layout || 'preformatted';
 	
 	if (typeof(options.tabWidth) === 'undefined') {
 		options.tabWidth = 4;
@@ -586,8 +689,10 @@ Syntax.highlight = function (elements, options, callback) {
 	elements.each(function () {
 		var container = jQuery(this);
 		
+		// We can augment the plain text to extract existing annotations.
+		var matches = Syntax.extractElementMatches(container);
 		var text = Syntax.getCDATA(container);
-
+		
 		var match = text.match(/-\*- mode: (.+?);(.*?)-\*-/i);
 		var endOfSecondLine = text.indexOf("\n", text.indexOf("\n") + 1);
 		
@@ -613,10 +718,20 @@ Syntax.highlight = function (elements, options, callback) {
 			container.addClass('syntax');
 			
 			if (options.tabWidth) {
-				text = Syntax.convertTabsToSpaces(text, options.tabWidth);
+				// Calculate the tab expansion and offsets
+				replacement = Syntax.convertTabsToSpaces(text, options.tabWidth);
+				
+				// Update any existing matches
+				if (matches && matches.length) {
+					var linearOffsets = Syntax.convertToLinearOffsets(replacement.offsets, text.length);
+					matches = Syntax.updateMatchesWithOffsets(matches, linearOffsets, replacement.text);
+				}
+				
+				text = replacement.text;
 			}
 			
-			var html = brush.process(text);
+			console.log(matches, text);
+			var html = brush.process(text, matches);
 			
 			if (options.linkify !== false) {
 				jQuery('span.href', html).each(function(){
