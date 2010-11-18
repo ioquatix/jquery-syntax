@@ -421,7 +421,6 @@ Syntax.Match.prototype.insertAtEnd = function (match) {
 				// displacement = 'before'
 				return this._splice(i, match);
 			} else {
-				// displacement = 'left-overlap'
 				return null;
 			}
 		} else if (match.offset < child.endOffset) {
@@ -430,7 +429,6 @@ Syntax.Match.prototype.insertAtEnd = function (match) {
 				var result = child.insertAtEnd(match);
 				return result;
 			} else {
-				// displacement = 'right-overlap'
 				// If a match overlaps a previous one, we ignore it.
 				return null;
 			}
@@ -623,7 +621,7 @@ Syntax.Brush.prototype.getMatches = function(text, offset) {
 	return matches;
 };
 
-Syntax.Brush.prototype.buildTree = function(text, matches, offset) {
+Syntax.Brush.prototype.buildTree = function(text, offset, matches) {
 	offset = offset || 0;
 	matches = matches || [];
 	
@@ -631,6 +629,7 @@ Syntax.Brush.prototype.buildTree = function(text, matches, offset) {
 	text = text.replace(/\r/g, "");
 	
 	matches = matches.concat(this.getMatches(text, offset));
+	
 	var top = new Syntax.Match(offset, text.length, {klass: this.klass, allow: '*', owner: this}, text);
 
 	// This sort is absolutely key to the functioning of the tree insertion algorithm.
@@ -647,7 +646,7 @@ Syntax.Brush.prototype.buildTree = function(text, matches, offset) {
 
 // Matches is optional, and provides a set of pre-existing matches.
 Syntax.Brush.prototype.process = function(text, matches) {
-	var top = this.buildTree(text, matches);
+	var top = this.buildTree(text, 0, matches);
 	
 	var lines = top.split(/\n/g);
 	
@@ -730,7 +729,6 @@ Syntax.highlight = function (elements, options, callback) {
 				text = replacement.text;
 			}
 			
-			console.log(matches, text);
 			var html = brush.process(text, matches);
 			
 			if (options.linkify !== false) {
