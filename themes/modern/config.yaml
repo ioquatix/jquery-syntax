@@ -1,0 +1,4 @@
+depends:
+  - clean
+includes:
+  - _modern.scss
