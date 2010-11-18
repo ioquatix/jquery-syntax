@@ -64,6 +64,8 @@ class Theme
 		
 		@includes = []
 		@root = root || File.join(File.dirname(__FILE__), "themes")
+		
+		@extends = {}
 	end
 	
 	attr :includes
@@ -93,6 +95,10 @@ class Theme
 			config['depends'].each {|name| load_theme(name)}
 		end
 		
+		if config['extends']
+			config['extends'].each {|name,extension| @extends[name] = extension}
+		end
+		
 		if config['includes']
 			@includes.concat(config['includes'])
 		end
@@ -105,6 +111,14 @@ class Theme
 			config['exclude'].each do |name|
 				FileUtils.rm_rf(File.join(@destination, name))
 			end
+		end
+	end
+	
+	def includes_for(path)
+		if extension = @extends[File.basename(path)]
+			return @includes + [extension]
+		else
+			return @includes
 		end
 	end
 end
@@ -140,7 +154,7 @@ task :generate_css, [:theme,:override,:output] => [:clean_css] do |task, argumen
 		$stderr.puts command
 		
 		IO.popen(command, "w") do |io|
-			aggregate_theme.includes.each do |incl|
+			aggregate_theme.includes_for(sass).each do |incl|
 				io.puts("@import #{incl}")
 			end
 			

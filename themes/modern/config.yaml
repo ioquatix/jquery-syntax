@@ -1,4 +1,4 @@
 depends:
-  - clean
+  - base
 includes:
   - _modern.scss
