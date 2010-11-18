@@ -18,5 +18,14 @@ Syntax.register('bash', function(brush) {
 		allow: ['href']
 	});
 	
+	// Strings
+	brush.push(Syntax.lib.singleQuotedString);
+	brush.push(Syntax.lib.doubleQuotedString);
+	brush.push(Syntax.lib.stringEscape);
+	
+	// Numbers
+	brush.push(Syntax.lib.decimalNumber);
+	brush.push(Syntax.lib.hexNumber);
+	
 	brush.push(Syntax.lib.webLink);
 });
