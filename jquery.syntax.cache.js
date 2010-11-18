@@ -46,4 +46,5 @@ Syntax.styles["jquery.syntax.core"] = "jquery.syntax.core.css";
 Syntax.styles["jquery.syntax.layout.fixed"] = "jquery.syntax.layout.fixed.css";
 Syntax.styles["jquery.syntax.layout.inline"] = "jquery.syntax.layout.inline.css";
 Syntax.styles["jquery.syntax.layout.list"] = "jquery.syntax.layout.list.css";
+Syntax.styles["jquery.syntax.layout.plain"] = "jquery.syntax.layout.plain.css";
 Syntax.styles["jquery.syntax.layout.table"] = "jquery.syntax.layout.table.css";
