@@ -1,4 +1,4 @@
-// brush: "csharp" aliases: ["c#"]
+// brush: "csharp" aliases: ["c-sharp", "c#"]
 
 //	This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
 //	Copyright 2010 Samuel Williams. All rights reserved.
@@ -14,12 +14,15 @@ Syntax.register('csharp', function(brush) {
 	var operators = ["+", "-", "*", "/", "%", "&", "|", "^", "!", "~", "&&", "||", "++", "--", "<<", ">>", "==", "!=", "<", ">", "<=", ">=", "=", "?", "new", "as", "is", "sizeof", "typeof", "checked", "unchecked"];
 	
 	var values = ["this", "true", "false", "null"];
-	
+		
 	brush.push(values, {klass: 'constant'});
 	brush.push(types, {klass: 'type'});
 	brush.push(keywords, {klass: 'keyword'});
 	brush.push(operators, {klass: 'operator'});
 	brush.push(access, {klass: 'access'});
+	
+	// Functions
+	brush.push(Syntax.lib.cStyleFunction);
 	
 	// Camel Case Types
 	brush.push(Syntax.lib.camelCaseType);
@@ -36,7 +39,5 @@ Syntax.register('csharp', function(brush) {
 	
 	brush.push(Syntax.lib.decimalNumber);
 	brush.push(Syntax.lib.hexNumber);
-	
-	brush.push(Syntax.lib.cStyleFunction);
 });
 
