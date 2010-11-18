@@ -321,6 +321,12 @@ Syntax.Match.prototype.reduce = function (append, process) {
 };
 
 Syntax.Match.prototype.canContain = function (match) {
+	// This is a special conditional for explicitly added ranges by the user.
+	// Since user added it, we honour it no matter what.
+	if (match.expression.force) {
+		return true;
+	}
+	
 	// Can't add anything into complete trees.
 	if (this.complete) {
 		return false;
@@ -328,10 +334,6 @@ Syntax.Match.prototype.canContain = function (match) {
 	
 	// match.expression.only will be checked on insertion using this.canHaveChild(match)
 	if (match.expression.only) {
-		return true;
-	}
-	
-	if (match.expression.force) {
 		return true;
 	}
 	
