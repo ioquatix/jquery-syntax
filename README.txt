@@ -1,6 +1,17 @@
 *** jQuery.Syntax [release-2.2] ***
 
-jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamically loads external dependencies (js & css) when required. It uses jQuery to make it cross-browser compatible and to simplify integration.
+jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamically loads external dependencies (JavaScript & CSS) when required. It uses jQuery to make it cross-browser compatible and to simplify integration.
+
+You will need to install the following dependencies to use jQuery.Syntax :
+	$ sudo gem install rake haml
+
+To generate CSS for a particular theme (e.g. clean) :
+	$ rake generate_css[clean]
+
+To install jQuery.Syntax into a directory (e.g. _static/jquery-syntax) :
+	$ rake install[_static/jquery-syntax]
+
+Once installed, jQuery.Syntax depends on jQuery 1.4+.
 
 For downloads, documentation, compatibility, please see :
 	http://www.oriontransfer.co.nz/software/jquery-syntax/
@@ -42,6 +53,12 @@ If you modify this code, you must include these "Additional permissions" in your
 of the code.
 
 *** Change Log ***
+
+release-3.0rc1
+ - Support for marked up content
+ - Support for several new languages (Kai, io)
+ - Installation process (now the recommended process)
+ - Enhanced support for themes
 
 release-2.2.2
  - Major Internet Exploder bugfix.
