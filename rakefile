@@ -205,4 +205,34 @@ task :compress_all => [:build_combined] do
 	end
 end
 
+task :install, [:destination] => [:build_combined] do |task, arguments|
+	js_files = Dir[File.dirname(__FILE__) + "/jquery.syntax.*.js"]
+	
+	js_files.each do |path|
+		$stderr.puts "Copying #{path}..."
+		
+		output_path = File.join(arguments[:destination], File.basename(path))
+		
+		IO.popen(JSMIN_EXEC, "r+") do |min|
+			min.write(File.read(path))
+			min.close_write
+			
+			File.open(output_path, "w") do |fp|
+				fp.write(LICENSE)
+				fp.write(min.read)
+			end
+		end
+	end
+	
+	css_files = Dir[File.dirname(__FILE__) + "/jquery.syntax.*.css"]
+	
+	css_files.each do |path|
+		$stderr.puts "Copying #{path}..."
+		
+		output_path = File.join(arguments[:destination], File.basename(path))
+		
+		FileUtils.cp(path, output_path)
+	end
+end
+
 task :default => :build_combined
