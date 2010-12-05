@@ -698,7 +698,7 @@ Syntax.highlight = function (elements, options, callback) {
 		var endOfSecondLine = text.indexOf("\n", text.indexOf("\n") + 1);
 		
 		if (match && match.index < endOfSecondLine) {
-			options.brush = match[1];
+			options.brush = options.brush || match[1];
 			var modeline = match[2];
 			
 			var mode = /([a-z\-]+)\:(.*?)\;/gi;
