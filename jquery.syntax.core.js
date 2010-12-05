@@ -713,11 +713,10 @@ Syntax.highlight = function (elements, options, callback) {
 		}
 		
 		var brushName = (options.brush || 'plain').toLowerCase();
+		
 		brushName = Syntax.aliases[brushName] || brushName;
 		
 		Syntax.brushes.get(brushName, function(brush) {
-			container.addClass('syntax');
-			
 			if (options.tabWidth) {
 				// Calculate the tab expansion and offsets
 				replacement = Syntax.convertTabsToSpaces(text, options.tabWidth);
