@@ -5,10 +5,10 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.register('javascript', function(brush) {
-	var keywords = ["break", "case", "catch", "continue", "default", "delete", "do", "else", "for", "if", "in", "instanceof", "new", "return", "super", "switch", "throw", "true", "try", "typeof", "var", "while", "with", "prototype"];
+	var keywords = ["function", "break", "case", "catch", "continue", "default", "delete", "do", "else", "for", "if", "in", "instanceof", "new", "return", "super", "switch", "throw", "true", "try", "typeof", "var", "while", "with", "prototype"];
 	
 	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">"];
-	var values = ["function", "this", "true", "false", "null"];
+	var values = ["this", "true", "false", "null"];
 	
 	brush.push(values, {klass: 'constant'});
 	brush.push(keywords, {klass: 'keyword'});
