@@ -250,7 +250,9 @@ jQuery.syntax = function (options, callback) {
 	options.blockLayout = options.blockLayout || 'list';
 	options.inlineLayout = options.inlineLayout || 'inline';
 	
-	options.replace = true;
+	// Allow the user to specify callbacks without replacement.
+	if (typeof options.replace == "undefined")
+		options.replace = true;
 	
 	jQuery(options.blockSelector, context).each(function () {
 		jQuery(this).syntax(jQuery.extend({}, options, {
