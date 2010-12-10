@@ -59,6 +59,7 @@ release-3.0rc1
  - Support for several new languages (Kai, io)
  - Installation process (now the recommended process)
  - Enhanced support for themes
+ - Support for derived brushes
 
 release-2.2.2
  - Major Internet Exploder bugfix.

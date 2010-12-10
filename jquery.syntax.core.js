@@ -540,9 +540,16 @@ Syntax.Match.prototype.split = function(pattern) {
 };
 
 Syntax.Brush = function () {
+	// The primary class of this brush. Must be unique.
 	this.klass = null;
+	
+	// A sequential list of rules for extracting matches.
 	this.rules = [];
+	
+	// A list of all parents that this brush derives from.
 	this.parents = [];
+	
+	// A list of processes that may be run after extracting matches.
 	this.processes = {};
 };
 
@@ -570,6 +577,11 @@ Syntax.Brush.convertStringToTokenPattern = function (pattern, escape) {
 // Add a parent to the brush. This brush should be loaded as a dependency.
 Syntax.Brush.prototype.derives = function (name) {
 	this.parents.push(name);
+	this.rules.push({
+		apply: function(text, expr, offset) {
+			return Syntax.brushes[name].getMatches(text, offset);
+		}
+	});
 }
 
 // Return an array of all classes that the brush consists of.
@@ -614,6 +626,12 @@ Syntax.Brush.prototype.push = function () {
 Syntax.Brush.prototype.getMatchesForRule = function (text, expr, offset) {
 	var matches = [], match = null;
 	
+	// Short circuit (user defined) function:
+	if (typeof expr.apply != "undefined") {
+		return expr.apply(text, expr, offset);
+	}
+	
+	// Traditional regular expression pattern extraction:
 	while((match = expr.pattern.exec(text)) !== null) {
 		if (expr.matches) {
 			matches = matches.concat(expr.matches(match, expr));
@@ -634,13 +652,6 @@ Syntax.Brush.prototype.getMatchesForRule = function (text, expr, offset) {
 Syntax.Brush.prototype.getMatches = function(text, offset) {
 	var matches = [];
 	
-	// Process any extension rules.
-	for (var i = 0; i < this.parents.length; i += 1) {
-		var brush = Syntax.brushes[this.parents[i]];
-		matches = matches.concat(brush.getMatches(text, offset));
-	}
-	
-	// Process the rules for this brush.
 	for (var i = 0; i < this.rules.length; i += 1) {
 		matches = matches.concat(this.getMatchesForRule(text, this.rules[i], offset));
 	}

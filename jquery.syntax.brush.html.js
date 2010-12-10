@@ -11,8 +11,6 @@ Syntax.brushes.dependency('html', 'php-script');
 Syntax.brushes.dependency('html', 'ruby');
 
 Syntax.register('html', function(brush) {
-	brush.derives('xml');
-	
 	brush.push({
 		pattern: /<script.*?type\=.?text\/javascript.*?>((.|\n)*?)<\/script>/gmi,
 		matches: Syntax.extractMatches({brush: 'javascript'})
@@ -43,5 +41,16 @@ Syntax.register('html', function(brush) {
 		pattern: /<(\!DOCTYPE(.*?))>/g,
 		matches: Syntax.extractMatches({klass: 'doctype'})
 	});
+	
+	// Is this rule still relevant?
+	brush.push({
+		pattern: /(%[0-9a-f]{2})/gi,
+		klass: 'percent-escape',
+		only: ['html']
+	});
+	
+	// The position of this statement is important - it determines at what point the rules of the parent are processed.
+	// In this case, the rules for xml are processed after the rules for html.
+	brush.derives('xml');
 });
 
