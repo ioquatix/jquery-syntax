@@ -542,6 +542,7 @@ Syntax.Match.prototype.split = function(pattern) {
 Syntax.Brush = function () {
 	this.klass = null;
 	this.rules = [];
+	this.parents = [];
 	this.processes = {};
 };
 
@@ -564,6 +565,23 @@ Syntax.Brush.convertStringToTokenPattern = function (pattern, escape) {
 		pattern = RegExp.escape(pattern)
 	
 	return prefix + pattern + postfix;
+}
+
+// Add a parent to the brush. This brush should be loaded as a dependency.
+Syntax.Brush.prototype.derives = function (name) {
+	this.parents.push(name);
+}
+
+// Return an array of all classes that the brush consists of.
+// A derivied brush is its own klass + the klass of any and all parents.
+Syntax.Brush.prototype.allKlasses = function () {
+	var klasses = [this.klass];
+	
+	for (var i = 0; i < this.parents.length; i += 1) {
+		klasses = klasses.concat(Syntax.brushes[this.parents[i]].allKlasses());
+	}
+	
+	return klasses;
 }
 
 Syntax.Brush.prototype.push = function () {
@@ -616,6 +634,13 @@ Syntax.Brush.prototype.getMatchesForRule = function (text, expr, offset) {
 Syntax.Brush.prototype.getMatches = function(text, offset) {
 	var matches = [];
 	
+	// Process any extension rules.
+	for (var i = 0; i < this.parents.length; i += 1) {
+		var brush = Syntax.brushes[this.parents[i]];
+		matches = matches.concat(brush.getMatches(text, offset));
+	}
+	
+	// Process the rules for this brush.
 	for (var i = 0; i < this.rules.length; i += 1) {
 		matches = matches.concat(this.getMatchesForRule(text, this.rules[i], offset));
 	}
@@ -632,7 +657,7 @@ Syntax.Brush.prototype.buildTree = function(text, offset, matches) {
 	
 	matches = matches.concat(this.getMatches(text, offset));
 	
-	var top = new Syntax.Match(offset, text.length, {klass: this.klass, allow: '*', owner: this}, text);
+	var top = new Syntax.Match(offset, text.length, {klass: this.allKlasses().join(" "), allow: '*', owner: this}, text);
 
 	// This sort is absolutely key to the functioning of the tree insertion algorithm.
 	matches.sort(Syntax.Match.sort);
