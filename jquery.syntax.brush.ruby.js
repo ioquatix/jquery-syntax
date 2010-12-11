@@ -17,6 +17,12 @@ Syntax.register('ruby', function(brush) {
 	
 	brush.push(access, {klass: 'access'});
 	brush.push(values, {klass: 'constant'});
+
+	// Percent operator statements
+	brush.push({
+		pattern: /(\%[\S])(\{[\s\S]*?\})/g,
+		matches: Syntax.extractMatches({klass: 'function'}, {klass: 'constant'})
+	});
 	
 	brush.push({pattern: /(@+|\$)[\w]+/g, klass: 'variable'});
 	
