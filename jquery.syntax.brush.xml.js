@@ -7,12 +7,12 @@
 Syntax.register('xml', function(brush) {
 	// /[\s\S]/ means match anything... /./ doesn't match newlines
 	brush.push({
-		pattern: /<\/?((?:[\w]+:)?)([\w]+)[\s\S]*?>/g,
+		pattern: /<\/?((?:[\w_\-]+:)?)([\w_\-\.]+)[\s\S]*?>/g,
 		matches: Syntax.extractMatches({klass: 'namespace', allow: ['attribute']}, {klass: 'tag', allow: ['attribute']})
 	});
 	
 	brush.push({
-		pattern: /(\w+)=(".*?"|'.*?'|\S+)/g,
+		pattern: /([\w_\-\.]+)=(".*?"|'.*?'|\S+)/g,
 		matches: Syntax.extractMatches({klass: 'attribute'}, {klass: 'string'})
 	});
 	
