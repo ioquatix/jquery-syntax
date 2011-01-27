@@ -9,6 +9,7 @@
 require 'stringio'
 require 'fileutils'
 require 'tmpdir'
+require 'pathname'
 
 JSMIN_EXEC = File.dirname(__FILE__) + "/ext/jsmin.rb"
 CACHE_FILE = "jquery.syntax.cache.js"
@@ -50,12 +51,6 @@ task :update_aliases do
 	
 	puts "*** Written updated cache file #{CACHE_FILE} ***"
 	puts code.string
-end
-
-task :clean do
-	Dir.glob(File.join(File.dirname(__FILE__), "jquery.syntax.*.css")) do |path|
-		FileUtils.rm path, :verbose => true
-	end
 end
 
 class Theme
@@ -123,7 +118,7 @@ class Theme
 	end
 end
 
-task :generate_css, [:theme,:override,:output] => [:clean] do |task, arguments|
+task :generate_stylesheets, [:theme,:override,:output] do |task, arguments|
 	theme = arguments[:theme] || "base"
 	override = arguments[:override] || "master.sass"
 	
@@ -165,8 +160,10 @@ task :generate_css, [:theme,:override,:output] => [:clean] do |task, arguments|
 	
 	FileUtils.rm_rf(theme_tmp)
 	
-	Rake::Task[:update_aliases].reenable
-	Rake::Task[:update_aliases].invoke
+	Dir.chdir(output) do
+		Rake::Task[:update_aliases].reenable
+		Rake::Task[:update_aliases].invoke
+	end
 end
 
 # This builds a combined jquery.syntax.js and jquery.syntax.cache.js and minifies the result
@@ -189,7 +186,7 @@ end
 
 # Note... this is one way !
 task :compress_all => [:build_combined] do
-	files = Dir[File.dirname(__FILE__) + "/jquery.syntax.*.js"]
+	files = Dir["jquery.syntax.*.js"]
 	
 	files.each do |path|
 		IO.popen(JSMIN_EXEC, "r+") do |min|
@@ -205,13 +202,27 @@ task :compress_all => [:build_combined] do
 	end
 end
 
-task :install, [:destination] => [:build_combined] do |task, arguments|
-	js_files = Dir[File.dirname(__FILE__) + "/jquery.syntax.*.js"]
+task :install, [:config] do |task, arguments|
+	config_path = Pathname.new(arguments[:config] || "install.yaml")
+	config = YAML::load_file(config_path)
+	
+	destination = config_path.dirname + (config['destination'] || 'public')
+	destination.mkpath
+	
+	Rake::Task[:clean].invoke(arguments[:config])
+	
+	Rake::Task[:generate_stylesheets].invoke(
+		config['generate_stylesheets']['theme'], 
+		config['generate_stylesheets']['override'],
+		destination
+	)
+	
+	js_files = Dir[File.dirname(__FILE__) + "/source/jquery.syntax.*js"]
 	
 	js_files.each do |path|
 		$stderr.puts "Copying #{path}..."
 		
-		output_path = File.join(arguments[:destination], File.basename(path))
+		output_path = File.join(destination, File.basename(path))
 		
 		IO.popen(JSMIN_EXEC, "r+") do |min|
 			min.write(File.read(path))
@@ -224,14 +235,19 @@ task :install, [:destination] => [:build_combined] do |task, arguments|
 		end
 	end
 	
-	css_files = Dir[File.dirname(__FILE__) + "/jquery.syntax.*.css"]
+	Dir.chdir(destination) do
+		Rake::Task[:build_combined].invoke
+	end
+end
+
+task :clean, [:config] do |task, arguments|
+	config_path = Pathname.new(arguments[:config] || "install.yaml")
+	config = YAML::load_file(config_path)
 	
-	css_files.each do |path|
-		$stderr.puts "Copying #{path}..."
-		
-		output_path = File.join(arguments[:destination], File.basename(path))
-		
-		FileUtils.cp(path, output_path)
+	destination = config_path.dirname + (config['destination'] || 'public')
+	
+	Dir.glob(File.join(destination, "jquery.syntax.*")) do |path|
+		FileUtils.rm path, :verbose => true
 	end
 end
 

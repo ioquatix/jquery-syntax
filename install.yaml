@@ -1,0 +1,3 @@
+destination: "public"
+generate_stylesheets:
+    theme: "clean"
