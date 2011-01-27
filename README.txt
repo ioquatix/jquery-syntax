@@ -1,15 +1,14 @@
-*** jQuery.Syntax [release-2.2] ***
+*** jQuery.Syntax [release-3.0rc2] ***
 
 jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamically loads external dependencies (JavaScript & CSS) when required. It uses jQuery to make it cross-browser compatible and to simplify integration.
 
 You will need to install the following dependencies to use jQuery.Syntax :
 	$ sudo gem install rake haml
 
-To generate CSS for a particular theme (e.g. clean) :
-	$ rake generate_css[clean]
+To install jQuery.Syntax into the standard 'public' directory
+	$ rake install
 
-To install jQuery.Syntax into a directory (e.g. _static/jquery-syntax) :
-	$ rake install[_static/jquery-syntax]
+This will create a new sub-directory called 'public' containing all the appropriate stylesheets and javascript. To customise the install process, edit "install.yaml".
 
 Once installed, jQuery.Syntax depends on jQuery 1.4+.
 
@@ -53,6 +52,11 @@ If you modify this code, you must include these "Additional permissions" in your
 of the code.
 
 *** Change Log ***
+
+release-3.0rc2
+ - Installation now staged directly into destination directory.
+ - Installation now supports configuration files.
+ - Minor fixes to brushes.
 
 release-3.0rc1
  - Support for marked up content
