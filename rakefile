@@ -52,7 +52,7 @@ task :update_aliases do
 	puts code.string
 end
 
-task :clean_css do
+task :clean do
 	Dir.glob(File.join(File.dirname(__FILE__), "jquery.syntax.*.css")) do |path|
 		FileUtils.rm path, :verbose => true
 	end
@@ -123,7 +123,7 @@ class Theme
 	end
 end
 
-task :generate_css, [:theme,:override,:output] => [:clean_css] do |task, arguments|
+task :generate_css, [:theme,:override,:output] => [:clean] do |task, arguments|
 	theme = arguments[:theme] || "base"
 	override = arguments[:override] || "master.sass"
 	
