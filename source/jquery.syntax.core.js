@@ -224,7 +224,7 @@ Syntax.lib.cppStyleComment = {pattern: /\/\/.*$/gm, klass: 'comment', allow: ['h
 Syntax.lib.perlStyleComment = {pattern: /#.*$/gm, klass: 'comment', allow: ['href']};
 
 Syntax.lib.cStyleFunction = {pattern: /([a-z_][a-z0-9_]*)\s*\(/gi, matches: Syntax.extractMatches({klass: 'function'})};
-Syntax.lib.camelCaseType = {pattern: /\b_*[A-Z_][\w]*\b/g, klass: 'type'};
+Syntax.lib.camelCaseType = {pattern: /\b_*[A-Z][\w]*\b/g, klass: 'type'};
 
 Syntax.lib.xmlComment = {pattern: /(&lt;|<)!--[\s\S]*?--(&gt;|>)/gm, klass: 'comment'};
 Syntax.lib.webLink = {pattern: /\w+:\/\/[\w\-.\/?%&=@:;#]*/g, klass: 'href'};
