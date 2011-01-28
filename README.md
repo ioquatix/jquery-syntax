@@ -14,12 +14,12 @@ To customise the install process, including destination directory and theme, edi
 
 jQuery.Syntax depends on jQuery 1.4.1+.
 
-For downloads, documentation, compatibility, please visit http://www.oriontransfer.co.nz/software/jquery-syntax/
+For downloads, documentation, compatibility, please visit <http://www.oriontransfer.co.nz/software/jquery-syntax/>
 
 There are several plugins available (source code - for stable releases see the main project page above):
 
- - DokuWiki: http://github.com/ioquatix/jquery-syntax-dokuwiki
- - WordPress: http://github.com/ioquatix/jquery-syntax-wordpress
+ - DokuWiki: <http://github.com/ioquatix/jquery-syntax-dokuwiki>
+ - WordPress: <http://github.com/ioquatix/jquery-syntax-wordpress>
 
 For licensing details, please see the included LICENSE.txt.
 
@@ -28,7 +28,7 @@ For licensing details, please see the included LICENSE.txt.
 The "jQuery.Syntax" project is licensed under the GNU AGPLv3.
 Copyright 2010 Samuel Williams. All rights reserved.
 
-For more information, please see http://www.oriontransfer.co.nz/software/jquery-syntax
+For more information, please see <http://www.oriontransfer.co.nz/software/jquery-syntax>
 
 This program is free software: you can redistribute it and/or modify it under the terms
 of the GNU Affero General Public License as published by the Free Software Foundation,
@@ -100,9 +100,16 @@ of the code.
  - Added support for YAML.
  - Fixed a bug in the bisection algorithm.
  - Added support for highlighting inline code tags.
- - Added shorthand notation <code class="syntax html"> (vs <code class="syntax brush-html">).
-   - However, this only works in this exact case where class="syntax {language}"
+ - Added shorthand notation
  - Improved simple function to improve consistency.
+
+Shorthand notation depends on the classes being in a specific order, i.e. <tt>"syntax {language}"</tt>. e.g.
+
+	<code class="syntax html">
+
+Previously, this would have been written as (and is still acceptable):
+
+	<code class="syntax brush-html">
 
 ### release-1.6 ###
  - Fixed a compatibility issue with jQuery 1.4.2.
