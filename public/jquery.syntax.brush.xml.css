@@ -1,0 +1,14 @@
+.syntax .xml .tag {
+  color: blue;
+  font-weight: bold; }
+.syntax .xml .namespace {
+  color: #0000cc; }
+.syntax .xml .attribute {
+  color: #0000cc; }
+.syntax .xml .instruction {
+  color: #553322;
+  font-style: italic; }
+.syntax .xml .entity, .syntax .xml .percent-escape {
+  color: #666666;
+  background-color: #dddddd;
+  border-radius: 0.5em; }
