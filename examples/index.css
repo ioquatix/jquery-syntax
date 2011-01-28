@@ -1,4 +1,7 @@
 body {
+	font-size: 80%;
+	font-family: sans-serif;
+	padding: 1em 3em 1em;
 }
 
 div.title {
