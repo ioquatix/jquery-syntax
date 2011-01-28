@@ -12,5 +12,13 @@ Syntax.register('diff', function(brush) {
 	
 	brush.push({pattern: /^\+[^\+]{1}.*$/gm, klass: 'insert'});
 	brush.push({pattern: /^\-[^\-]{1}.*$/gm, klass: 'remove'});
+	
+	brush.postprocess = function (options, html, container) {
+		$('.insert', html).closest('.source').addClass('insert-line');
+		$('.remove', html).closest('.source').addClass('remove-line');
+		$('.offset', html).closest('.source').addClass('offset-line');
+		
+		return html;
+	};
 });
 
