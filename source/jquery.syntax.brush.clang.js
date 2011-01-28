@@ -43,7 +43,7 @@ Syntax.register('clang', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /-\s*(\(.+?\))?\s*(\w+)\s*\{/g,
+		pattern: /-\s*(\([^\)]+?\))?\s*(\w+)\s*\{/g,
 		matches: Syntax.extractMatches({index: 2, klass: 'function'})
 	});
 	
