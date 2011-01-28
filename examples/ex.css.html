@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
+
+		<script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+			$(function() {
+				jQuery.syntax();
+			});
+		</script>
+
+	</head>
+	<body>
+		<h1>Syntax: CSS</h1>
+		
+		<h2>Special Example</h2>
+		
+		<p>This example extracts definitions and creates example elements on the right hand side.</p>
+		
+		<pre class="syntax brush-css">
+p {
+	background-color: #ccc;
+	border: 1px solid black;
+}
+
+/* The way this information is extracted isn't that great, but as long as the CSS is kept simple, it is fine for demonstration purposes */
+
+h1 {
+	color: #cfcfcf;
+	background-color: red;
+	border: 1px solid green;
+	
+	padding: 10px;
+}
+
+h2 {
+	color: PaleGoldenRod;
+	text-shadow: 0.1em 0.1em 5px #333;
+	
+	border-color:#ff0000 #0000ff;
+}
+		</pre>
+	</body>
+</html>

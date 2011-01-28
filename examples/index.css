@@ -1,0 +1,15 @@
+body {
+}
+
+div.title {
+	text-align: center;
+}
+
+h1 {
+	background-color: #eee;
+	border-bottom: 2px solid black;
+	border-top: 2px solid black;
+	padding: 10px;
+	
+	text-align: center;
+}

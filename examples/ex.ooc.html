@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
+
+		<script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+			$(function() {
+				jQuery.syntax();
+			});
+		</script>
+	</head>
+	<body>
+		<h1>Syntax: OOC</h1>
+		
+		<pre class="syntax brush-ooc">
+include stdint, stdlib, memory, ./myheader // C includes, &quot;./&quot; means relative
+use gtk, yajit // .use files define include paths, libraries, sourcepath extensions
+import rock/middle/[FunctionCall, VariableAccess, Expression], gtk/Button // import other ooc files
+
+Representable: interface {
+    toString: func -&gt; String
+}
+
+String: cover from Char* implements Representable {
+    length: extern(strlen) func -&gt; Int
+    toString: func -&gt; String { this } // implicit return
+}
+
+/**
+ * Dereference is actually a node used in rock (ooc compiler in ooc)
+ * You generate html docs with rock+sonofaj+sphinx, see http://docs.ooc-lang.org
+ * @author nddrylliog
+ */
+Dereference: class extends Expression implements Representable {
+
+    expr: Expression
+    count := 0
+
+    /* ~ is a suffix, =expr is an Assign-arg, .token is a Member-arg */
+    init: func ~addressOf (=expr, .token) {
+        super(token)
+    }
+
+    accept: func (visitor: Visitor) {
+        visitor visitDereference(this)
+    }
+
+    getType: func -&gt; Type { expr getType() ? expr getType() dereference() : null }
+
+    toString: func -&gt; String {
+        return expr toString() + &quot;@&quot;
+    }
+
+    /**
+     * @return Responses OK if the node is resolved now, Responses LOOP otherwise
+     */
+    resolve: func (trail: Trail, res: Resolver) -&gt; Response {
+
+        trail push(this)
+        {
+            response := expr resolve(trail, res)
+            if(!response ok()) {
+                trail pop(this)
+                return response
+            }
+        }
+        trail pop(this)
+
+        return Responses OK
+
+    }
+
+    replace: func (oldie, kiddo: Node) -&gt; Bool {
+        // here the match is used implicitly for the returne xception
+        match oldie {
+            case expr =&gt; expr = kiddo; true
+            case      =&gt; false
+        }
+    }
+
+}
+
+pointerFiddling: func (p: Int*) -&gt; Float* {
+    printf(&quot;%d, %d, %d\n&quot;, p@, (p+1)@, (p+2)@)
+    // qualifiers are okay in decl-assigns, casting is done with &#x27;as&#x27;
+    i := static const 42 as Float
+    return i&amp;
+}
+
+reference: func (i: Int@) {
+    i = 4
+}
+
+main: func {
+    Dereference new(expr, token)
+    a := 3
+    reference(a&amp;)
+    &quot;a = %d&quot; format(a) println()
+}
+
+List: class &lt;T&gt; extends Enumerable&lt;T&gt; {
+
+    data: T*
+
+    get: func (i: Int) -&gt; T {
+        data[i]
+    }
+
+}
+
+&quot;Bye world!&quot; println()
+		</pre>
+
+	</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
+
+		<script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" language="JavaScript">
+		//<!--
+			$(function() {
+				// This will display the current page's HTML, in the current page.
+				// Recursion will one day blow my mind beyond repair.
+				$('#self').text($('html').html());
+				
+				jQuery.syntax();
+			})
+		//-->
+		</script>
+		
+		<style type="text/css" media="screen">
+			/* Please note the CSS styled text - embedded in HTML */
+			.floyd {
+				is-any-one-out-there: "?";
+				padding: 10px;
+			}
+		</style>
+ 
+	</head>
+	<body>
+		<h1>Syntax: HTML / XML</h1>
+		
+		<h2>HTML Example</h2>
+		
+		<pre id="self" class="syntax brush-html"></pre>
+		
+		<div style="display: none">
+			You can't see me...... <a href="http://www.google.com/search?q=special+xml+tags+%22%3C%3F%22+%22%3C!%22">or maybe you can?</a>
+		</div>
+		
+		<p>Here is another example of using a mode-line. The mode-line must be on line 1 or 2 for it to be recognized:</p>
+		
+		<pre class="syntax">
+&lt;!DOCTYPE html&gt;
+&lt;!--*- mode: html; tab-width: 4; -*--&gt;
+
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+	&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;
+	&lt;title&gt;My Website&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;p&gt;Hello &lt;?= &quot;World&quot; ?&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+	<p>Here is an example of embedded instructions:</p>
+	
+	<pre class="syntax brush-html">&lt;!DOCTYPE html&gt;
+
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+	&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;
+	&lt;title&gt;My Website&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;p&gt;Hello &lt;?= h(&quot;World&quot;) ?&gt;
+	
+	&lt;p&gt;Hello &lt;%= h(&quot;ASP...!? WTF???&quot;) %&gt;
+	
+	&lt;?php
+		// This will print Hello World!
+		echo &quot;Hello World!&quot;;
+		setEndOfWorld(&quot;tomorrow&quot;);
+	?&gt;
+	
+	
+	&lt;?r if request[:bob] ?&gt;
+		&lt;p&gt;Hello Bob&lt;/p&gt;
+	&lt;?r end ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+	</pre>
+	
+	<pre class="syntax brush-apache">
+&lt;VirtualHost *&gt;
+	# ... standard configuration ...
+	# ServerName, DocumentRoot, etc
+
+	# Root DAV which requires authentication to access:
+	&lt;Location &quot;/MyFiles/&quot;&gt;
+		DAV on
+		AuthType Digest
+		AuthName &quot;Digest Realm&quot;
+		AuthUserFile /etc/apache2/users/myfiles.htdigest
+		Require user me
+
+		&lt;LimitExcept GET HEAD OPTIONS REPORT PROPFIND&gt;
+			Require user me
+		&lt;/LimitExcept&gt;
+	&lt;/Location&gt;
+
+	# Specific folder which can be accessed anonymously (read-only)
+	&lt;Location &quot;/MyFiles/Public/&quot;&gt;
+		&lt;Limit GET HEAD OPTIONS REPORT PROPFIND&gt;
+			Allow from all
+			Satisfy any
+		&lt;/Limit&gt;
+	&lt;/Location&gt;
+
+	# Specific folder which can be accessed anonymously (read/write)
+	&lt;Location &quot;/MyFiles/DropBox/&quot;&gt;
+		Allow from all
+		Satisfy any
+	&lt;/Location&gt;
+&lt;/VirtualHost&gt;
+	</pre>
+	</body>
+</html>

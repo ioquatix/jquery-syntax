@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
+
+		<script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
+	
+		<script type="text/javascript">
+			$(function() {
+				jQuery.syntax();
+			});
+		</script>
+
+	</head>
+	<body>
+		<h1>Syntax: AppleScript</h1>
+		
+		<h2>Hello World &amp; Mode-line Support</h2>
+		
+		<p>The following example does not have a class specifying the brush to use. This is extracted from the mode-line. This line also specifies other options, in this case the tab-width.</p>
+		
+		<pre class="syntax">(* -*- mode: applescript; tab-width: 4; -*-
+Copyright (C) 2009 Orion Transfer Ltd. All Rights Reserved. See http://www.oriontransfer.co.nz/ for more information.
+Drop files on top of this application to produce a zip archive on the desktop containing compressed JPEGs at a maximum size of 800px.
+*)
+
+on open some_items
+	-- If we drop a single folder onto the icon, we pull the name from the folder name
+	set target_name to &quot;Images&quot;
+
+	if (count of some_items) = 1 then
+		set first_item to get item 1 of some_items
+
+		tell application &quot;System Events&quot;
+			set target_item to disk item (first_item as string)
+
+			if class of target_item is folder then
+				set target_name to name of first_item
+			end if
+		end tell
+	end if
+
+	display dialog &quot;Name of Archive&quot; default answer target_name buttons {&quot;OK&quot;} default button 1
+	set target_name to text returned of the result
+
+	tell application &quot;Finder&quot;
+		set desktop_path to folder &quot;Desktop&quot; of home
+
+		make new folder at desktop_path with properties {name:target_name}
+
+		set destination to (folder target_name of desktop_path) as alias
+		set archive_path to (POSIX path of (desktop_path as text)) &amp; target_name &amp; &quot;.zip&quot;
+	end tell
+
+	repeat with this_item in some_items
+		tell application &quot;System Events&quot;
+			set source_item to disk item (this_item as string)
+		end tell
+
+		process_path(source_item, destination)
+	end repeat
+
+	set archive_command to &quot;/usr/bin/ditto -c -k -rsrc &quot; &amp; quoted form of (POSIX path of destination) &amp; &quot; &quot; &amp; quoted form of archive_path
+
+	do shell script archive_command
+
+	tell application &quot;Finder&quot;
+		activate
+
+		delete folder target_name of desktop_path
+
+		reveal file (target_name &amp; &quot;.zip&quot;) of desktop_path
+	end tell
+end open
+
+to process_path(source, destination)
+	-- Figure out if it is a file or folder, and recurse appropriately
+	tell application &quot;System Events&quot;
+		set is_folder to class of source is folder
+		if is_folder then
+			set sub_items to items in source
+		end if
+	end tell
+
+	if is_folder then
+		repeat with this_item in sub_items
+			process_path(this_item, destination)
+		end repeat
+	else
+		tell application &quot;System Events&quot;
+			set source_alias to (path of source) as alias
+		end tell
+
+		resize_and_save(source_alias, destination)
+	end if
+end process_path
+
+to resize_and_save(image_alias, destination_alias)
+	tell application &quot;Image Events&quot;
+		launch
+
+		set opened_image to open image_alias
+
+		if class of opened_image is image and not dimensions of opened_image = {} then
+			set dim to dimensions of opened_image
+
+			-- We only resize if the dimension is bigger than 800
+			if (first item of dim &gt; 800 or second item of dim &gt; 800) then
+				scale opened_image to size 800
+			end if
+
+			save opened_image in destination_alias as JPEG with compression level medium
+
+			close opened_image
+		end if
+	end tell
+end resize_and_save
+</pre>
+	</body>
+</html>

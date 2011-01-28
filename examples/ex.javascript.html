@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
+
+		<script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+			$(function() {
+				jQuery.syntax();
+			});
+		</script>
+	</head>
+	<body>
+		<h1>Syntax: JavaScript</h1>
+		
+		<h2>(Old!) jQuery.Syntax Source Code</h2>
+		
+		<pre class="syntax brush-javascript">/* 
+	This file is part of the &quot;jQuery.Syntax&quot; project, and is licensed under the GNU AGPLv3.
+
+	Copyright 2010 Samuel Williams. All rights reserved.
+
+	For more information, please see http://www.oriontransfer.co.nz/software/jquery-syntax
+
+	This program is free software: you can redistribute it and/or modify it under the terms
+	of the GNU Affero General Public License as published by the Free Software Foundation,
+	either version 3 of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+	without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU Affero General Public License along with this
+	program. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+*/
+
+// A kludgy hack... why aren&#x27;t these functions available by default..!?
+if (!RegExp.prototype.indexOf) {
+	RegExp.indexOf = function (match, index) {
+		return match[0].indexOf(match[index]) + match.index;
+	};
+}
+
+if (!RegExp.prototype.escape) {
+	RegExp.escape = function (pattern) {
+		return pattern.replace(/[\-\[\]{}()*+?.\\\^$|,#\s]/g, &quot;\\$&amp;&quot;);
+	};
+}
+
+// ECMAScript 5! Why wasn&#x27;t this done before!?
+if (!Function.prototype.bind) {
+	Function.prototype.bind = function(target) {
+		var args = [], fn = this;
+
+		for (var n = 1; n &lt; arguments.length; n += 1) {
+			args.push(arguments[n]);
+		}
+
+		return function () { return fn.apply(target, args); };
+	};
+}
+
+// The jQuery version of this function is broken on IE6.
+// This version fixes it... for pre elements only. Other elements
+// in IE will have the whitespace manipulated.
+jQuery.getText = function ( elems ) {
+	var ret = &quot;&quot;, elem;
+
+	for ( var i = 0; elems[i]; i++ ) {
+		elem = elems[i];
+
+		// Get the text from text nodes and CDATA nodes
+		if ( elem.nodeType === 3 || elem.nodeType === 4 ) {
+			ret += elem.nodeValue;
+
+		// Use textContent || innerText for elements
+		} else if ( elem.nodeType === 1 ) {
+			if ( typeof(elem.textContent) === &#x27;string&#x27; )
+				ret += elem.textContent;
+			else if ( typeof(elem.innerText) === &#x27;string&#x27; )
+				ret += elem.innerText;
+			else
+				ret += getText( elem.childNodes );
+
+		// Traverse everything else, except comment nodes
+		} else if ( elem.nodeType !== 8 ) {
+			ret += getText( elem.childNodes );
+		}
+	}
+
+	return ret;
+}
+
+function ResourceLoader (loader) {
+	this.dependencies = {};
+	this.loading = {};
+	this.loader = loader;
+}
+
+ResourceLoader.prototype._finish = function (name) {
+	var deps = this.dependencies[name];
+
+	if (deps) {
+		// I&#x27;m not sure if this makes me want to cry... or laugh... or kill!?
+		var chain = this._loaded.bind(this, name);
+
+		for (var i = 0; i &lt; deps.length; i += 1) {
+			chain = this.get.bind(this, deps[i], chain);
+		}
+
+		chain();
+	} else {
+		this._loaded(name);
+	}
+};
+
+ResourceLoader.prototype._loaded = function (name) {
+	// When the script has been succesfully loaded, we expect the script
+	// to register with this loader (i.e. this[name]).
+	var resource = this[name], loading = this.loading[name];
+
+	// Clear the loading list
+	this.loading[name] = null;
+
+	if (!resource) {
+		alert(&quot;Could not load resource named &quot;, name);
+	} else {
+		for (var i = 0; i &lt; loading.length; i += 1) {
+			loading[i](resource);
+		}
+	}
+};
+
+ResourceLoader.prototype.dependency = function(current, next) {
+	 // if it is already loaded, it isn&#x27;t a dependency
+	if (this[next]) {
+		return;
+	}
+
+	if (this.dependencies[current]) {
+		this.dependencies[current].push(next);
+	} else {
+		this.dependencies[current] = [next];
+	}
+
+	// Possible preload step... need to test!
+	// this.get(next, bindTargetArguments(this, this._finish, next))
+};
+
+ResourceLoader.prototype.get = function (name, callback) {
+	if (this[name]) {
+		callback(this[name]);
+	} else if (this.loading[name]) {
+		this.loading[name].push(callback);
+	} else {
+		this.loading[name] = [callback];
+
+		this.loader(name, this._finish.bind(this, name));
+	}
+};
+
+var Syntax = {
+	root: &#x27;./&#x27;, aliases: {}, styles: {}, lib: {},
+
+	brushes: new ResourceLoader(function(name, callback) {
+		name = Syntax.aliases[name] || name;
+
+		Syntax.getResource(&#x27;jquery.syntax.brush&#x27;, name, callback);
+	}),
+
+	layouts: new ResourceLoader(function(name, callback) {
+		Syntax.getResource(&#x27;jquery.syntax.layout&#x27;, name, callback);
+	}),
+
+	getStyles: function (path) {
+		var link = $(&#x27;&lt;link&gt;&#x27;);
+		$(&quot;head&quot;).append(link);
+
+		link.attr({
+			rel: &quot;stylesheet&quot;,
+			type: &quot;text/css&quot;,
+			href: path + &quot;?&quot; + (new Date()).toString()
+		});
+	},
+
+	getScript: function (path, callback) {
+		jQuery.ajax({
+			async: &#x27;true&#x27;,
+			type: &quot;GET&quot;,
+			url: path,
+			success: function() {
+				callback();
+			},
+			dataType: &quot;script&quot;,
+			cache: false
+		});
+	},
+
+	getResource: function (prefix, name, callback) {
+		var basename = prefix + &quot;.&quot; + name;
+
+		if (this.styles[basename]) {
+			this.getStyles(this.root + basename + &#x27;.css&#x27;);
+		}
+
+		Syntax.getScript(this.root + basename + &#x27;.js&#x27;, callback);
+	},
+
+	register: function (name, callback) {
+		var brush = Syntax.brushes[name] = new Syntax.Brush();
+		brush.klass = name;
+
+		callback(brush);
+	},
+
+	alias: function (name, aliases) {
+		for (var i = 0; i &lt; aliases.length; i += 1) {
+			Syntax.aliases[aliases[i]] = name;
+		}
+	},
+
+	getMatches: function (text, expr, offset) {
+		var matches = [], match = null;
+
+		while((match = expr.pattern.exec(text)) !== null) {
+			if (expr.matches) {
+				matches = matches.concat(expr.matches(match, expr));
+			} else {
+				matches.push(new Syntax.Match(match.index, match[0].length, expr, match[0]));
+			}
+		}
+
+		if (offset &amp;&amp; offset &gt; 0) {
+			for (var i = 0; i &lt; matches.length; i += 1) {
+				matches[i].shift(offset);
+			}
+		}
+
+		return matches;
+	},
+
+	convertTabsToSpaces: function (text, tabSize) {
+		var space = [], pattern = /\r|\n|\t/g, tabOffset = 0;
+
+		for (var i = &quot;&quot;; i.length &lt;= tabSize; i = i + &quot; &quot;) {
+			space.push(i);
+		}
+
+		text = text.replace(pattern, function(match) {
+			var offset = arguments[arguments.length - 2];
+			if (match === &quot;\r&quot; || match === &quot;\n&quot;) {
+				tabOffset = -(offset + 1);
+				return match;
+			} else {
+				var width = tabSize - ((tabOffset + offset) % tabSize);
+				tabOffset += width - 1;
+				return space[width];
+			}
+		});
+
+		return text;
+	},
+
+	modeLineOptions: {
+		&#x27;tab-width&#x27;: function(name, value, options) { options.tabWidth = parseInt(value, 10); }
+	}
+};
+
+(function ($) {
+	jQuery.fn.syntax = function (options, callback) {
+		if (typeof(options) === &#x27;function&#x27;) {
+			callback = options;
+			options = {};
+		}
+
+		options.layout = options.layout || &#x27;plain&#x27;;
+
+		if (typeof(options.tabWidth) === &#x27;undefined&#x27;) {
+			options.tabWidth = 4;
+		}
+
+		this.each(function () {
+			var container = $(this);
+
+			var text = container.text();
+
+			var match = text.match(/-\*- mode: (.+?);(.*?)-\*-/i);
+			var endOfSecondLine = text.indexOf(&quot;\n&quot;, text.indexOf(&quot;\n&quot;) + 1);
+
+			if (match &amp;&amp; match.index &lt; endOfSecondLine) {
+				options.brush = match[1].toLowerCase();
+				var modeline = match[2];
+
+				var mode = /([a-z\-]+)\:(.*?)\;/gi;
+
+				while((match = mode.exec(modeline)) !== null) {
+					var setter = Syntax.modeLineOptions[match[1]];
+
+					if (setter) {
+						setter(match[1], match[2], options);
+					}
+				}
+			}
+
+			var brushName = options.brush || &#x27;plain&#x27;;
+
+			Syntax.brushes.get(brushName, function(brush) {
+				container.addClass(&#x27;syntax&#x27;);
+
+				if (options.tabWidth) {
+					text = Syntax.convertTabsToSpaces(text, options.tabWidth);
+				}
+
+				// IE requires .clone() - all other browsers I tested were fine without it.
+				var html = brush.process(text);
+
+				Syntax.layouts.get(options.layout, function(layout) {
+					html = layout(options, html, container);
+
+					if (callback) {
+						html = callback(options, html, container) || html;
+					}
+
+					if (html &amp;&amp; options.replace === true) {
+						container.replaceWith(html);
+					}
+				});
+			});
+		});
+	};
+
+	jQuery.syntax = function (options, callback) {
+		// Some useful defaults
+		var selector = (options.selector || &#x27;pre.syntax&#x27;);
+
+		if (typeof(options.replace) === &#x27;undefined&#x27;) {
+			options.replace = true;
+		}
+
+		if (typeof(options.layout) === &#x27;undefined&#x27;){
+			options.layout = &#x27;table&#x27;;
+		}
+
+		$(selector).each(function(){
+			var match = this.className.match(/brush-([\w\-]+)/);
+			var brush;
+
+			if (match) {
+				brush = match[1];
+			}
+
+			$(this).syntax(jQuery.extend({brush: brush}, options), callback);
+		});
+	};
+}(jQuery));
+
+Syntax.layouts.plain = function (options, html, container) {
+	return html;
+};
+
+Syntax.extractMatches = function() {
+	var rules = arguments;
+
+	return function(match) {
+		var matches = [];
+
+		for (var i = 0; i &lt; rules.length; i += 1) {
+			var rule = rules[i];
+			var index = rule.index || (i+1);
+
+			if (match[index].length &gt; 0) {
+				matches.push(new Syntax.Match(RegExp.indexOf(match, index), match[index].length, rule, match[index]));
+			}
+		}
+
+		return matches;
+	};
+};
+
+Syntax.parseScriptFunction = function(brush, index) {
+	return function(match) {
+		return Syntax.brushes[brush].buildTree(match[index], RegExp.indexOf(match, index));
+	};
+};
+
+Syntax.lib.cStyleComment = {pattern: /\/\*[\s\S]*?\*\//gm, klass: &#x27;comment&#x27;, allow: [&#x27;href&#x27;]};
+Syntax.lib.cppStyleComment = {pattern: /\/\/.*$/gm, klass: &#x27;comment&#x27;, allow: [&#x27;href&#x27;]};
+Syntax.lib.perlStyleComment = {pattern: /#.*$/gm, klass: &#x27;comment&#x27;, allow: [&#x27;href&#x27;]};
+
+Syntax.lib.cStyleFunction = {pattern: /([a-z_][a-z0-9_]+)\s*\(/gi, matches: Syntax.extractMatches({klass: &#x27;function&#x27;})};
+
+Syntax.lib.xmlComment = {pattern: /(&amp;lt;|&lt;)!--[\s\S]*?--(&amp;gt;|&gt;)/gm, klass: &#x27;comment&#x27;};
+Syntax.lib.webLink = {pattern: /\w+:\/\/[\w\-.\/?%&amp;=@:;#]*/g, klass: &#x27;href&#x27;};
+
+Syntax.lib.doubleQuotedString = {pattern: /&quot;([^\\&quot;\n]|\\.)*&quot;/g, klass: &#x27;string&#x27;};
+Syntax.lib.singleQuotedString = {pattern: /&#x27;([^\\&#x27;\n]|\\.)*&#x27;/g, klass: &#x27;string&#x27;};
+Syntax.lib.multiLineDoubleQuotedString = {pattern: /&quot;([^\\&quot;]|\\.)*&quot;/g, klass: &#x27;string&#x27;};
+Syntax.lib.multiLineSingleQuotedString = {pattern: /&#x27;([^\\&#x27;]|\\.)*&#x27;/g, klass: &#x27;string&#x27;};
+Syntax.lib.stringEscape = {pattern: /\\./g, klass: &#x27;escape&#x27;, only: [&#x27;string&#x27;]};
+
+Syntax.Match = function (offset, length, expr, value) {
+	this.offset = offset;
+	this.endOffset = offset + length;
+	this.length = length;
+	this.expression = expr;
+	this.value = value;
+	this.children = [];
+	this.parent = null;
+
+	// When a node is bisected, this points to the next part.
+	this.next = null;
+};
+
+Syntax.Match.prototype.shift = function (x) {
+	this.offset += x;
+	this.endOffset += x;
+};
+
+Syntax.Match.sort = function (a,b) {
+	return (a.offset - b.offset) || (b.length - a.length);
+};
+
+Syntax.Match.prototype.contains = function (match) {
+	return (match.offset &gt;= this.offset) &amp;&amp; (match.endOffset &lt;= this.endOffset);
+};
+
+Syntax.Match.defaultReduceCallback = function (node, container) {
+	// We avoid using jQuery in this function since it is incredibly performance sensitive.
+	// Using jQuery jQuery.fn.append() can reduce performance by as much as 1/3rd.
+	if (typeof(node) === &#x27;string&#x27;) {
+		// &amp;nbsp; characters
+		node = node.replace(/[ ]{2}/g, &quot;\u00a0\u00a0&quot;);
+
+		node = document.createTextNode(node);
+	} else {
+		node = node[0];
+	}
+
+	container[0].appendChild(node);
+};
+
+Syntax.Match.prototype.reduce = function (append) {
+	var start = this.offset;
+	var container = $(&#x27;&lt;span&gt;&lt;/span&gt;&#x27;);
+
+	append = append || Syntax.Match.defaultReduceCallback;
+
+	if (this.expression &amp;&amp; this.expression.klass) {
+		container.addClass(this.expression.klass);
+	}
+
+	for (var i = 0; i &lt; this.children.length; i += 1) {
+		var child = this.children[i], end = child.offset;
+		var text = this.value.substr(start - this.offset, end - start);
+
+		append(text, container);
+		append(child.reduce(append), container);
+
+		start = child.endOffset;
+	}
+
+	if (start === this.offset) {
+		append(this.value, container);
+	} else if (start &lt; this.endOffset) {
+		append(this.value.substr(start - this.offset, this.endOffset - start), container);
+	} else if (start &gt; this.endOffset) {
+		alert(&quot;Syntax Warning: Start position &quot; + start + &quot; exceeds end of value &quot; + this.endOffset);
+	}
+
+	return container;
+};
+
+Syntax.Match.prototype.canContain = function (match) {
+	if (this.complete || typeof(this.expression.allow) === &#x27;undefined&#x27;) {
+		return false;
+	}
+
+	// match.expression.only will be checked on insertion using this.canHaveChild(match)
+	if (match.expression.only) {
+		return true;
+	}
+
+	// false if {disallow: [..., klass, ...]}
+	if (jQuery.isArray(this.expression.disallow) &amp;&amp; jQuery.inArray(match.expression.klass, this.expression.disallow) !== -1) {
+		return false;
+	}
+
+	// true if {allow: &#x27;*&#x27;}
+	if (this.expression.allow === &#x27;*&#x27;) {
+		return true;
+	}
+
+	// true if {allow: [..., klass, ...]}
+	if (jQuery.isArray(this.expression.allow) &amp;&amp; jQuery.inArray(match.expression.klass, this.expression.allow) !== -1) {
+		return true;
+	}
+
+	// else, false.
+	return false;
+};
+
+Syntax.Match.prototype.canHaveChild = function (match) {
+	var only = match.expression.only;
+
+	// This condition is fairly slow
+	if (match.expression.only) {
+		var cur = this;
+
+		while (cur !== null) {
+			if (jQuery.inArray(cur.expression.klass, match.expression.only) !== -1) {
+				return true;
+			}
+
+			cur = cur.parent;
+
+			// We don&#x27;t traverse into other trees.
+			if (cur &amp;&amp; cur.complete) {
+				break;
+			}
+		}
+
+		return false;
+	}
+
+	return true;
+};
+
+Syntax.Match.prototype._splice = function(i, match) {
+	if (this.canHaveChild(match)) {
+		this.children.splice(i, 0, match);
+		match.parent = this;
+		return this;
+	} else {
+		return null;
+	}
+};
+
+// This is not a general tree insertion function. It is optimised to run in almost constant
+// time, but data must be inserted in sorted order, otherwise you will have problems.
+Syntax.Match.prototype.insertAtEnd = function (match) {
+	if (!this.contains(match)) {
+		alert(&quot;Syntax Error: Child is not contained in parent node!&quot;);
+		return null;
+	}
+
+	if (!this.canContain(match)) {
+		return null;
+	}
+
+	if (this.children.length &gt; 0) {
+		var i = this.children.length-1;
+		var child = this.children[i];
+
+		if (match.offset &lt; child.offset) {
+			if (match.endOffset &lt;= child.offset) {
+				// displacement = &#x27;before&#x27;
+				return this._splice(i, match);
+			} else {
+				// displacement = &#x27;left-overlap&#x27;
+				return null;
+			}
+		} else if (match.offset &lt; child.endOffset) {
+			if (match.endOffset &lt;= child.endOffset) {
+				// displacement = &#x27;contains&#x27;
+				var result = child.insertAtEnd(match);
+				return result;
+			} else {
+				// displacement = &#x27;right-overlap&#x27;
+				// If a match overlaps a previous one, we ignore it.
+				return null;
+			}
+		} else {
+			// displacement = &#x27;after&#x27;
+			return this._splice(i+1, match);
+		}
+
+		// Could not find a suitable placement
+		return null;
+	} else {
+		return this._splice(0, match);
+	}
+};
+
+Syntax.Match.prototype.halfBisect = function(offset) {
+	if (offset &gt; this.offset &amp;&amp; offset &lt; this.endOffset) {
+		return this.bisectAtOffsets([offset, this.endOffset]);
+	} else {
+		return null;
+	}
+};
+
+Syntax.Match.prototype.bisectAtOffsets = function(splits) {
+	var parts = [], start = this.offset, prev = null, children = jQuery.merge([], this.children);
+
+	// Copy the array so we can modify it.
+	splits = splits.slice(0);
+
+	// We need to split including the last part.
+	splits.push(this.endOffset);
+	splits.sort(function(a,b){return a-b;});
+
+	for (var i = 0; i &lt; splits.length; i += 1) {
+		var offset = splits[i];
+
+		if (offset &lt; this.offset || offset &gt; this.endOffset) {
+			break;
+		}
+
+		var match = new Syntax.Match(start, offset - start, this.expression);
+		match.value = this.value.substr(start - this.offset, match.length);
+
+		if (prev) {
+			prev.next = match;
+		}
+
+		prev = match;
+
+		start = match.endOffset;
+		parts.push(match);
+	}
+
+	// We only need to split to produce the number of parts we have.
+	splits.length = parts.length;
+
+	for (var i = 0; i &lt; parts.length; i += 1) {
+		var offset = splits[0];
+
+		while (children.length &gt; 0) {
+			if (children[0].endOffset &lt;= parts[i].endOffset) {
+				parts[i].children.push(children.shift());
+			} else {
+				break;
+			}
+		}
+
+		if (children.length) {
+			// We may have an intersection
+			if (children[0].offset &lt; parts[i].endOffset) {
+				var children_parts = children.shift().bisectAtOffsets(splits), j = 0;
+
+				for (; j &lt; children_parts.length; j += 1) {
+					parts[i+j].children.push(children_parts[j]);
+				}
+
+				// Skip any parts which have been populated already
+				// i += (children_parts.length-1)
+			}
+		}
+
+		splits.shift();
+	}
+
+	if (children.length) {
+		alert(&quot;Syntax Error: Children nodes not consumed, &quot; + children.length + &quot; remaining!&quot;);
+	}
+
+	return parts;
+};
+
+Syntax.Match.prototype.split = function(pattern) {
+	var splits = [], match;
+
+	while ((match = pattern.exec(this.value)) !== null) {
+		splits.push(pattern.lastIndex);
+	}
+
+	return this.bisectAtOffsets(splits);
+};
+
+Syntax.Brush = function () {
+	this.klass = null;
+	this.rules = [];
+};
+
+Syntax.Brush.prototype.push = function () {
+	if (jQuery.isArray(arguments[0])) {
+		var patterns = arguments[0], rule = arguments[1];
+
+		for (var i = 0; i &lt; patterns.length; i += 1) {
+			this.push(jQuery.extend({pattern: patterns[i]}, rule));
+		}
+	} else {
+		var rule = arguments[0];
+
+		if (typeof(rule.pattern) === &#x27;string&#x27;) {
+			rule.string = rule.pattern;
+			var prefix = &quot;\\b&quot;, postfix = &quot;\\b&quot;;
+
+			if (!rule.pattern.match(/^\w/)) {
+				if (!rule.pattern.match(/\w$/)) {
+					prefix = postfix = &quot;&quot;;
+				} else {
+					prefix = &quot;\\B&quot;;
+				}
+			} else {
+				if (!rule.pattern.match(/\w$/)) {
+					postfix = &quot;\\B&quot;;
+				}
+			}
+
+
+			rule.pattern = new RegExp(prefix + RegExp.escape(rule.pattern) + postfix, rule.options || &#x27;g&#x27;);
+		}
+
+		if (typeof(XRegExp) !== &#x27;undefined&#x27;)
+			rule.pattern = new XRegExp(rule.pattern);
+
+		if (rule.pattern.global) {
+			this.rules.push(rule);
+		} else {
+			alert(&quot;Syntax Error: Malformed rule! All rules need to be global! &quot; + rule);
+		}
+	}
+};
+
+Syntax.Brush.prototype.getMatches = function(text, offset) {
+	var matches = [];
+
+	for (var i = 0; i &lt; this.rules.length; i += 1) {
+		matches = matches.concat(Syntax.getMatches(text, this.rules[i], offset));
+	}
+
+	return matches;
+};
+
+Syntax.Brush.prototype.buildTree = function(text, offset) {
+	offset = offset || 0;
+
+	// Fixes code that uses \r\n for line endings. /$/ matches both \r\n, which is a problem..
+	text = text.replace(/\r/g, &quot;&quot;);
+
+	var matches = this.getMatches(text, offset);
+	var top = new Syntax.Match(offset, text.length, {klass: this.klass, allow: &#x27;*&#x27;}, text);
+
+	// This sort is absolutely key to the functioning of the tree insertion algorithm.
+	matches.sort(Syntax.Match.sort);
+
+	for (var i = 0; i &lt; matches.length; i += 1) {
+		top.insertAtEnd(matches[i]);
+	}
+
+	top.complete = true;
+
+	return top;
+};
+
+Syntax.Brush.prototype.process = function(text) {
+	var top = this.buildTree(text);
+
+	var lines = top.split(/\n/g);
+
+	var html = $(&#x27;&lt;pre class=&quot;syntax&quot;&gt;&lt;/pre&gt;&#x27;);
+
+	for (var i = 0; i &lt; lines.length; i += 1) {
+		var line = lines[i].reduce();
+		html.append(line);
+	}
+
+	return html;
+};</pre>
+
+	</body>
+</html>

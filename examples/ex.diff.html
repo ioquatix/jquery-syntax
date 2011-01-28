@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
+
+		<script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+			$(function() {
+				jQuery.syntax();
+			});
+		</script>
+
+	</head>
+	<body>
+		<h1>Syntax: Diff</h1>
+		
+		<h2>jQuery.Syntax Diff</h2>
+		
+		<pre class="syntax brush-diff">
+diff --git a/ex.ruby.html b/ex.ruby.html
+index a02a04e..7d42db0 100644
+--- a/ex.ruby.html
++++ b/ex.ruby.html
+@@ -21,6 +21,8 @@
+ 	&lt;body&gt;
+ 		&lt;h1&gt;Syntax: Ruby&lt;/h1&gt;
+
++		&lt;h2&gt;Ruby Script #1&lt;/h2&gt;
++		
+ 		&lt;pre class=&quot;ruby&quot;&gt;#!/usr/bin/env ruby
+
+ # Copyright (c) 2009 Samuel Williams. Released under the GNU GPLv3.
+@@ -104,5 +106,257 @@ end
+ # RExec daemon runner
+ Server.daemonize&lt;/pre&gt;
+
++	&lt;h2&gt;Ruby Script #2&lt;/h2&gt;
++	
++	&lt;pre class=&quot;ruby&quot;&gt;#!/usr/bin/env ruby
++# Simple Operator Expression Parser
++
++require &amp;#x27;set&amp;#x27;
++
++DEBUG = false
++
++class Array
++  def map_to(with)
++    r = {}
++
++    each_with_index { |v,i| r[v] = with[i] }
++
++    return r
++  end
++end
++
++module Expression
++  class Context
++    def initialize(operators, values)
++      @values = values
++      @operators = operators
++    end
++
++    def value_of (key)
++      @values[key]
++    end
++
++    def call (op, args)
++      @operators.call(op, args)
++    end
++  end
++
++  class Constant
++    def initialize(value)
++      @value = value
++    end
++
++    def evaluate (ctx)
++      return @value
++    end
++  end
++
++  class Identifier
++    def initialize(name)
++      @name = name
++    end
++
++    def evaluate (ctx)
++      ctx.value_of(@name)
++    end
++  end
++
++  class Operator
++    def initialize(name, args = [])
++      @name = name
++      @args = args
++    end
++
++    def name
++      @name
++    end
++
++    def evaluate (ctx)
++      ctx.call(@name, @args.collect { |a| a.evaluate(ctx) })
++    end
++
++    def args
++      @args
++    end
++  end
++
++  class Brackets
++    def initialize(node)
++      @node = node
++    end
++
++    def evaluate (ctx)
++      @node.evaluate(ctx)
++    end
++  end
++
++  class Parser
++    def initialize(ops, expr)
++      @identifiers = []
++      @operators = ops
++
++      # Tokens and expressions line up
++      @expressions = []
++      @tokens = []
++
++      @top = nil
++
++      parse(expr)
++    end
++
++    def evaluate (ctx)
++      @expressions.collect do |expr|
++        expr != nil ? expr.evaluate(ctx) : nil
++      end
++    end
++
++    def identifiers
++      @identifiers
++    end
++
++    def tokens
++      @tokens
++    end
++  private
++    def parse(expr)
++      symbols = @operators.keys + [&amp;quot;(&amp;quot;, &amp;quot;)&amp;quot;]
++      tokenizer = Regexp.union(Regexp.union(*symbols), /[A-Z]+/)
++
++      @tokens = expr.scan(tokenizer)
++      @expressions = [nil] * @tokens.size
++
++      @identifiers = Set.new(expr.scan(/[A-Z]+/))
++
++      @top, i = process_expression
++
++      if DEBUG
++        puts &amp;quot;Processed #{i} tokens...&amp;quot;
++        puts &amp;quot;Tokens: &amp;quot; + @tokens.join(&amp;quot; &amp;quot;)
++        puts @top.inspect
++        puts @expressions.inspect
++      end
++    end
++
++    def process_expression(i = 0)
++      ast = []
++      ops = {}
++      while i &amp;lt; @tokens.size
++        t = @tokens[i]
++
++        if t == &amp;quot;(&amp;quot;
++          result, i = process_expression(i+1)
++          ast += result
++        elsif t == &amp;quot;)&amp;quot;
++          break
++        else        
++          result = process_token(i)
++          ast &amp;lt;&amp;lt; result
++        end
++
++        if result.class == Operator
++          ops[result.name] ||= []
++          # Store the index
++          ops[result.name] &amp;lt;&amp;lt; (ast.size - 1)
++        end
++
++        i += 1
++      end
++
++      #puts ast.inspect
++
++      # We need to sort the list of operators now
++      # [c, infix, prefix, c]
++
++      @operators.order.each do |name|
++        op_kind = @operators.kind(name)
++        next unless ops[name]
++
++        ops[name].each do |loc|
++          op = ast[loc]
++
++          if op_kind == :prefix
++            rhs = find_subexpression(ast, loc, RHS_SEARCH)
++            op.args &amp;lt;&amp;lt; ast[rhs]
++            ast[rhs] = nil
++          elsif op_kind == :infix
++            lhs = find_subexpression(ast, loc, LHS_SEARCH)
++            rhs = find_subexpression(ast, loc, RHS_SEARCH)
++            op.args &amp;lt;&amp;lt; ast[lhs]
++            op.args &amp;lt;&amp;lt; ast[rhs]
++            ast[lhs] = ast[rhs] = nil
++          elsif op_kind == :postfix
++            lhs = find_subexpression(ast, loc, LHS_SEARCH)
++            op.args &amp;lt;&amp;lt; ast[lhs]
++            ast[rhs] = nil
++          end
++        end
++      end
++
++      return [ast.uniq, i]
++    end
++
++    RHS_SEARCH = 1
++    LHS_SEARCH = -1
++
++    def find_subexpression(ast, loc, dir)
++      while loc &amp;gt;= 0 &amp;amp;&amp;amp; loc &amp;lt; ast.size
++        loc += dir
++        return loc if ast[loc] != nil
++      end
++
++      return nil
++    end
++
++    def process_token(i) 
++      t = @tokens[i]
++
++      if @operators.key? t
++        tok = Operator.new(t)
++      elsif t.match /[A-Z]+/
++        tok = Identifier.new(t)
++      else
++        tok = Constant.new(t)
++      end
++
++      @expressions[i] = tok
++      return tok
++    end
++  end
++
++  TYPE = 0
++  FUNC = 1
++  class Operators    
++    def initialize
++      @operators = {}
++      @order = []
++    end
++
++    def add(sym, kind, &amp;amp;block)
++      @operators[sym] = [kind, block]
++      @order &amp;lt;&amp;lt; sym
++    end
++
++    def order
++      @order
++    end
++
++    def keys
++      @operators.keys
++    end
++
++    def key? k
++      @operators.key? k
++    end
++
++    def kind k
++      @operators[k][0]
++    end
++
++    def call(k, args)
++      @operators[k][1].call(*args)
++    end
++  end
++end&lt;/pre&gt;
++
+ 	&lt;/body&gt;
+ &lt;/html&gt;
+\ No newline at end of file
+diff --git a/example.css b/example.css
+index e69de29..4ece63a 100644
+--- a/example.css
++++ b/example.css
+@@ -0,0 +1,3 @@
++body {
++	font-size: 70%;
++}
+\ No newline at end of file
+diff --git a/example.html b/example.html
+deleted file mode 100644
+index 7ac7cd5..0000000
+--- a/example.html
++++ /dev/null
+@@ -1,46 +0,0 @@
+-&lt;!DOCTYPE html&gt;
+-&lt;html&gt;
+-	&lt;head&gt;
+-		
+-		&lt;link rel=&quot;stylesheet&quot; href=&quot;jquery.syntax.css&quot; type=&quot;text/css&quot; media=&quot;screen&quot; /&gt;
+-		&lt;link rel=&quot;stylesheet&quot; href=&quot;example.css&quot; type=&quot;text/css&quot; media=&quot;screen&quot; /&gt;
+-	
+-		&lt;script src=&quot;jquery-1.4.1.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+-		
+-		&lt;script src=&quot;jquery.syntax.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+-		&lt;script src=&quot;jquery.syntax.cache.js&quot; type=&quot;text/javascript&quot; charset=&#x27;utf-8&#x27;&gt;&lt;/script&gt;
+-		
+-		&lt;script type=&quot;text/javascript&quot; language=&quot;JavaScript&quot;&gt;
+-		//&lt;!--
+-			$(function() {
+-				$(&#x27;#highlight&#x27;).click(function() {
+-					$(&#x27;pre.clang&#x27;).syntax({brush: &#x27;clang&#x27;, layout: &#x27;table&#x27;, replace: true}, function(options, html, container) {
+-						//$(&#x27;.function&#x27;, html).replaceWith(function(){
+-						//	return $(&#x27;&lt;a&gt;&#x27;).addClass(&#x27;function&#x27;).attr(&#x27;href&#x27;, &#x27;#&#x27; + $(this).text()).html($(this).html());
+-						//})
+-					});
+-				});
+-			});
+-		//--&gt;
+-		&lt;/script&gt;
+- 
+-	&lt;/head&gt;
+-	&lt;body&gt;
+-		&lt;h1&gt;Syntax Highlighting Example&lt;/h1&gt;
+-		
+-		&lt;button id=&quot;highlight&quot;&gt;Highlight&lt;/button&gt;
+-		
+-		&lt;pre class=&quot;clang&quot;&gt;#include &amp;lt;iostream&amp;gt;
+-/* Multi line c comment
+-
+-	Hello World
+-*/
+-
+-	const char * s = &quot;My name is computer!\n\n&quot;
+-int main (int argv, char ** argv) {
+-	return EXIT_SUCCESS;
+-}
+-&lt;/pre&gt;
+-
+-	&lt;/body&gt;
+-&lt;/html&gt;
+\ No newline at end of file
+diff --git a/example2.html b/example2.html
+deleted file mode 100644
+index f5f1d8c..0000000
+--- a/example2.html
++++ /dev/null
+@@ -1,81 +0,0 @@
+-&lt;!DOCTYPE html&gt;
+-&lt;html&gt;
+-	&lt;head&gt;
+-		
+-		&lt;link rel=&quot;stylesheet&quot; href=&quot;jquery.syntax.css&quot; type=&quot;text/css&quot; media=&quot;screen&quot; /&gt;
+-		&lt;link rel=&quot;stylesheet&quot; href=&quot;example.css&quot; type=&quot;text/css&quot; media=&quot;screen&quot; /&gt;
+-	
+-		&lt;script src=&quot;jquery-1.4.1.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+-		
+-		&lt;script src=&quot;jquery.syntax.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+-		&lt;script src=&quot;jquery.syntax.cache.js&quot; type=&quot;text/javascript&quot; charset=&#x27;utf-8&#x27;&gt;&lt;/script&gt;
+-		
+-		&lt;script src=&quot;jquery.syntax.brush.clang.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+-		&lt;script src=&quot;jquery.syntax.layout.table.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+-		
+-		&lt;link rel=&quot;stylesheet&quot; href=&quot;jquery.syntax.layout.table.css&quot; type=&quot;text/css&quot; media=&quot;screen&quot;&gt;
+-		
+-		&lt;script type=&quot;text/javascript&quot; language=&quot;JavaScript&quot;&gt;
+-		//&lt;!--
+-			$(function() {
+-				$(&#x27;#highlight&#x27;).click(function() {
+-					window.console.profile(&quot;Syntax Highlighting&quot;);
+-					start = new Date();
+-					
+-					$(&#x27;pre.clang&#x27;).syntax({brush: &#x27;clang&#x27;, layout: &#x27;table&#x27;, replace: true}, function(options, html, container) {
+-						//$(&#x27;.function&#x27;, html).replaceWith(function(){
+-						//	return $(&#x27;&lt;a&gt;&#x27;).addClass(&#x27;function&#x27;).attr(&#x27;href&#x27;, &#x27;#&#x27; + $(this).text()).html($(this).html());
+-						//})
+-						
+-						finish = new Date();
+-						window.console.profileEnd();
+-						window.console.log(finish - start);
+-					});
+-				});
+-			});
+-		//--&gt;
+-		&lt;/script&gt;
+- 
+-	&lt;/head&gt;
+-	&lt;body&gt;
+-		&lt;h1&gt;Syntax Highlighting Example&lt;/h1&gt;
+-		
+-		&lt;button id=&quot;highlight&quot;&gt;Highlight&lt;/button&gt;
+-		
+-		&lt;pre class=&quot;clang&quot;&gt;#include &amp;lt;iostream&amp;gt;
+-
+-// If we increase row by 1, the offset will increase by sz (number of elements per row i.e. number of columns)
+-// If we increase col by 1, the offset will increase by 1
+-unsigned rowMajorOffset(unsigned row, unsigned col, unsigned sz)
+-{
+-  return col + row * sz;
+-}
+-
+-// If we increase col by 1, the offset will increase by sz (number of elements per column i.e. number of rows)
+-// If we increase row by 1, the offset will increase by 1
+-unsigned columnMajorOffset(unsigned row, unsigned col, unsigned sz)
+-{
+-  return row + col * sz;
+-}
+-
+-int main (int argc, char * const argv[]) {
+-	Matrix&amp;lt;float, 4, 2, false&amp;gt; rowMajorMatrix;
+-	Matrix&amp;lt;float, 4, 2, true&amp;gt; columnMajorMatrix;
+-
+-	rowMajorMatrix.loadTestPattern();
+-	rowMajorMatrix.debug();
+-
+-	columnMajorMatrix.loadTestPattern();
+-	columnMajorMatrix.debug();
+-
+-	rowMajorMatrix = columnMajorMatrix.transposeStorage();
+-	rowMajorMatrix.debug();
+-
+-	Matrix&amp;lt;float, 2, 4, false&amp;gt; transposedMatrix = columnMajorMatrix.transposeMatrix();
+-	transposedMatrix.debug();
+-
+-	return 0;
+-}&lt;/pre&gt;
+-
+-	&lt;/body&gt;
+-&lt;/html&gt;
+\ No newline at end of file
+diff --git a/example3.html b/example3.html
+deleted file mode 100644
+index d559b68..0000000
+--- a/example3.html
++++ /dev/null
+@@ -1,171 +0,0 @@
+-&lt;!DOCTYPE html&gt;
+-&lt;html&gt;
+-	&lt;head&gt;
+-		
+-		&lt;link rel=&quot;stylesheet&quot; href=&quot;jquery.syntax.css&quot; type=&quot;text/css&quot; media=&quot;screen&quot; /&gt;
+-		&lt;link rel=&quot;stylesheet&quot; href=&quot;example.css&quot; type=&quot;text/css&quot; media=&quot;screen&quot; /&gt;
+-	
+-		&lt;script src=&quot;jquery-1.4.1.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+-		
+-		&lt;script src=&quot;jquery.syntax.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+-		&lt;script src=&quot;jquery.syntax.cache.js&quot; type=&quot;text/javascript&quot; charset=&#x27;utf-8&#x27;&gt;&lt;/script&gt;
+-		
+-		&lt;script src=&quot;jquery.syntax.brush.clang.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+-		&lt;script src=&quot;jquery.syntax.layout.table.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+-		
+-		&lt;link rel=&quot;stylesheet&quot; href=&quot;jquery.syntax.layout.table.css&quot; type=&quot;text/css&quot; media=&quot;screen&quot;&gt;
+-		
+-		&lt;script type=&quot;text/javascript&quot; language=&quot;JavaScript&quot;&gt;
+-		//&lt;!--
+-			$(function() {
+-				$(&#x27;#highlight&#x27;).click(function() {
+-					window.console.profile(&quot;Syntax Highlighting&quot;);
+-					start = new Date();
+-					
+-					$(&#x27;pre.clang&#x27;).syntax({brush: &#x27;clang&#x27;, layout: &#x27;table&#x27;, replace: true}, function(options, html, container) {
+-						//$(&#x27;.function&#x27;, html).replaceWith(function(){
+-						//	return $(&#x27;&lt;a&gt;&#x27;).addClass(&#x27;function&#x27;).attr(&#x27;href&#x27;, &#x27;#&#x27; + $(this).text()).html($(this).html());
+-						//})
+-						
+-						finish = new Date();
+-						window.console.profileEnd();
+-						window.console.log(finish - start);
+-					});
+-				});
+-			});
+-		//--&gt;
+-		&lt;/script&gt;
+- 
+-	&lt;/head&gt;
+-	&lt;body&gt;
+-		&lt;h1&gt;Syntax Highlighting Example&lt;/h1&gt;
+-		
+-		&lt;button id=&quot;highlight&quot;&gt;Highlight&lt;/button&gt;
+-		
+-		&lt;pre class=&quot;clang&quot;&gt;#include &amp;lt;iostream&amp;gt;
+-
+-// If we increase row by 1, the offset will increase by sz (number of elements per row i.e. number of columns)
+-// If we increase col by 1, the offset will increase by 1
+-unsigned rowMajorOffset(unsigned row, unsigned col, unsigned sz)
+-{
+-    return col + row * sz;
+-}
+-
+-// If we increase col by 1, the offset will increase by sz (number of elements per column i.e. number of rows)
+-// If we increase row by 1, the offset will increase by 1
+-unsigned columnMajorOffset(unsigned row, unsigned col, unsigned sz)
+-{
+-    return row + col * sz;
+-}
+-
+-template &amp;lt;typename _ValueT, unsigned _R, unsigned _C, bool _ColumnMajor&amp;gt;
+-class Matrix {
+-protected:
+-	enum { ColumnMajor = _ColumnMajor };
+-	enum { R = _R };
+-	enum { C = _C };
+-
+-	typedef _ValueT ValueT;
+-
+-	ValueT m_values[C*R];
+-
+-public:
+-	const ValueT &amp;amp; at (unsigned r, unsigned c) const
+-	{
+-		if (ColumnMajor)
+-			return m_values[columnMajorOffset(r, c, R)];
+-		else
+-			return m_values[rowMajorOffset(r, c, C)];
+-	}
+-
+-	ValueT &amp;amp; at (unsigned r, unsigned c)
+-	{
+-		if (ColumnMajor)
+-			return m_values[columnMajorOffset(r, c, R)];
+-		else
+-			return m_values[rowMajorOffset(r, c, C)];
+-	}
+-
+-	void loadTestPattern ()
+-	{
+-		for (unsigned r = 0; r &amp;lt; R; r += 1)
+-			for (unsigned c = 0; c &amp;lt; C; c += 1)
+-				at(r, c) = (r+1) * 1000 + (c+1);
+-	}
+-
+-	void debug ()
+-	{
+-		using namespace std;
+-
+-		if (ColumnMajor)
+-			cout &amp;lt;&amp;lt; &amp;quot;Column-Major Matrix &amp;quot; &amp;lt;&amp;lt; &amp;quot;(&amp;quot; &amp;lt;&amp;lt; R &amp;lt;&amp;lt; &amp;quot;,&amp;quot; &amp;lt;&amp;lt; C &amp;lt;&amp;lt; &amp;quot;)&amp;quot; &amp;lt;&amp;lt; &amp;quot; @ &amp;quot; &amp;lt;&amp;lt; this &amp;lt;&amp;lt; endl;
+-		else
+-			cout &amp;lt;&amp;lt; &amp;quot;Row-Major Matrix &amp;quot; &amp;lt;&amp;lt; &amp;quot;(&amp;quot; &amp;lt;&amp;lt; R &amp;lt;&amp;lt; &amp;quot;,&amp;quot; &amp;lt;&amp;lt; C &amp;lt;&amp;lt; &amp;quot;)&amp;quot; &amp;lt;&amp;lt; &amp;quot; @ &amp;quot; &amp;lt;&amp;lt; this &amp;lt;&amp;lt; endl;
+-
+-		cout &amp;lt;&amp;lt; &amp;quot;Memory Offset: &amp;quot;;
+-		for (unsigned i = 0; i &amp;lt; (R*C); i += 1)
+-			cout &amp;lt;&amp;lt; i &amp;lt;&amp;lt; &amp;quot;    &amp;quot;;
+-		cout &amp;lt;&amp;lt; endl;
+-
+-		cout &amp;lt;&amp;lt; &amp;quot;       Values: &amp;quot;;	
+-		for (unsigned i = 0; i &amp;lt; (R*C); i += 1)
+-			cout &amp;lt;&amp;lt; m_values[i] &amp;lt;&amp;lt; &amp;quot; &amp;quot;;
+-		cout &amp;lt;&amp;lt; endl;
+-
+-		cout &amp;lt;&amp;lt; &amp;quot;Standard Mathematical Notation:&amp;quot; &amp;lt;&amp;lt; endl;
+-		cout &amp;lt;&amp;lt; &amp;quot;      &amp;quot;;
+-		for (unsigned c = 0; c &amp;lt; C; c += 1)
+-			cout &amp;lt;&amp;lt; &amp;quot;Col &amp;quot; &amp;lt;&amp;lt; c &amp;lt;&amp;lt; &amp;quot; &amp;quot;;
+-		cout &amp;lt;&amp;lt; endl;
+-
+-		for (unsigned r = 0; r &amp;lt; R; r += 1) {
+-			cout &amp;lt;&amp;lt; &amp;quot;Row &amp;quot; &amp;lt;&amp;lt; r &amp;lt;&amp;lt; &amp;quot; &amp;quot;;
+-			for (unsigned c = 0; c &amp;lt; C; c += 1)
+-				cout &amp;lt;&amp;lt; at(r, c) &amp;lt;&amp;lt; &amp;quot;  &amp;quot;;
+-			cout &amp;lt;&amp;lt; endl;
+-		}
+-		cout &amp;lt;&amp;lt; endl;
+-	}
+-
+-	Matrix&amp;lt;ValueT, R, C, !ColumnMajor&amp;gt; transposeStorage () const
+-	{
+-		Matrix&amp;lt;ValueT, R, C, !ColumnMajor&amp;gt; result;
+-
+-		for (unsigned r = 0; r &amp;lt; R; r += 1)
+-			for (unsigned c = 0; c &amp;lt; C; c += 1)
+-				result.at(r, c) = at(r, c);
+-
+-		return result;
+-	}
+-
+-	Matrix&amp;lt;ValueT, C, R, !ColumnMajor&amp;gt; transposeMatrix () const
+-	{
+-		Matrix&amp;lt;ValueT, C, R, !ColumnMajor&amp;gt; result;
+-
+-		memcpy(&amp;amp;result.at(0,0), m_values, sizeof(m_values));
+-
+-		return result;
+-	}
+-};
+-
+-int main (int argc, char * const argv[]) {
+-	Matrix&amp;lt;float, 4, 2, false&amp;gt; rowMajorMatrix;
+-	Matrix&amp;lt;float, 4, 2, true&amp;gt; columnMajorMatrix;
+-
+-	rowMajorMatrix.loadTestPattern();
+-	rowMajorMatrix.debug();
+-
+-	columnMajorMatrix.loadTestPattern();
+-	columnMajorMatrix.debug();
+-
+-	rowMajorMatrix = columnMajorMatrix.transposeStorage();
+-	rowMajorMatrix.debug();
+-
+-	Matrix&amp;lt;float, 2, 4, false&amp;gt; transposedMatrix = columnMajorMatrix.transposeMatrix();
+-	transposedMatrix.debug();
+-
+-	return 0;
+-}&lt;/pre&gt;
+-
+-	&lt;/body&gt;
+-&lt;/html&gt;
+\ No newline at end of file
+diff --git a/jquery.syntax.brush.clang.js b/jquery.syntax.brush.clang.js
+index dcbebbc..3c10a29 100644
+--- a/jquery.syntax.brush.clang.js
++++ b/jquery.syntax.brush.clang.js
+@@ -1,16 +1,19 @@
+ // brush: &quot;clang&quot; aliases: [&quot;cpp&quot;, &quot;c&quot;, &quot;objective-c&quot;]
+
+ Syntax.register(&#x27;clang&#x27;, function(brush) {
+-	var keywords = [&quot;@interface&quot;, &quot;@implementation&quot;, &quot;@protocol&quot;, &quot;@end&quot;, &quot;@private&quot;, &quot;@protected&quot;, &quot;@public&quot;, &quot;@try&quot;, &quot;@throw&quot;, &quot;@catch&quot;, &quot;@finally&quot;, &quot;@class&quot;, &quot;@selector&quot;, &quot;@encode&quot;, &quot;@synchronized&quot;, &quot;struct&quot;, &quot;break&quot;, &quot;continue&quot;, &quot;else&quot;, &quot;for&quot;, &quot;switch&quot;, &quot;case&quot;, &quot;default&quot;, &quot;enum&quot;, &quot;goto&quot;, &quot;register&quot;, &quot;sizeof&quot;, &quot;typedef&quot;, &quot;volatile&quot;, &quot;do&quot;, &quot;extern&quot;, &quot;if&quot;, &quot;return&quot;, &quot;static&quot;, &quot;union&quot;, &quot;while&quot;, &quot;asm&quot;, &quot;dynamic_cast&quot;, &quot;namespace&quot;, &quot;reinterpret_cast&quot;, &quot;try&quot;, &quot;explicit&quot;, &quot;static_cast&quot;, &quot;typeid&quot;, &quot;catch&quot;, &quot;operator&quot;, &quot;template&quot;, &quot;class&quot;, &quot;friend&quot;, &quot;private&quot;, &quot;using&quot;, &quot;const_cast&quot;, &quot;inline&quot;, &quot;public&quot;, &quot;throw&quot;, &quot;virtual&quot;, &quot;mutable&quot;, &quot;protected&quot;, &quot;wchar_t&quot;];
++	var keywords = [&quot;@interface&quot;, &quot;@implementation&quot;, &quot;@protocol&quot;, &quot;@end&quot;, &quot;@private&quot;, &quot;@protected&quot;, &quot;@public&quot;, &quot;@try&quot;, &quot;@throw&quot;, &quot;@catch&quot;, &quot;@finally&quot;, &quot;@class&quot;, &quot;@selector&quot;, &quot;@encode&quot;, &quot;@synchronized&quot;, &quot;@property&quot;, &quot;struct&quot;, &quot;break&quot;, &quot;continue&quot;, &quot;else&quot;, &quot;for&quot;, &quot;switch&quot;, &quot;case&quot;, &quot;default&quot;, &quot;enum&quot;, &quot;goto&quot;, &quot;register&quot;, &quot;sizeof&quot;, &quot;typedef&quot;, &quot;volatile&quot;, &quot;do&quot;, &quot;extern&quot;, &quot;if&quot;, &quot;return&quot;, &quot;static&quot;, &quot;union&quot;, &quot;while&quot;, &quot;asm&quot;, &quot;dynamic_cast&quot;, &quot;namespace&quot;, &quot;reinterpret_cast&quot;, &quot;try&quot;, &quot;explicit&quot;, &quot;static_cast&quot;, &quot;typeid&quot;, &quot;catch&quot;, &quot;operator&quot;, &quot;template&quot;, &quot;class&quot;, &quot;friend&quot;, &quot;private&quot;, &quot;using&quot;, &quot;const_cast&quot;, &quot;inline&quot;, &quot;public&quot;, &quot;throw&quot;, &quot;virtual&quot;, &quot;mutable&quot;, &quot;protected&quot;, &quot;wchar_t&quot;];
+
+-	var types = [&quot;auto&quot;, &quot;const&quot;, &quot;double&quot;, &quot;float&quot;, &quot;int&quot;, &quot;short&quot;, &quot;char&quot;, &quot;long&quot;, &quot;signed&quot;, &quot;unsigned&quot;, &quot;bool&quot;, &quot;void&quot;, &quot;typename&quot;];
+-	var operators = [&quot;+&quot;, &quot;*&quot;, &quot;/&quot;, &quot;-&quot;, &quot;&amp;&quot;, &quot;|&quot;, &quot;~&quot;, &quot;!&quot;, &quot;%&quot;, &quot;&lt;&quot;, &quot;=&quot;, &quot;&gt;&quot;, &quot;new&quot;, &quot;delete&quot;];
++	var types = [&quot;auto&quot;, &quot;const&quot;, &quot;double&quot;, &quot;float&quot;, &quot;int&quot;, &quot;short&quot;, &quot;char&quot;, &quot;long&quot;, &quot;signed&quot;, &quot;unsigned&quot;, &quot;bool&quot;, &quot;void&quot;, &quot;typename&quot;, &quot;id&quot;];
++	var operators = [&quot;+&quot;, &quot;*&quot;, &quot;/&quot;, &quot;-&quot;, &quot;&amp;&quot;, &quot;|&quot;, &quot;~&quot;, &quot;!&quot;, &quot;%&quot;, &quot;&lt;&quot;, &quot;=&quot;, &quot;&gt;&quot;, &quot;[&quot;, &quot;]&quot;, &quot;new&quot;, &quot;delete&quot;];
+ 	var values = [&quot;this&quot;, &quot;true&quot;, &quot;false&quot;, /[0-9]+(\.[0-9]+)?/g];
+
+-	brush.push(values, {klass: &#x27;constant&#x27;, children: null});
+-	brush.push(types, {klass: &#x27;type&#x27;, children: null})
+-	brush.push(keywords, {klass: &#x27;keyword&#x27;, children: null})
+-	brush.push(operators, {klass: &#x27;operator&#x27;, children: null})
++	brush.push(values, {klass: &#x27;constant&#x27;, children: []});
++	brush.push(types, {klass: &#x27;type&#x27;, children: []})
++	brush.push(keywords, {klass: &#x27;keyword&#x27;, children: []})
++	brush.push(operators, {klass: &#x27;operator&#x27;, children: []})
++	
++	// Objective-C classes
++	brush.push({pattern: /\b[A-Z][\w]*\b/g, klass: &#x27;type&#x27;, children: []})
+
+ 	brush.push({
+ 		pattern: /#.*$/gmi,
+@@ -21,6 +24,15 @@ Syntax.register(&#x27;clang&#x27;, function(brush) {
+ 	brush.push(Syntax.lib.cStyleComment);
+ 	brush.push(Syntax.lib.cppStyleComment);
+
++	// Objective-C style functions
++	brush.push({pattern: /\w+:/g, klass: &#x27;function&#x27;, children: []});
++	brush.push({
++		pattern: /[^:\[]\s+(\w+)(?=])/g,
++		klass: &#x27;function&#x27;, 
++		matches: Syntax.singleMatchFunction(1, {klass: &#x27;function&#x27;, children: []})
++	})
++	
++	// Strings
+ 	brush.push({pattern: /&quot;.+?&quot;/g, klass: &#x27;string&#x27;, children: &#x27;escape&#x27;});
+ 	brush.push({pattern: /\\./g, klass: &#x27;escape&#x27;});
+
+diff --git a/jquery.syntax.brush.ruby.js b/jquery.syntax.brush.ruby.js
+index 71fdeaf..64a4626 100644
+--- a/jquery.syntax.brush.ruby.js
++++ b/jquery.syntax.brush.ruby.js
+@@ -1,34 +1,30 @@
+ // brush: &quot;ruby&quot; aliases: []
+
+-/*
+-	# This ruby code will generate a list of classes.
+-	classes = []
+-
+-	ObjectSpace.each_object(Class) do |c|
+-		classes &lt;&lt; c
+-	end
+-
+-	puts classes.collect{|cls| cls.name}.inspect
+-*/
++Syntax.lib.rubyStyleFunction = {pattern: /(?:def\s+|\.)([a-z_][a-z0-9_]+)/gi, matches: Syntax.singleMatchFunction(1, {klass: &#x27;function&#x27;, children: null})}
++Syntax.lib.rubyStyleSymbol = {pattern: /:[\w]+/, klass: &#x27;constant&#x27;, children: null}
+
+ Syntax.register(&#x27;ruby&#x27;, function(brush) {
+ 	var keywords = [&quot;alias&quot;, &quot;and&quot;, &quot;begin&quot;, &quot;break&quot;, &quot;case&quot;, &quot;class&quot;, &quot;def&quot;, &quot;define_method&quot;, &quot;defined&quot;, &quot;do&quot;, &quot;each&quot;, &quot;else&quot;, &quot;elsif&quot;, &quot;end&quot;, &quot;ensure&quot;, &quot;false&quot;, &quot;for&quot;, &quot;if&quot;, &quot;in&quot;, &quot;module&quot;, &quot;new&quot;, &quot;next&quot;, &quot;nil&quot;, &quot;not&quot;, &quot;or&quot;, &quot;raise&quot;, &quot;redo&quot;, &quot;rescue&quot;, &quot;retry&quot;, &quot;return&quot;, &quot;self&quot;, &quot;super&quot;, &quot;then&quot;, &quot;throw&quot;, &quot;true&quot;, &quot;undef&quot;, &quot;unless&quot;, &quot;until&quot;, &quot;when&quot;, &quot;while&quot;, &quot;yield&quot;];
+
+-	var types = [&quot;Socket&quot;, &quot;UNIXServer&quot;, &quot;UNIXSocket&quot;, &quot;UDPSocket&quot;, &quot;TCPServer&quot;, &quot;TCPSocket&quot;, &quot;IPSocket&quot;, &quot;BasicSocket&quot;, &quot;SocketError&quot;, &quot;Pathname&quot;, &quot;StopIteration&quot;, &quot;Enumerable::Enumerator&quot;, &quot;Binding&quot;, &quot;UnboundMethod&quot;, &quot;Method&quot;, &quot;Proc&quot;, &quot;SystemStackError&quot;, &quot;LocalJumpError&quot;, &quot;Struct::Tms&quot;, &quot;Process::Status&quot;, &quot;Time&quot;, &quot;Dir&quot;, &quot;File::Stat&quot;, &quot;File&quot;, &quot;IO&quot;, &quot;EOFError&quot;, &quot;IOError&quot;, &quot;Range&quot;, &quot;MatchData&quot;, &quot;Regexp&quot;, &quot;RegexpError&quot;, &quot;Struct&quot;, &quot;Hash&quot;, &quot;Array&quot;, &quot;Errno::EDQUOT&quot;, &quot;Errno::ESTALE&quot;, &quot;Errno::EINPROGRESS&quot;, &quot;Errno::EALREADY&quot;, &quot;Errno::EHOSTUNREACH&quot;, &quot;Errno::EHOSTDOWN&quot;, &quot;Errno::ECONNREFUSED&quot;, &quot;Errno::ETIMEDOUT&quot;, &quot;Errno::ETOOMANYREFS&quot;, &quot;Errno::ESHUTDOWN&quot;, &quot;Errno::ENOTCONN&quot;, &quot;Errno::EISCONN&quot;, &quot;Errno::ENOBUFS&quot;, &quot;Errno::ECONNRESET&quot;, &quot;Errno::ECONNABORTED&quot;, &quot;Errno::ENETRESET&quot;, &quot;Errno::ENETUNREACH&quot;, &quot;Errno::ENETDOWN&quot;, &quot;Errno::EADDRNOTAVAIL&quot;, &quot;Errno::EADDRINUSE&quot;, &quot;Errno::EAFNOSUPPORT&quot;, &quot;Errno::EPFNOSUPPORT&quot;, &quot;Errno::EOPNOTSUPP&quot;, &quot;Errno::ESOCKTNOSUPPORT&quot;, &quot;Errno::EPROTONOSUPPORT&quot;, &quot;Errno::ENOPROTOOPT&quot;, &quot;Errno::EPROTOTYPE&quot;, &quot;Errno::EMSGSIZE&quot;, &quot;Errno::EDESTADDRREQ&quot;, &quot;Errno::ENOTSOCK&quot;, &quot;Errno::EUSERS&quot;, &quot;Errno::EILSEQ&quot;, &quot;Errno::EOVERFLOW&quot;, &quot;Errno::EBADMSG&quot;, &quot;Errno::EMULTIHOP&quot;, &quot;Errno::EPROTO&quot;, &quot;Errno::ENOLINK&quot;, &quot;Errno::EREMOTE&quot;, &quot;Errno::ENOSR&quot;, &quot;Errno::ETIME&quot;, &quot;Errno::ENODATA&quot;, &quot;Errno::ENOSTR&quot;, &quot;Errno::EIDRM&quot;, &quot;Errno::ENOMSG&quot;, &quot;Errno::ELOOP&quot;, &quot;Errno::ENOTEMPTY&quot;, &quot;Errno::ENOSYS&quot;, &quot;Errno::ENOLCK&quot;, &quot;Errno::ENAMETOOLONG&quot;, &quot;Errno::EDEADLK&quot;, &quot;Errno::ERANGE&quot;, &quot;Errno::EDOM&quot;, &quot;Errno::EPIPE&quot;, &quot;Errno::EMLINK&quot;, &quot;Errno::EROFS&quot;, &quot;Errno::ESPIPE&quot;, &quot;Errno::ENOSPC&quot;, &quot;Errno::EFBIG&quot;, &quot;Errno::ETXTBSY&quot;, &quot;Errno::ENOTTY&quot;, &quot;Errno::EMFILE&quot;, &quot;Errno::ENFILE&quot;, &quot;Errno::EINVAL&quot;, &quot;Errno::EISDIR&quot;, &quot;Errno::ENOTDIR&quot;, &quot;Errno::ENODEV&quot;, &quot;Errno::EXDEV&quot;, &quot;Errno::EEXIST&quot;, &quot;Errno::EBUSY&quot;, &quot;Errno::ENOTBLK&quot;, &quot;Errno::EFAULT&quot;, &quot;Errno::EACCES&quot;, &quot;Errno::ENOMEM&quot;, &quot;Errno::EAGAIN&quot;, &quot;Errno::ECHILD&quot;, &quot;Errno::EBADF&quot;, &quot;Errno::ENOEXEC&quot;, &quot;Errno::E2BIG&quot;, &quot;Errno::ENXIO&quot;, &quot;Errno::EIO&quot;, &quot;Errno::EINTR&quot;, &quot;Errno::ESRCH&quot;, &quot;Errno::ENOENT&quot;, &quot;Errno::EPERM&quot;, &quot;Bignum&quot;, &quot;Float&quot;, &quot;Fixnum&quot;, &quot;Integer&quot;, &quot;Numeric&quot;, &quot;FloatDomainError&quot;, &quot;ZeroDivisionError&quot;, &quot;ThreadGroup&quot;, &quot;Continuation&quot;, &quot;Thread&quot;, &quot;ThreadError&quot;, &quot;SystemCallError&quot;, &quot;NoMemoryError&quot;, &quot;SecurityError&quot;, &quot;RuntimeError&quot;, &quot;NotImplementedError&quot;, &quot;LoadError&quot;, &quot;SyntaxError&quot;, &quot;ScriptError&quot;, &quot;NoMethodError&quot;, &quot;NameError::message&quot;, &quot;NameError&quot;, &quot;RangeError&quot;, &quot;IndexError&quot;, &quot;ArgumentError&quot;, &quot;TypeError&quot;, &quot;StandardError&quot;, &quot;Interrupt&quot;, &quot;SignalException&quot;, &quot;fatal&quot;, &quot;SystemExit&quot;, &quot;Exception&quot;, &quot;String&quot;, &quot;FalseClass&quot;, &quot;TrueClass&quot;, &quot;Data&quot;, &quot;Symbol&quot;, &quot;NilClass&quot;, &quot;Class&quot;, &quot;Module&quot;, &quot;Object&quot;];
+-	
+ 	var operators = [&quot;+&quot;, &quot;*&quot;, &quot;/&quot;, &quot;-&quot;, &quot;&amp;&quot;, &quot;|&quot;, &quot;~&quot;, &quot;!&quot;, &quot;%&quot;, &quot;&lt;&quot;, &quot;=&quot;, &quot;&gt;&quot;];
+ 	var values = [&quot;this&quot;, &quot;true&quot;, &quot;false&quot;, &quot;nil&quot;, /[0-9]+(\.[0-9]+)?/g];
+
+ 	brush.push(values, {klass: &#x27;constant&#x27;, children: null});
+-	brush.push(types, {klass: &#x27;type&#x27;, children: null})
++	
++	brush.push({pattern: /(@+|\$)[\w]+/g, klass: &#x27;variable&#x27;, children: null})
++	
++	brush.push({pattern: /[A-Z_][\w:]+/g, klass: &#x27;type&#x27;, children: null})
+ 	brush.push(keywords, {klass: &#x27;keyword&#x27;, children: null})
+ 	brush.push(operators, {klass: &#x27;operator&#x27;, children: null})
+
+ 	brush.push(Syntax.lib.perlStyleComment)
++	brush.push(Syntax.lib.webLink)
+
+ 	brush.push({pattern: /&quot;.+?&quot;/g, klass: &#x27;string&#x27;, children: [&#x27;escape&#x27;]});
++	brush.push({pattern: /&#x27;.+?&#x27;/g, klass: &#x27;string&#x27;, children: [&#x27;escape&#x27;]});
+ 	brush.push({pattern: /\\./g, klass: &#x27;escape&#x27;});
+
+ 	brush.push(Syntax.lib.rubyStyleFunction);
++	brush.push(Syntax.lib.cStyleFunction);
+ });
+
+diff --git a/jquery.syntax.css b/jquery.syntax.css
+index 0c4d657..2423173 100644
+--- a/jquery.syntax.css
++++ b/jquery.syntax.css
+@@ -14,12 +14,12 @@
+
+ .syntax .keyword {
+ 	color: #3c3;
+-	font-weight: bold;
+ }
+
+ .syntax .type,
+ .syntax .template {
+-	color: #3c3;
++	color: #191;
++	font-weight: bold;
+ }
+
+ .syntax .typename {
+@@ -44,7 +44,12 @@
+ 	color: #c00;
+ }
+
+-.syntax .template {
++.syntax .href {
++	color: #00f;
++	text-decoration: underline;
++}
++
++.syntax .variable {
+ 	font-style: italic;
+ }
+
+diff --git a/jquery.syntax.js b/jquery.syntax.js
+index 7dfc642..07fc8a1 100644
+--- a/jquery.syntax.js
++++ b/jquery.syntax.js
+@@ -73,9 +73,8 @@ ResourceLoader.prototype._finish = function (name) {
+ 	if (!resource)
+ 		window.console.log(&quot;Could not load resource named &quot;, name)
+ 	else {
+-		for (var i in loading) {
++		for (var i = 0; i &lt; loading.length; i += 1)
+ 			loading[i](resource)
+-		}
+ 	}
+ }
+
+@@ -100,11 +99,9 @@ Syntax = {
+
+ 		Syntax.getResource(&#x27;jquery.syntax.brush&#x27;, name, callback)
+ 	}),
+-	
+ 	layouts: new ResourceLoader(function(name, callback) {
+ 		Syntax.getResource(&#x27;jquery.syntax.layout&#x27;, name, callback)
+-	}), 
+-	
++	}),
+ 	getStyles: function (path) {
+ 		var link = $(&#x27;&lt;link&gt;&#x27;)
+ 		$(&quot;head&quot;).append(link)
+@@ -115,7 +112,6 @@ Syntax = {
+ 			href: path
+ 		})
+ 	},
+-	
+ 	getScript: function (path, callback) {
+ 		$.ajax({
+ 			async: &#x27;true&#x27;,
+@@ -128,7 +124,6 @@ Syntax = {
+ 			cache: true
+ 		})
+ 	},
+-	
+ 	getResource: function (prefix, name, callback) {
+ 		var basename = prefix + &quot;.&quot; + name
+
+@@ -137,25 +132,22 @@ Syntax = {
+
+ 		Syntax.getScript(this.root + basename + &#x27;.js&#x27;, callback)
+ 	},
+-	
+ 	register: function (name, callback) {
+-		brush = Syntax.brushes[name] = new Syntax.Brush()
++		var brush = Syntax.brushes[name] = new Syntax.Brush()
+ 		window.console.log(&quot;Registering brush&quot;, name, Syntax.brushes)
+
+ 		brush.klass = name
+
+ 		callback(brush)
+ 	},
+-	
+ 	alias: function (name, aliases) {
+-		for (var i in aliases)
++		for (var i = 0; i &lt; aliases.length; i += 1)
+ 			Syntax.aliases[aliases[i]] = name
+ 	},
+-	
+ 	getMatches: function (text, expr) {
+ 		//window.console.log(&quot;getMatches: &quot;, text, expr)
+
+-		var matches = []
++		var matches = [], match = null
+
+ 		while((match = expr.pattern.exec(text)) != null) {
+ 			if (expr.matches)
+@@ -168,23 +160,23 @@ Syntax = {
+ 	}
+ }
+
+-// Default layout
+ Syntax.layouts.plain = function (options, html, container) {
+ 	return html
+ }
+
+ Syntax.singleMatchFunction = function(index, rule) {
+-	return function(token) {
++	return function(match) {
+ 		return new Syntax.Match(RegExp.indexOf(match, index), match[index].length, rule, match[index])
+ 	}
+ }
+
+-Syntax.lib.cStyleComment = {pattern: /\/\*[\s\S]*?\*\//gm, klass: &#x27;comment&#x27;, children: null}
+-Syntax.lib.cppStyleComment = {pattern: /\/\/.*$/gm, klass: &#x27;comment&#x27;, children: null}
+-Syntax.lib.perlStyleComment = {pattern: /#.*$/gm, klass: &#x27;comment&#x27;, children: null}
+-Syntax.lib.cStyleFunction = {pattern: /([a-z_][a-z0-9_]+)\s*\(/gi, matches: Syntax.singleMatchFunction(1, {klass: &#x27;function&#x27;, children: null})}
+-Syntax.lib.rubyStyleFunction = {pattern: /\.([a-z_][a-z0-9_]+)/gi, matches: Syntax.singleMatchFunction(1, {klass: &#x27;function&#x27;, children: null})}
+-Syntax.lib.rubyStyleSymbol = {pattern: /:[\w]+/, klass: &#x27;constant&#x27;, children: null}
++Syntax.lib.cStyleComment = {pattern: /\/\*[\s\S]*?\*\//gm, klass: &#x27;comment&#x27;, children: [&#x27;href&#x27;]}
++Syntax.lib.cppStyleComment = {pattern: /\/\/.*$/gm, klass: &#x27;comment&#x27;, children: [&#x27;href&#x27;]}
++Syntax.lib.perlStyleComment = {pattern: /#.*$/gm, klass: &#x27;comment&#x27;, children: [&#x27;href&#x27;]}
++
++Syntax.lib.cStyleFunction = {pattern: /([a-z_][a-z0-9_]+)\s*\(/gi, matches: Syntax.singleMatchFunction(1, {klass: &#x27;function&#x27;, children: []})}
++
++Syntax.lib.webLink = {pattern: /https?:\/\/([-\w~!$?&amp;#\/+|.,=]|%[a-f\d]{2})+/g, klass: &#x27;href&#x27;}
+
+ Syntax.Match = function (offset, length, expr, value) {
+ 	this.offset = offset
+@@ -199,16 +191,11 @@ Syntax.Match = function (offset, length, expr, value) {
+ }
+
+ Syntax.Match.sort = function (a,b) {
+-	var diff = a.offset - b.offset
+-	
+-	if (diff != 0)
+-		return diff
+-	else
+-		return b.length - a.length
++	return (a.offset - b.offset) || (b.length - a.length)
+ }
+
+ Syntax.Match.prototype.contains = function (match) {
+-	return (this.offset &lt;= match.offset) &amp;&amp; (match.endOffset &lt;= this.endOffset)
++	return (match.offset &gt;= this.offset) &amp;&amp; (match.endOffset &lt;= this.endOffset)
+ }
+
+ Syntax.Match.defaultReduceCallback = function (node, container) {
+@@ -237,9 +224,8 @@ Syntax.Match.prototype.reduce = function (append) {
+ 	if (this.expression &amp;&amp; this.expression.klass)
+ 		container.addClass(this.expression.klass)
+
+-	for (var i in this.children) {
++	for (var i = 0; i &lt; this.children.length; i += 1) {
+ 		//window.console.log(i, this.children[i], text)
+-		
+ 		var child = this.children[i]
+ 		var end = child.offset
+
+@@ -256,56 +242,59 @@ Syntax.Match.prototype.reduce = function (append) {
+ 	else if (start &lt; this.endOffset)
+ 		append(this.value.substr(start - this.offset, this.endOffset - start), container)
+ 	else if (start &gt; this.endOffset)
+-		window.console.log(&quot;Start position&quot;, start, &quot;exceeds length of value&quot;, this)
++		window.console.log(&quot;Start position&quot;, start, &quot;exceeds length of value&quot;, this.offset, this.length)
+
+ 	return container
+ }
+
+-// This function is by far the biggest overal cost in terms of run-time. This is not because
+-// it is slow, but mostly because it is called many times. It already has as much of the logic
+-// folded into it (few function calls). I considered making it non-recursive, but after testing,
+-// I found that less than 64 out of 500 function calls recursed at all, so it wouldn&#x27;t be worth
+-// it - it might even get slower.
+-Syntax.Match.prototype.insert = function (match) {
++// This is not a general tree insertion function. It is optimised to run in almost constant
++// time, but data must be inserted in sorted order, otherwise you will have problems.
++Syntax.Match.prototype.insertAtEnd = function (match) {
++	if (!this.contains(match)) {
++		window.console.log(this, &quot;does not contain&quot;, match)
++		return null;
++	}
++	
+ 	// We have explicitly said: no children
+ 	if (this.expression.children === null)
+ 		return null
+-	
+-	if (this.expression.children) {
+-		// window.console.log(this.expression.children, match.expression.klass, $.inArray(match.expression.klass, this.expression.children))
++	else if (this.expression.children) {
+ 		if ($.inArray(match.expression.klass, this.expression.children) == -1)
+ 			return null
+ 	}
+
+-	if (!this.contains(match))
+-		return null
+-	
+ 	if (this.children.length &gt; 0) {
+-		for (var i in this.children) {
+-			var child = this.children[i]
+-			
+-			if (match.offset &lt; child.offset) {
+-				if (match.endOffset &lt;= child.offset) {
+-					this.children.splice(i, 0, match)
+-					return this
+-				} else {
+-					window.console.log(&quot;Match &quot; + match.toString() + &quot; &quot; + displacement + &quot;  existing child: &quot; + this.children[i].toString())
+-					return null
+-				}
+-			} else if (match.offset &lt; child.endOffset) {
+-				if (match.endOffset &lt;= child.endOffset) {
+-					// Recursive step
+-					return child.insert(match)
+-				} else {
+-					var parts = match.halfBisect(child.endOffset)
+-					child.insert(parts[0])
+-					match = parts[1]
+-				}
++		var i = this.children.length-1
++		var child = this.children[i]
++		
++		if (match.offset &lt; child.offset) {
++			if (match.endOffset &lt;= child.offset) {
++				// displacement = &#x27;before&#x27;
++				this.children.splice(i, 0, match)
++				return this
++			} else {
++				// displacement = &#x27;left-overlap&#x27;
++				return null
++			}
++		} else if (match.offset &lt; child.endOffset) {
++			if (match.endOffset &lt;= child.endOffset) {
++				// displacement = &#x27;contains&#x27;
++				var result = child.insertAtEnd(match)
++				return result
+ 			} else {
+-				if (i == this.children.length-1) {
+-					this.children.splice(i+1, 0, match)
+-					return this
+-				}
++				// displacement = &#x27;right-overlap&#x27;
++				// This code should work, but right now I don&#x27;t think its useful.
++				window.console.error(&quot;Cannot add match&quot;, match, &quot;into&quot;, this, &quot;it right-overlaps!&quot;)
++				//var parts = match.halfBisect(child.endOffset)
++				// child.insertAtEnd(parts[0])
++				// this.insertAtEnd(parts[1])
++				return null;
++			}
++		} else {
++			// displacement = &#x27;after&#x27;
++			if (i == this.children.length-1) {
++				this.children.splice(i+1, 0, match)
++				return this
+ 			}
+ 		}
+
+@@ -328,7 +317,14 @@ Syntax.Match.prototype.halfBisect = function(offset) {
+ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
+ 	var parts = [], start = this.offset, prev = null, children = $.merge([], this.children)
+
+-	for (var i in splits) {
++	// Copy the array so we can modify it.
++	splits = splits.slice(0)
++	
++	// We need to split including the last part.
++	splits.push(this.endOffset)
++	splits.sort(function(a,b){return a-b})
++	
++	for (var i = 0; i &lt; splits.length; i += 1) {
+ 		var offset = splits[i]
+
+ 		if (offset &lt; this.offset || offset &gt; this.endOffset) {
+@@ -336,7 +332,7 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
+ 		}
+
+ 		var match = new Syntax.Match(start, offset - start, this.expression)
+-		match.value = this.value.substr(start, match.length)
++		match.value = this.value.substr(start - this.offset, match.length)
+
+ 		if (prev)
+ 			prev.next = match
+@@ -351,7 +347,7 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
+ 	splits.length = parts.length
+
+ 	for (var i = 0; i &lt; parts.length; i += 1) {
+-		var offset = splits.shift()
++		var offset = splits[0]
+
+ 		while (children.length &gt; 0) {
+ 			if (children[0].endOffset &lt;= parts[i].endOffset)
+@@ -362,15 +358,18 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
+
+ 		if (children.length) {
+ 			// We may have an intersection
+-			if (children[0].offset &lt; parts[i].offset) {
+-				children_parts = children.shift().bisectAtOffsets(splits)
++			if (children[0].offset &lt; parts[i].endOffset) {
++				var children_parts = children.shift().bisectAtOffsets(splits), j = 0
+
+-				for (var j in children_parts)
++				for (; j &lt; children_parts.length; j += 1)
+ 					parts[i+j].children.push(children_parts[j])
+
+-				// i += (j-1)
++				// Skip any parts which have been populated already
++				// i += (children_parts.length-1)
+ 			}
+ 		}
++		
++		splits.shift();
+ 	}
+
+ 	if (children.length)
+@@ -380,14 +379,11 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
+ }
+
+ Syntax.Match.prototype.split = function(pattern) {
+-	var splits = []
++	var splits = [], match
+
+ 	while ((match = pattern.exec(this.value)) != null)
+ 		splits.push(pattern.lastIndex)
+
+-	// We need to have a fake split at the end.
+-	splits.push(this.endOffset)
+-	
+ 	return this.bisectAtOffsets(splits)
+ }
+
+@@ -400,14 +396,24 @@ Syntax.Brush.prototype.push = function () {
+ 	if ($.isArray(arguments[0])) {
+ 		var patterns = arguments[0], rule = arguments[1]
+
+-		for (var i in patterns)
++		for (var i = 0; i &lt; patterns.length; i += 1)
+ 			this.push($.extend({pattern: patterns[i]}, rule))
+ 	} else {
+ 		var rule = arguments[0]
+
+ 		if (typeof(rule.pattern) == &#x27;string&#x27;) {
+ 			rule.string = rule.pattern
+-			rule.pattern = new RegExp(RegExp.escape(rule.pattern), rule.options || &#x27;g&#x27;)
++			var prefix = &quot;\\b&quot;, postfix = &quot;\\b&quot;
++			
++			if (!rule.pattern.match(/^\w/)) {
++				if (!rule.pattern.match(/\w$/))
++					prefix = postfix = &quot;&quot;
++				else
++					prefix = &quot;\\B&quot;
++			}
++			
++			
++			rule.pattern = rule.pattern = new RegExp(prefix + RegExp.escape(rule.pattern) + postfix, rule.options || &#x27;g&#x27;)
+ 		}
+
+ 		if (rule.pattern.global)
+@@ -420,9 +426,8 @@ Syntax.Brush.prototype.push = function () {
+ Syntax.Brush.prototype.getMatches = function(text) {
+ 	var matches = []
+
+-	for (var i in this.rules) {
++	for (var i = 0; i &lt; this.rules.length; i += 1)
+ 		matches = matches.concat(Syntax.getMatches(text, this.rules[i]))
+-	}
+
+ 	return matches
+ }
+@@ -434,15 +439,14 @@ Syntax.Brush.prototype.process = function(text) {
+ 	// This sort is absolutely key to the functioning of the tree insertion algorithm.
+ 	matches.sort(Syntax.Match.sort)
+
+-	for (var i in matches) {
+-		top.insert(matches[i])
+-	}
++	for (var i = 0; i &lt; matches.length; i += 1)
++		top.insertAtEnd(matches[i])
+
+ 	var lines = top.split(/\n/g)
+
+ 	var html = $(&#x27;&lt;pre&gt;&#x27;).addClass(&#x27;syntax&#x27;)
+
+-	for (var i in lines) {
++	for (var i = 0; i &lt; lines.length; i += 1) {
+ 		var line = lines[i].reduce()
+ 		html.append(line)
+ 	}
+diff --git a/jquery.syntax.layout.table.css b/jquery.syntax.layout.table.css
+index 6e12646..043f721 100644
+--- a/jquery.syntax.layout.table.css
++++ b/jquery.syntax.layout.table.css
+@@ -11,6 +11,10 @@ table.syntax {
+ 	-webkit-box-shadow: 5px 5px 5px #eee;
+ }
+
++table.syntax tr.alt td.source {
++	background-color: #f6f6f6;
++}
++
+ table.syntax td {
+ 	padding-left: 0.4em;
+ 	padding-right: 0.4em;
+@@ -22,5 +26,5 @@ table.syntax td.number {
+
+ 	width: 2.5em;
+ 	color: #555;
+-	background-color: #dadada;
++	background-color: #e0e0e0;
+ }
+\ No newline at end of file
+diff --git a/jquery.syntax.layout.table.js b/jquery.syntax.layout.table.js
+index 9cd68c3..14967c4 100644
+--- a/jquery.syntax.layout.table.js
++++ b/jquery.syntax.layout.table.js
+@@ -1,16 +1,14 @@
+-Syntax.layouts.table = function(options, code, container) {
+-	var table = $(&#x27;&lt;table&gt;&#x27;), tr = null, td = null;
++Syntax.layouts.tableJQ = function(options, code, container) {
++	var table = $(&#x27;&lt;table class=&quot;syntax&quot;&gt;&#x27;), tr = null, td = null;
+ 	var line = 1;
+
+-	table.addClass(&#x27;syntax&#x27;);
+-	
+ 	code.children().each(function() {
+-		tr = $(&#x27;&lt;tr&gt;&#x27;).addClass(&#x27;line&#x27;, &#x27;line-&#x27; + line);
++		tr = $(&#x27;&lt;tr class=&quot;line ln&#x27; + line + &#x27;&quot;&gt;&#x27;)
+
+-		td = $(&#x27;&lt;td&gt;&#x27;).addClass(&#x27;number&#x27;).text(line);
++		td = $(&#x27;&lt;td class=&quot;number&quot;&gt;&#x27; + line + &#x27;&lt;/td&gt;&#x27;)
+ 		tr.append(td);
+
+-		td = $(&#x27;&lt;td&gt;&#x27;).addClass(&#x27;source&#x27;);
++		td = $(&#x27;&lt;td class=&quot;source&quot;&gt;&#x27;)
+ 		td.append(this);
+ 		tr.append(td);
+
+@@ -19,4 +17,57 @@ Syntax.layouts.table = function(options, code, container) {
+ 	});
+
+ 	return table;
+-}
+\ No newline at end of file
++}
++
++Syntax.layouts.tableDOM = function(options, code, container) {
++	var table = $(&#x27;&lt;table&gt;&#x27;), tr = null, td = null;
++	var line = 1;
++	
++	table.addClass(&#x27;syntax&#x27;);
++	
++	code.children().each(function() {
++		tr = document.createElement(&#x27;tr&#x27;)
++		tr.className = &quot;line ln&quot; + line
++		
++		if (line % 2)
++			tr.className += &quot; alt&quot;
++		
++		td = document.createElement(&#x27;td&#x27;)
++		td.className = &quot;number&quot;
++		td.innerHTML = line
++		tr.appendChild(td)
++		
++		td = document.createElement(&#x27;td&#x27;)
++		td.className = &quot;source&quot;
++		td.innerHTML = this.innerHTML
++		tr.appendChild(td)
++		
++		table[0].appendChild(tr)
++		line = line + 1;
++	});
++	
++	$(&#x27;span.href&#x27;, table).each(function(){
++		$(this).replaceWith($(&#x27;&lt;a&gt;&#x27;).attr(&#x27;href&#x27;, this.innerHTML).text(this.innerHTML))
++	})
++	
++	return table;
++}
++
++Syntax.layouts.tableSTR = function(options, code, container) {
++	var table = &quot;&lt;table class=&#x27;syntax&#x27;&gt;&quot;, tr = null, td = null;
++	var line = 1;
++	
++	code.children().each(function() {
++		table += &quot;&lt;tr class=&#x27;line ln&quot; + line + &quot;&#x27;&gt;&lt;td class=&#x27;number&#x27;&gt;&lt;/td&gt;&lt;td class=&#x27;source&#x27;&gt;&quot; + this.innerHTML + &quot;&lt;/td&gt;&lt;/tr&gt;&quot;
++
++		line = line + 1;
++	});
++	
++	table += &quot;&lt;/table&gt;&quot;
++	
++	window.console.log(table.length)
++	
++	return $(table);
++}
++
++Syntax.layouts.table = Syntax.layouts.tableDOM
+\ No newline at end of file
+		</pre>
+
+	</body>
+</html>

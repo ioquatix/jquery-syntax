@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
+
+		<script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+			$(function() {
+				jQuery.syntax();
+			});
+		</script>
+
+	</head>
+	<body>
+		<h1>Syntax: Assembler</h1>
+		
+		<h2>Hello World &amp; Mode-line Support</h2>
+		
+		<p>The following example does not have a class specifying the brush to use. This is extracted from the mode-line. This line also specifies other options, in this case the tab-width.</p>
+		
+		<pre class="syntax"># -*- mode: asm; tab-width: 4; -*-
+.text
+	.global _start
+
+_start:
+	# ssize_t sys_write(unsigned int fd, const char __user * buf, size_t count)
+	movl	$len,	%edx		# size_t count
+	movl	$msg,	%ecx		# const char __user * buf
+	movl	$1,		%ebx		# unsigned int fd
+	movl	$4,		%eax		# system call number (sys_write)
+	int		$0x80				# call kernel
+
+	# void _exit(int status);
+	movl	$0,		%ebx		# int status
+	movl	$1,		%eax		# system call number (sys_exit)
+	int		$0x80				# call kernel
+
+.data							# section declaration
+
+msg:
+	.ascii	"Hello, world!\n"
+	len = . - msg</pre>
+	</body>
+</html>

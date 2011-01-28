@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
+
+		<script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
+	
+		<script type="text/javascript">
+			$(function() {
+				jQuery.syntax();
+			});
+		</script>
+
+	</head>
+	<body>
+		<h1>Syntax: Ruby</h1>
+		
+		<h2>Ruby Script #1</h2>
+		
+		<pre class="syntax brush-ruby">#!/usr/bin/env ruby
+
+# Copyright (c) 2009 Samuel Williams. Released under the GNU GPLv3.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+
+require 'rubygems'
+
+require 'rexec'
+require 'rexec/daemon'
+
+require 'rubygems'
+require 'rubydns'
+
+# To run this command, use the standard daemon syntax as root
+# ./daemon2.rb start
+
+# You should be able to see that the server has dropped priviledges
+#   # ps aux | grep daemon2.rb
+#   daemon   16555   0.4  0.0    81392   2024   ??  S     3:35am   0:00.28 ruby ../test/daemon2.rb start
+
+# Test using the following command
+# dig @localhost test.mydomain.org
+
+# You might need to change the user name &quot;daemon&quot;. This can be a user name or a user id.
+RUN_AS = &quot;daemon&quot;
+
+# UDP Socket does per packet reverse lookups unless this is set.
+UDPSocket.do_not_reverse_lookup = true
+
+# We need to be root in order to bind to privileged port
+if RExec.current_user != &quot;root&quot;
+  $stderr.puts &quot;Sorry, this command needs to be run as root!&quot;
+  exit 1
+end
+
+# The Daemon itself
+class Server &lt; RExec::Daemon::Base
+  @@var_directory = File.dirname(__FILE__)
+
+  def self.run
+    # Bind to port 53 (UDP)
+    socket = UDPSocket.new
+    socket.bind(&quot;0.0.0.0&quot;, 53)
+
+    # Drop priviledges
+    RExec.change_user(RUN_AS)
+
+    # Don't buffer output (for debug purposes)
+    $stderr.sync = true
+
+    # Use upstream DNS for name resolution (These ones are Orcon DNS in NZ)
+    $R = Resolv::DNS.new(:nameserver =&gt; [&quot;60.234.1.1&quot;, &quot;60.234.2.2&quot;])
+
+    # Start the RubyDNS server
+    RubyDNS::run_server(:listen =&gt; [socket]) do
+      match(&quot;test.mydomain.org&quot;, :A) do |transaction|
+        transaction.respond!(&quot;10.0.0.80&quot;)
+      end
+
+      # Default DNS handler
+      otherwise do |transaction|
+        logger.info &quot;Passthrough: #{transaction}&quot;
+        transaction.passthrough!($R)
+      end
+    end
+  end
+end
+
+# RExec daemon runner
+Server.daemonize</pre>
+
+	<h2>Ruby Script #2</h2>
+	
+	<pre class="syntax brush-ruby">#!/usr/bin/env ruby
+# Simple Operator Expression Parser
+
+require &#x27;set&#x27;
+
+DEBUG = false
+
+class Array
+  def map_to(with)
+    r = {}
+
+    each_with_index { |v,i| r[v] = with[i] }
+
+    return r
+  end
+end
+
+module Expression
+  class Context
+    def initialize(operators, values)
+      @values = values
+      @operators = operators
+    end
+
+    def value_of (key)
+      @values[key]
+    end
+
+    def call (op, args)
+      @operators.call(op, args)
+    end
+  end
+
+  class Constant
+    def initialize(value)
+      @value = value
+    end
+
+    def evaluate (ctx)
+      return @value
+    end
+  end
+
+  class Identifier
+    def initialize(name)
+      @name = name
+    end
+
+    def evaluate (ctx)
+      ctx.value_of(@name)
+    end
+  end
+
+  class Operator
+    def initialize(name, args = [])
+      @name = name
+      @args = args
+    end
+
+    def name
+      @name
+    end
+
+    def evaluate (ctx)
+      ctx.call(@name, @args.collect { |a| a.evaluate(ctx) })
+    end
+
+    def args
+      @args
+    end
+  end
+
+  class Brackets
+    def initialize(node)
+      @node = node
+    end
+
+    def evaluate (ctx)
+      @node.evaluate(ctx)
+    end
+  end
+
+  class Parser
+    def initialize(ops, expr)
+      @identifiers = []
+      @operators = ops
+
+      # Tokens and expressions line up
+      @expressions = []
+      @tokens = []
+
+      @top = nil
+
+      parse(expr)
+    end
+
+    def evaluate (ctx)
+      @expressions.collect do |expr|
+        expr != nil ? expr.evaluate(ctx) : nil
+      end
+    end
+
+    def identifiers
+      @identifiers
+    end
+
+    def tokens
+      @tokens
+    end
+  private
+    def parse(expr)
+      symbols = @operators.keys + [&quot;(&quot;, &quot;)&quot;]
+      tokenizer = Regexp.union(Regexp.union(*symbols), /[A-Z]+/)
+
+      @tokens = expr.scan(tokenizer)
+      @expressions = [nil] * @tokens.size
+
+      @identifiers = Set.new(expr.scan(/[A-Z]+/))
+
+      @top, i = process_expression
+
+      if DEBUG
+        puts &quot;Processed #{i} tokens...&quot;
+        puts &quot;Tokens: &quot; + @tokens.join(&quot; &quot;)
+        puts @top.inspect
+        puts @expressions.inspect
+      end
+    end
+
+    def process_expression(i = 0)
+      ast = []
+      ops = {}
+      while i &lt; @tokens.size
+        t = @tokens[i]
+
+        if t == &quot;(&quot;
+          result, i = process_expression(i+1)
+          ast += result
+        elsif t == &quot;)&quot;
+          break
+        else        
+          result = process_token(i)
+          ast &lt;&lt; result
+        end
+
+        if result.class == Operator
+          ops[result.name] ||= []
+          # Store the index
+          ops[result.name] &lt;&lt; (ast.size - 1)
+        end
+
+        i += 1
+      end
+
+      #puts ast.inspect
+
+      # We need to sort the list of operators now
+      # [c, infix, prefix, c]
+
+      @operators.order.each do |name|
+        op_kind = @operators.kind(name)
+        next unless ops[name]
+
+        ops[name].each do |loc|
+          op = ast[loc]
+
+          if op_kind == :prefix
+            rhs = find_subexpression(ast, loc, RHS_SEARCH)
+            op.args &lt;&lt; ast[rhs]
+            ast[rhs] = nil
+          elsif op_kind == :infix
+            lhs = find_subexpression(ast, loc, LHS_SEARCH)
+            rhs = find_subexpression(ast, loc, RHS_SEARCH)
+            op.args &lt;&lt; ast[lhs]
+            op.args &lt;&lt; ast[rhs]
+            ast[lhs] = ast[rhs] = nil
+          elsif op_kind == :postfix
+            lhs = find_subexpression(ast, loc, LHS_SEARCH)
+            op.args &lt;&lt; ast[lhs]
+            ast[rhs] = nil
+          end
+        end
+      end
+
+      return [ast.uniq, i]
+    end
+
+    RHS_SEARCH = 1
+    LHS_SEARCH = -1
+
+    def find_subexpression(ast, loc, dir)
+      while loc &gt;= 0 &amp;&amp; loc &lt; ast.size
+        loc += dir
+        return loc if ast[loc] != nil
+      end
+
+      return nil
+    end
+
+    def process_token(i) 
+      t = @tokens[i]
+
+      if @operators.key? t
+        tok = Operator.new(t)
+      elsif t.match /[A-Z]+/
+        tok = Identifier.new(t)
+      else
+        tok = Constant.new(t)
+      end
+
+      @expressions[i] = tok
+      return tok
+    end
+  end
+
+  TYPE = 0
+  FUNC = 1
+  class Operators    
+    def initialize
+      @operators = {}
+      @order = []
+    end
+
+    def add(sym, kind, &amp;block)
+      @operators[sym] = [kind, block]
+      @order &lt;&lt; sym
+    end
+
+    def order
+      @order
+    end
+
+    def keys
+      @operators.keys
+    end
+
+    def key? k
+      @operators.key? k
+    end
+
+    def kind k
+      @operators[k][0]
+    end
+
+    def call(k, args)
+      @operators[k][1].call(*args)
+    end
+  end
+end</pre>
+
+	</body>
+</html>
