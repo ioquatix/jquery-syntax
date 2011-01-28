@@ -1,18 +1,20 @@
-*** jQuery.Syntax [release-3.0rc2] ***
+*** jQuery.Syntax [release-3.0rc3] ***
 
 jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamically loads external dependencies (JavaScript & CSS) when required. It uses jQuery to make it cross-browser compatible and to simplify integration.
 
-You will need to install the following dependencies to use jQuery.Syntax :
+To use jQuery.Syntax with minimal work, simply review the examples and use the files in the public sub-directory.
+
+For more advanced usage and customisation, you will need to install the following dependencies to use jQuery.Syntax:
 	$ sudo gem install rake haml
 
 To install jQuery.Syntax into the standard 'public' directory
 	$ rake install
 
-This will create a new sub-directory called 'public' containing all the appropriate stylesheets and javascript. To customise the install process, edit "install.yaml".
+To customise the install process, including destination directory and theme, edit "install.yaml".
 
-Once installed, jQuery.Syntax depends on jQuery 1.4+.
+jQuery.Syntax depends on jQuery 1.4.1+.
 
-For downloads, documentation, compatibility, please see :
+For downloads, documentation, compatibility, please see:
 	http://www.oriontransfer.co.nz/software/jquery-syntax/
 
 There are several plugins available (source code - for stable releases see the main project page above):
@@ -52,6 +54,16 @@ If you modify this code, you must include these "Additional permissions" in your
 of the code.
 
 *** Change Log ***
+
+release-3.0rc3
+ - Bug fixes to several brushes including:
+    - Objective-C methods (incorrect highlighting of last argument).
+    - Diff insertion and deletion how highlight the background row colour.
+    - Camel case type now expects a capital letter in the first non-underscore position.
+    - Improved the style of XML entities, percent-escapes.
+ - Several examples now included in examples sub-directory.
+ - Default install now included in public sub-directory.
+ - Fixed minor issue in path detection regular expression.
 
 release-3.0rc2
  - Installation now staged directly into destination directory.
