@@ -11,6 +11,8 @@ require 'fileutils'
 require 'tmpdir'
 require 'pathname'
 
+require 'ext/theme'
+
 JSMIN_EXEC = File.dirname(__FILE__) + "/ext/jsmin.rb"
 CACHE_FILE = "jquery.syntax.cache.js"
 MINIFIED_FILE = "jquery.syntax.min.js"
@@ -19,6 +21,13 @@ LICENSE = <<EOF
 // Copyright 2010 Samuel Williams. All rights reserved.
 // For more information, please see <http://www.oriontransfer.co.nz/software/jquery-syntax>
 EOF
+
+BASE_PATH = Pathname.new(Dir.getwd)
+$config = nil
+
+if ENV['PREFIX']
+	Dir.chdir(ENV['PREFIX'])
+end
 
 task :update_aliases do
 	code = StringIO.new
@@ -53,83 +62,17 @@ task :update_aliases do
 	puts code.string
 end
 
-class Theme
-	def initialize(dst_dir, root = nil)
-		@destination = dst_dir
-		
-		@includes = []
-		@root = root || File.join(File.dirname(__FILE__), "themes")
-		
-		@extends = {}
-	end
-	
-	attr :includes
-	
-	def load_theme(theme_dir)
-		# Themes which are relative paths are designed to reside in the themes subdirectory.
-		unless File.directory?(theme_dir)
-			theme_dir = File.join(@root, theme_dir)
-		end
-	
-		unless File.directory?(theme_dir)
-			raise StandardError.new("Could not find theme #{theme_dir}!")
-		end
-	
-		$stderr.puts "Loading theme from #{theme_dir}..."
-		theme_config_path = File.join(theme_dir, "config.yaml")
-		config = {}
-	
-		# Is there a configuration file?
-		if File.exist? theme_config_path
-			config = YAML::load_file(theme_config_path)
-		end
-	
-		# Load any dependencies recursively - if you have bad configuration this might
-		# give you visions of infinity.
-		if config['depends']
-			config['depends'].each {|name| load_theme(name)}
-		end
-		
-		if config['extends']
-			config['extends'].each {|name,extension| @extends[name] = extension}
-		end
-		
-		if config['includes']
-			@includes.concat(config['includes'])
-		end
-	
-		# Copy all the theme files
-		FileUtils.cp_r(Dir.glob(theme_dir + "/*"), @destination)
-	
-		# Remove any files/directories that have been excluded
-		if config['exclude']
-			config['exclude'].each do |name|
-				FileUtils.rm_rf(File.join(@destination, name))
-			end
-		end
-	end
-	
-	def includes_for(path)
-		if extension = @extends[File.basename(path)]
-			return @includes + [extension]
-		else
-			return @includes
-		end
-	end
-end
-
-task :generate_stylesheets, [:theme,:override,:output] do |task, arguments|
+task :generate_stylesheets, [:theme,:override] do |task, arguments|
 	theme = arguments[:theme] || "base"
 	override = arguments[:override] || "master.sass"
+	output = "./"
 	
 	puts "Building CSS: #{theme}/#{override}"
-	
-	output = arguments[:output] || File.dirname(__FILE__)
 	
 	theme_tmp = File.join(Dir.tmpdir, "jQuery.Syntax-#{Time.now.to_i}")
 	FileUtils.mkdir_p(theme_tmp)
 	
-	aggregate_theme = Theme.new(theme_tmp)
+	aggregate_theme = Theme.new(theme_tmp, File.join(File.dirname(__FILE__), "themes"))
 	aggregate_theme.load_theme(theme)
 	
 	unless File.exist?(override)
@@ -160,10 +103,8 @@ task :generate_stylesheets, [:theme,:override,:output] do |task, arguments|
 	
 	FileUtils.rm_rf(theme_tmp)
 	
-	Dir.chdir(output) do
-		Rake::Task[:update_aliases].reenable
-		Rake::Task[:update_aliases].invoke
-	end
+	Rake::Task[:update_aliases].reenable
+	Rake::Task[:update_aliases].invoke
 end
 
 # This builds a combined jquery.syntax.js and jquery.syntax.cache.js and minifies the result
@@ -202,29 +143,47 @@ task :compress_all => [:build_combined] do
 	end
 end
 
-task :install, [:config] do |task, arguments|
-	config_path = Pathname.new(arguments[:config] || "install.yaml")
-	config = YAML::load_file(config_path)
+task :setup_prefix do
+	if ENV['CONFIG']
+		config_path = BASE_PATH + ENV['CONFIG']
+	else
+		config_path = BASE_PATH + "install.yaml"
+	end
 	
-	destination = config_path.dirname + (config['destination'] || 'public')
-	destination.mkpath
+	$config = YAML::load_file(config_path)
 	
+	if $config['prefix'] && !ENV['PREFIX']
+		ENV['PREFIX'] = config_path.dirname + ($config['prefix'] || 'public')
+	elsif ENV['PREFIX']
+		ENV['PREFIX'] = BASE_PATH + ENV['PREFIX']
+	else
+		ENV['PREFIX'] = BASE_PATH + 'public'
+	end
+	
+	prefix = Pathname.new(ENV['PREFIX'])
+	prefix.mkpath
+	
+	Dir.chdir(prefix)
+	
+	puts "Working in #{Dir.getwd}..."
+end
+
+task :install => :setup_prefix do |task, arguments|
 	Rake::Task[:clean].invoke(arguments[:config])
 	
 	Rake::Task[:generate_stylesheets].invoke(
-		config['generate_stylesheets']['theme'], 
-		config['generate_stylesheets']['override'],
-		destination
+		$config['generate_stylesheets']['theme'], 
+		$config['generate_stylesheets']['override']
 	)
 	
-	js_files = Dir[File.dirname(__FILE__) + "/source/jquery.syntax.*js"]
+	js_files = Dir[BASE_PATH + "source/jquery.syntax.*js"]
 	
 	js_files.each do |path|
-		$stderr.puts "Copying #{path}..."
+		$stderr.puts "Copying #{File.basename(path)}..."
 		
-		output_path = File.join(destination, File.basename(path))
+		output_path = File.basename(path)
 		
-		if config['minify'] == false
+		if $config['minify'] == false
 			FileUtils.cp(path, output_path)
 		else
 			IO.popen(JSMIN_EXEC, "r+") do |min|
@@ -239,18 +198,13 @@ task :install, [:config] do |task, arguments|
 		end
 	end
 	
-	Dir.chdir(destination) do
-		Rake::Task[:build_combined].invoke
-	end
+	Rake::Task[:build_combined].invoke
+	
+	puts "Install into #{Dir.getwd} finished."
 end
 
-task :clean, [:config] do |task, arguments|
-	config_path = Pathname.new(arguments[:config] || "install.yaml")
-	config = YAML::load_file(config_path)
-	
-	destination = config_path.dirname + (config['destination'] || 'public')
-	
-	Dir.glob(File.join(destination, "jquery.syntax.*")) do |path|
+task :clean => :setup_prefix  do |task, arguments|
+	Dir.glob("jquery.syntax.*") do |path|
 		FileUtils.rm path, :verbose => true
 	end
 end

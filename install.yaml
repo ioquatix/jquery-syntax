@@ -1,5 +1,5 @@
 # The path to install the code
-destination: "public"
+prefix: "public"
 # The options for the stylesheet generation
 generate_stylesheets:
     theme: "clean"
