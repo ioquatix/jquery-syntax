@@ -1,3 +1,8 @@
+# The path to install the code
 destination: "public"
+# The options for the stylesheet generation
 generate_stylesheets:
     theme: "clean"
+    # override: blue
+# disable minification (on by default)
+# minify: false
