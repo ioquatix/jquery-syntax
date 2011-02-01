@@ -130,10 +130,12 @@ var Syntax = {
 	
 	getScript: function (path, callback) {
 		jQuery.ajax({
-			async: false,
 			type: "GET",
 			url: path,
 			success: callback,
+			error: function(xhr, status, error) {
+				alert("Could not load resource: " + path + " " + error);
+			},
 			dataType: "script",
 			cache: Syntax.defaultOptions.cacheScripts
 		});
