@@ -224,13 +224,17 @@ task :install, [:config] do |task, arguments|
 		
 		output_path = File.join(destination, File.basename(path))
 		
-		IO.popen(JSMIN_EXEC, "r+") do |min|
-			min.write(File.read(path))
-			min.close_write
+		if config['minify'] == false
+			FileUtils.cp(path, output_path)
+		else
+			IO.popen(JSMIN_EXEC, "r+") do |min|
+				min.write(File.read(path))
+				min.close_write
 			
-			File.open(output_path, "w") do |fp|
-				fp.write(LICENSE)
-				fp.write(min.read)
+				File.open(output_path, "w") do |fp|
+					fp.write(LICENSE)
+					fp.write(min.read)
+				end
 			end
 		end
 	end
