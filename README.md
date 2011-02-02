@@ -1,4 +1,4 @@
-# jQuery.Syntax [release-3.0rc3] #
+# jQuery.Syntax [release-3.0rc4] #
 
 jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamically loads external dependencies (JavaScript & CSS) when required. It uses jQuery to make it cross-browser compatible and to simplify integration.
 
@@ -55,6 +55,10 @@ If you modify this code, you must include these "Additional permissions" in your
 of the code.
 
 ## Change Log ##
+
+### release-3.0rc4 ###
+ - Bug fixes to rakefile - new environment variable PREFIX determines install location.
+ - Improvements to XML brush including supporting CDATA tags.
 
 ### release-3.0rc3 ###
  - Bug fixes to several brushes including:
