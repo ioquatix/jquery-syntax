@@ -100,7 +100,8 @@ var Syntax = {
 	styles: {},
 	lib: {},
 	defaultOptions: {
-		cacheScripts: true
+		cacheScripts: true,
+		cacheStyleSheets: true
 	},
 	
 	brushes: new ResourceLoader(function (name, callback) {
@@ -121,6 +122,10 @@ var Syntax = {
 		var link = jQuery('<link>');
 		jQuery("head").append(link);
 
+		if (!Syntax.defaultOptions.cacheStyleSheets) {
+			path = path + "?" + Math.random()
+		}
+		
 		link.attr({
 			rel: "stylesheet",
 			type: "text/css",
