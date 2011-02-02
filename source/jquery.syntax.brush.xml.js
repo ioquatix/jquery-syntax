@@ -5,15 +5,31 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.register('xml', function(brush) {
+	brush.push({
+		pattern: /(<(!\[CDATA\[)([\s\S]*?)(\]\])>)/gm,
+		matches: Syntax.extractMatches(
+			{klass: 'cdata', allow: ['cdata-content', 'cdata-tag'], debug: true},
+			{klass: 'cdata-tag', debug: true},
+			{klass: 'cdata-content', debug: true},
+			{klass: 'cdata-tag', debug: true}
+		)
+	});
+	
 	// /[\s\S]/ means match anything... /./ doesn't match newlines
 	brush.push({
+		pattern: /<[^>]+>/g,
+		klass: 'tag',
+		allow: '*'
+	});
+	
+	brush.push({
 		pattern: /<\/?((?:[\w_\-]+:)?)([\w_\-\.]+)[\s\S]*?>/g,
-		matches: Syntax.extractMatches({klass: 'namespace', allow: ['attribute']}, {klass: 'tag', allow: ['attribute']})
+		matches: Syntax.extractMatches({klass: 'namespace'}, {klass: 'tag-name'})
 	});
 	
 	brush.push({
 		pattern: /([\w_\-\.]+)=(".*?"|'.*?'|\S+)/g,
-		matches: Syntax.extractMatches({klass: 'attribute'}, {klass: 'string'})
+		matches: Syntax.extractMatches({klass: 'attribute', only: ['tag']}, {klass: 'string', only: ['tag']}),
 	});
 	
 	brush.push({
