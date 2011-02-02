@@ -1,4 +1,8 @@
-.syntax .xml .tag {
+.syntax .xml .cdata-content {
+  color: #005588;
+  border-radius: 0.5em; }
+.syntax .xml .tag-name, .syntax .xml .cdata-tag {
+  font-weight: bold;
   color: blue;
   font-weight: bold; }
 .syntax .xml .namespace {
