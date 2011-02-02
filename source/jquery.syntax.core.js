@@ -172,17 +172,19 @@ Syntax.extractMatches = function() {
 		var matches = [];
 		
 		for (var i = 0; i < rules.length; i += 1) {
-			var rule = rules[i];
+			var rule = rules[i], index = i+1;
 			
 			if (rule == null) {
 				continue;
 			}
 			
+			if (typeof(rule.index) != 'undefined') {
+				index = rule.index;
+			}
+			
 			if (rule.debug) {
 				console.log("extractMatches", rule, index, match[index], match);
 			}
-			
-			var index = rule.index || (i+1);
 			
 			if (match[index].length > 0) {
 				if (rule.brush) {
