@@ -646,6 +646,10 @@ Syntax.Brush.prototype.getMatchesForRule = function (text, expr, offset) {
 		}
 	}
 	
+	if (expr.debug) {
+		console.log("matches", matches);
+	}
+	
 	return matches;
 };
 
