@@ -37,6 +37,7 @@ task :update_aliases do
 	code.puts
 	
 	code.puts "// Brush Aliases"
+	
 	Dir["jquery.syntax.brush.*.js"].each do |path|
 		File.open(path, "r") do |f|
 			first_line = f.readline rescue ""
@@ -102,9 +103,6 @@ task :generate_stylesheets, [:theme,:override] do |task, arguments|
 	end
 	
 	FileUtils.rm_rf(theme_tmp)
-	
-	Rake::Task[:update_aliases].reenable
-	Rake::Task[:update_aliases].invoke
 end
 
 # This builds a combined jquery.syntax.js and jquery.syntax.cache.js and minifies the result
@@ -183,22 +181,11 @@ task :install => :setup_prefix do |task, arguments|
 		
 		output_path = File.basename(path)
 		
-		if $config['minify'] == false
-			FileUtils.cp(path, output_path)
-		else
-			IO.popen(JSMIN_EXEC, "r+") do |min|
-				min.write(File.read(path))
-				min.close_write
-			
-				File.open(output_path, "w") do |fp|
-					fp.write(LICENSE)
-					fp.write(min.read)
-				end
-			end
-		end
+		FileUtils.cp(path, output_path)
 	end
 	
 	Rake::Task[:build_combined].invoke
+	Rake::Task[:compress_all] if $config['minify']
 	
 	puts "Install into #{Dir.getwd} finished."
 end
