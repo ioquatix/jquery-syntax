@@ -128,6 +128,7 @@ task :compress_all => [:build_combined] do
 	files = Dir["jquery.syntax.*.js"]
 	
 	files.each do |path|
+		puts "Minifying #{File.basename(path)}..."
 		IO.popen(JSMIN_EXEC, "r+") do |min|
 			min.write(File.read(path))
 			
@@ -185,7 +186,7 @@ task :install => :setup_prefix do |task, arguments|
 	end
 	
 	Rake::Task[:build_combined].invoke
-	Rake::Task[:compress_all] if $config['minify']
+	Rake::Task[:compress_all].invoke if $config['minify']
 	
 	puts "Install into #{Dir.getwd} finished."
 end

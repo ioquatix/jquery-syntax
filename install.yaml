@@ -4,5 +4,5 @@ prefix: "public"
 generate_stylesheets:
     theme: "clean"
     # override: blue
-# disable minification (on by default)
-# minify: false
+# Enable minification
+minify: true
