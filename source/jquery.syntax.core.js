@@ -179,7 +179,7 @@ Syntax.extractMatches = function() {
 			}
 			
 			if (rule.debug) {
-				alert("'" + match[1] + "' : " + match[1].charCodeAt(0));
+				console.log("extractMatches", rule, index, match[index], match);
 			}
 			
 			var index = rule.index || (i+1);
