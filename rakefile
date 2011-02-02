@@ -125,7 +125,7 @@ end
 
 # Note... this is one way !
 task :compress_all => [:build_combined] do
-	files = Dir["jquery.syntax.*.js"]
+	files = Dir["jquery.syntax*.js"]
 	
 	files.each do |path|
 		puts "Minifying #{File.basename(path)}..."
@@ -175,7 +175,7 @@ task :install => :setup_prefix do |task, arguments|
 		$config['generate_stylesheets']['override']
 	)
 	
-	js_files = Dir[BASE_PATH + "source/jquery.syntax.*js"]
+	js_files = Dir[BASE_PATH + "source/jquery.syntax*.js"]
 	
 	js_files.each do |path|
 		$stderr.puts "Copying #{File.basename(path)}..."
