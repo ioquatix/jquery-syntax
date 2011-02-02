@@ -6,12 +6,12 @@
 
 Syntax.register('xml', function(brush) {
 	brush.push({
-		pattern: /(<(!\[CDATA\[)([\s\S]*?)(\]\])>)/gm,
+		pattern: /(<!(\[CDATA\[)([\s\S]*?)(\]\])>)/gm,
 		matches: Syntax.extractMatches(
-			{klass: 'cdata', allow: ['cdata-content', 'cdata-tag'], debug: true},
-			{klass: 'cdata-tag', debug: true},
-			{klass: 'cdata-content', debug: true},
-			{klass: 'cdata-tag', debug: true}
+			{klass: 'cdata', allow: ['cdata-content', 'cdata-tag']},
+			{klass: 'cdata-tag'},
+			{klass: 'cdata-content'},
+			{klass: 'cdata-tag'}
 		)
 	});
 	

@@ -38,7 +38,7 @@ Syntax.register('html', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /<(\!DOCTYPE(.*?))>/g,
+		pattern: /<\!(DOCTYPE(.*?))>/g,
 		matches: Syntax.extractMatches({klass: 'doctype'})
 	});
 	

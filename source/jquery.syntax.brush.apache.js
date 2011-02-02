@@ -6,17 +6,21 @@
 
 Syntax.register('apache', function(brush) {
 	brush.push({
-		pattern: /<(\w+).*?>/gi,
-		matches: Syntax.extractMatches({
+		pattern: /(<(\w+).*?>)/gi,
+		matches: Syntax.extractMatches(
+		{
 			klass: 'tag',
-			allow: ['attribute'],
+			allow: ['attribute', 'tag-name', 'string']
+		},
+		{
+			klass: 'tag-name',
 			process: Syntax.lib.webLinkProcess("site:http://httpd.apache.org/docs/trunk/ directive", true)
 		})
 	});
 
 	brush.push({
-		pattern: /<\/(\w+).*?>/gi,
-		matches: Syntax.extractMatches({klass: 'tag', allow: ['attribute']})
+		pattern: /(<\/(\w+).*?>)/gi,
+		matches: Syntax.extractMatches({klass: 'tag', allow: ['tag-name']}, {klass: 'tag-name'})
 	});
 
 	brush.push({
