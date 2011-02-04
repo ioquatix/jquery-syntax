@@ -18,7 +18,7 @@ Syntax.register('lisp', function(brush) {
 	brush.push(Syntax.lib.webLink);
 	
 	brush.push({
-		pattern: /\(([^\s\(\)]+)/gi,
+		pattern: /\(\s*([^\s\(\)]+)/gmi,
 		matches: Syntax.extractMatches({klass: 'function'})
 	});
 	
