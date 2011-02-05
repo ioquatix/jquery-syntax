@@ -24,6 +24,9 @@ Syntax.register('ruby', function(brush) {
 		matches: Syntax.extractMatches({klass: 'function'}, {klass: 'constant'})
 	});
 	
+	// Regular expressions
+	brush.push(Syntax.lib.perlStyleRegularExpressions);
+	
 	brush.push({pattern: /(@+|\$)[\w]+/g, klass: 'variable'});
 	
 	brush.push(Syntax.lib.camelCaseType);

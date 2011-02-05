@@ -18,6 +18,9 @@ Syntax.register('perl5', function(brush) {
 	brush.push(operators, {klass: 'operator'});
 	brush.push(builtins, {klass: 'function'});
 	
+	// Regular expressions
+	brush.push(Syntax.lib.perlStyleRegularExpressions);
+	
 	// Comments
 	brush.push(Syntax.lib.perlStyleComment);
 	brush.push(Syntax.lib.webLink);

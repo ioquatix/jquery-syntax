@@ -14,6 +14,9 @@ Syntax.register('javascript', function(brush) {
 	brush.push(keywords, {klass: 'keyword'});
 	brush.push(operators, {klass: 'operator'});
 	
+	// Regular expressions
+	brush.push(Syntax.lib.perlStyleRegularExpressions);
+	
 	// Camel Case Types
 	brush.push(Syntax.lib.camelCaseType);
 	
