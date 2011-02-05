@@ -32,7 +32,7 @@ pre.syntax {
     color: blue;
     text-decoration: underline; }
   .syntax .variable {
-    font-style: italic; }
+    color: #2222cc; }
   .syntax pre {
     overflow: auto;
     font-family: inherit; }
