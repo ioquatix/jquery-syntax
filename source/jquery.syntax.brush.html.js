@@ -22,13 +22,23 @@ Syntax.register('html', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /(<\?php)((.|\n)*?)(\?>)/gm,
-		matches: Syntax.extractMatches({klass: 'operator'}, {brush: 'php-script'}, null, {klass: 'operator'})
+		pattern: /((<\?php)([\s\S]*?)(\?>))/gm,
+		matches: Syntax.extractMatches(
+			{klass: 'php-tag', allow: ['operator', 'php-script']},
+			{klass: 'operator'},
+			{brush: 'php-script'},
+			{klass: 'operator'}
+		)
 	});
 	
 	brush.push({
-		pattern: /(<\?rb?)((.|\n)*?)(\?>)/gm,
-		matches: Syntax.extractMatches({klass: 'operator'}, {brush: 'ruby'}, null, {klass: 'operator'})
+		pattern: /((<\?rb)([\s\S]*?)(\?>))/gm,
+		matches: Syntax.extractMatches(
+			{klass: 'ruby-tag', allow: ['operator', 'ruby']},
+			{klass: 'operator'},
+			{brush: 'ruby'},
+			{klass: 'operator'}
+		)
 	});
 	
 	brush.push({
