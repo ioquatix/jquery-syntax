@@ -5,7 +5,13 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.lib.rubyStyleFunction = {pattern: /(?:def\s+|\.)([a-z_][a-z0-9_]+)/gi, matches: Syntax.extractMatches({klass: 'function'})};
-Syntax.lib.rubyStyleSymbol = {pattern: /:\w+/g, klass: 'constant'};
+
+// We need to emulate negative lookbehind
+Syntax.lib.rubyStyleSymbol = {pattern: /([:]?):\w+/g, klass: 'constant', matches: function (match, expr) {
+	if (match[1] != '') return [];
+	
+	return [new Syntax.Match(match.index, match[0].length, expr, match[0])];
+}};
 
 Syntax.register('ruby', function(brush) {
 	var keywords = ["alias", "and", "begin", "break", "case", "class", "def", "define_method", "defined", "do", "each", "else", "elsif", "end", "ensure", "false", "for", "if", "in", "module", "new", "next", "nil", "not", "or", "raise", "redo", "rescue", "retry", "return", "self", "super", "then", "throw", "true", "undef", "unless", "until", "when", "while", "yield"];
