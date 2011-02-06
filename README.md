@@ -59,7 +59,7 @@ of the code.
 ### release-3.0rc5 ###
  - Added support for perl style regular expressions.
  - Improved bash brush formatting and command matching.
- - Fixed some issues when highlighting camel case types scoped using '::'
+ - Fixed some issues when highlighting ruby code with scope operator '::' and symbols.
 
 ### release-3.0rc4 ###
  - Bug fixes to rakefile - new environment variable PREFIX determines install location.
