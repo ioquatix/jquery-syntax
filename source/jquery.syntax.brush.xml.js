@@ -15,6 +15,8 @@ Syntax.register('xml', function(brush) {
 		)
 	});
 	
+	brush.push(Syntax.lib.xmlComment);
+	
 	// /[\s\S]/ means match anything... /./ doesn't match newlines
 	brush.push({
 		pattern: /<[^>]+>/g,
@@ -23,7 +25,7 @@ Syntax.register('xml', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /<\/?((?:[\w_\-]+:)?)([\w_\-\.]+)[\s\S]*?>/g,
+		pattern: /<\/?((?:\S+?:)?)(\S+)[\s\S]*?>/g,
 		matches: Syntax.extractMatches({klass: 'namespace'}, {klass: 'tag-name'})
 	});
 	
@@ -42,8 +44,6 @@ Syntax.register('xml', function(brush) {
 		klass: 'percent-escape',
 		only: ['string']
 	});
-	
-	brush.push(Syntax.lib.xmlComment);
 	
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
