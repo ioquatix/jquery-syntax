@@ -25,7 +25,7 @@ Syntax.register('xml', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /<\/?((?:\S+?:)?)(\S+)[\s\S]*?>/g,
+		pattern: /<\/?((?:[^:\s>]+:)?)([^\s>]+)(\s[^>]*)?\/?>/g,
 		matches: Syntax.extractMatches({klass: 'namespace'}, {klass: 'tag-name'})
 	});
 	
