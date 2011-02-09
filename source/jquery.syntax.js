@@ -211,30 +211,32 @@ var Syntax = {
 		}
 		
 		return null;
-	}
-};
-
-jQuery(function() {
-	if (Syntax.root == null) {
-		// Initialize root based on current script path.
-		var scripts = $('script').filter(function(){
-			return this.src.match(/jquery\.syntax/);
-		});
-		
-		var first = scripts.get(0);
+	},
 	
-		if (first) {
-			// Calculate the basename for the given script src.
-			var root = first.src.match(/.*\//);
-			
-			if (root) {
-				Syntax.root = root[0];
+	detectRoot: function () {
+		if (Syntax.root == null) {
+			// Initialize root based on current script path.
+			var scripts = $('script').filter(function(){
+				return this.src.match(/jquery\.syntax/);
+			});
+
+			var first = scripts.get(0);
+
+			if (first) {
+				// Calculate the basename for the given script src.
+				var root = first.src.match(/.*\//);
+
+				if (root) {
+					Syntax.root = root[0];
+				}
 			}
 		}
 	}
-});
+};
 
 jQuery.fn.syntax = function (options, callback) {
+	Syntax.detectRoot();
+	
 	var elements = this;
 	
 	Syntax.loader.get('core', function () {
@@ -248,6 +250,8 @@ jQuery.syntax = function (options, callback) {
 	
 	if (options.root) {
 		Syntax.root = options.root;
+	} else {
+		Syntax.detectRoot();
 	}
 	
 	options = jQuery.extend(Syntax.defaultOptions, options)
