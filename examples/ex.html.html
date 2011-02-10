@@ -4,18 +4,19 @@
 		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
 
 		<script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+
 		<script src="../public/jquery.syntax.js" type="text/javascript"></script>
 		<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
 		
 		<script type="text/javascript" language="JavaScript">
 		//<!--
-			$(function() {
+			jQuery(function($) {
 				// This will display the current page's HTML, in the current page.
 				// Recursion will one day blow my mind beyond repair.
 				$('#self').text($('html').html());
 				
-				jQuery.syntax();
-			})
+				$.syntax();
+			});
 		//-->
 		</script>
 		
