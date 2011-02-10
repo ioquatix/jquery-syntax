@@ -70,9 +70,12 @@ ResourceLoader.prototype._loaded = function (name) {
 	}
 };
 
+// This function must ensure that current cannot be completely loaded until next
+// is completely loaded.
 ResourceLoader.prototype.dependency = function (current, next) {
-	 // if it is already loaded, it isn't a dependency
-	if (this[next]) {
+	// If the resource has completely loaded, then we don't need to queue it
+	// as a dependency
+	if (this[next] && !this.loading[name]) {
 		return;
 	}
 	
@@ -83,11 +86,12 @@ ResourceLoader.prototype.dependency = function (current, next) {
 	}
 };
 
+// This function must be reentrant for the same name and different callbacks.
 ResourceLoader.prototype.get = function (name, callback) {
-	if (this[name]) {
+	if (this.loading[name]) {
+		this.loading[name].push(callback)
+	} else if (this[name]) {
 		callback(this[name]);
-	} else if (this.loading[name]) { 
-		this.loading[name].push(callback);
 	} else {
 		this.loading[name] = [callback];
 		this.loader(name, this._finish.bind(this, name));
@@ -134,16 +138,28 @@ var Syntax = {
 	},
 	
 	getScript: function (path, callback) {
-		jQuery.ajax({
-			type: "GET",
-			url: path,
-			success: callback,
-			error: function(xhr, status, error) {
-				alert("Could not load resource: " + path + " " + error);
-			},
-			dataType: "script",
-			cache: Syntax.defaultOptions.cacheScripts
-		});
+		var script = document.createElement('script');
+		
+		// Internet Exploder
+		script.onreadystatechange = function() {
+			if (this.onload && (this.readyState == 'loaded' || this.readyState == 'complete')) {
+				this.onload();
+				
+				// Ensure the function is only called once.
+				this.onload = null;
+			}
+		};
+		
+		// Every other modern browser
+		script.onload = callback;
+		script.type = "text/javascript";
+		
+		if (!Syntax.defaultOptions.cacheScripts)
+			path = path + '?' + Math.random()
+		
+		script.src = path;
+		
+		document.getElementsByTagName('head')[0].appendChild(script);
 	},
 	
 	getResource: function (prefix, name, callback) {
