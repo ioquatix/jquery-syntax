@@ -30,8 +30,8 @@ Syntax.register('xml', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /([\w_\-\.]+)=(".*?"|'.*?'|\S+)/g,
-		matches: Syntax.extractMatches({klass: 'attribute', only: ['tag']}, {klass: 'string', only: ['tag']}),
+		pattern: /([^=\s]+)=(".*?"|'.*?'|[^\s>]+)/g,
+		matches: Syntax.extractMatches({klass: 'attribute', only: ['tag']}, {klass: 'string', only: ['tag']})
 	});
 	
 	brush.push({
@@ -50,4 +50,3 @@ Syntax.register('xml', function(brush) {
 	
 	brush.push(Syntax.lib.webLink);
 });
-
