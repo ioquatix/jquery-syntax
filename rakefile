@@ -10,6 +10,7 @@ require 'stringio'
 require 'fileutils'
 require 'tmpdir'
 require 'pathname'
+require 'yaml'
 
 require 'ext/theme'
 
