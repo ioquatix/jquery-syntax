@@ -13,7 +13,7 @@ Syntax.register('bash-script', function(brush) {
 	brush.push(operators, {klass: 'operator'});
 	
 	brush.push({
-		pattern: /^\s*((?:\S+=\S+\s+)*)\s*(\S+)\s+((?:.*?)?)$/gmi,
+		pattern: /^\s*((?:\S+=\S+\s+)*)\s*(\S+)((?:\s+.*?)?)$/gmi,
 		matches: Syntax.extractMatches(
 			{klass: 'env'},
 			{klass: 'function'},
