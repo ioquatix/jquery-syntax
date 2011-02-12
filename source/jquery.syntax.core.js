@@ -183,7 +183,7 @@ Syntax.extractMatches = function() {
 			}
 			
 			if (rule.debug) {
-				console.log("extractMatches", rule, index, match[index], match);
+				Syntax.log("extractMatches", rule, index, match[index], match);
 			}
 			
 			if (match[index].length > 0) {
@@ -301,6 +301,11 @@ Syntax.Match.prototype.reduce = function (append, process) {
 	
 	for (var i = 0; i < this.children.length; i += 1) {
 		var child = this.children[i], end = child.offset;
+		
+		if (child.offset < this.offset) {
+			Syntax.log("Syntax Warning: Offset of child", child, "is before offset of parent", this);
+		}
+		
 		var text = this.value.substr(start - this.offset, end - start);
 		
 		append(text, container);
@@ -314,7 +319,7 @@ Syntax.Match.prototype.reduce = function (append, process) {
 	} else if (start < this.endOffset) {
 		append(this.value.substr(start - this.offset, this.endOffset - start), container);
 	} else if (start > this.endOffset) {
-		alert("Syntax Warning: Start position " + start + " exceeds end of value " + this.endOffset);
+		Syntax.log("Syntax Warning: Start position " + start + " exceeds end of value " + this.endOffset);
 	}
 	
 	if (process) {
@@ -410,7 +415,7 @@ Syntax.Match.prototype._splice = function(i, match) {
 // time, but data must be inserted in sorted order, otherwise you will have problems.
 Syntax.Match.prototype.insertAtEnd = function (match) {
 	if (!this.contains(match)) {
-		alert("Syntax Error: Child is not contained in parent node!");
+		Syntax.log("Syntax Error: Child is not contained in parent node!");
 		return null;
 	}
 	
@@ -527,7 +532,7 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
 	}
 	
 	if (children.length) {
-		alert("Syntax Error: Children nodes not consumed, " + children.length + " remaining!");
+		Syntax.log("Syntax Error: Children nodes not consumed", children.length, " remaining!");
 	}
 	
 	return parts;
@@ -622,7 +627,7 @@ Syntax.Brush.prototype.push = function () {
 		if (rule.pattern && rule.pattern.global) {
 			this.rules.push(jQuery.extend({owner: this}, rule));
 		} else if (typeof(console) != "undefined") {
-			console.log("Syntax Error: Malformed rule: ", rule);
+			Syntax.log("Syntax Error: Malformed rule: ", rule);
 		}
 	}
 };
@@ -651,7 +656,7 @@ Syntax.Brush.prototype.getMatchesForRule = function (text, expr, offset) {
 	}
 	
 	if (expr.debug) {
-		console.log("matches", matches);
+		Syntax.log("matches", matches);
 	}
 	
 	return matches;
