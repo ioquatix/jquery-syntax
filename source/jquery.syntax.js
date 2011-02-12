@@ -253,6 +253,14 @@ var Syntax = {
 				}
 			}
 		}
+	},
+	
+	log: function() {
+		if (console && console.log) {
+			console.log.apply(console, arguments);
+		} else {
+			alert(arguments.join(" "));
+		}
 	}
 };
 
