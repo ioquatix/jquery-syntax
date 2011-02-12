@@ -642,20 +642,25 @@ Syntax.Brush.prototype.push = function () {
 	}
 };
 
-Syntax.Brush.prototype.getMatchesForRule = function (text, expr, offset) {
+Syntax.Brush.prototype.getMatchesForRule = function (text, rule, offset) {
 	var matches = [], match = null;
 	
 	// Short circuit (user defined) function:
-	if (typeof expr.apply != "undefined") {
-		return expr.apply(text, expr, offset);
+	if (typeof rule.apply != "undefined") {
+		return rule.apply(text, rule, offset);
 	}
 	
-	// Traditional regular expression pattern extraction:
-	while((match = expr.pattern.exec(text)) !== null) {
-		if (expr.matches) {
-			matches = matches.concat(expr.matches(match, expr));
+	// Duplicate the pattern so that the function is reentrant.
+	var pattern = new RegExp;
+	pattern.compile(rule.pattern);
+	
+	while((match = pattern.exec(text)) !== null) {
+		if (rule.matches) {
+			matches = matches.concat(rule.matches(match, rule));
+		} else if (rule.brush) {
+			matches.push(Syntax.brushes[rule.brush].buildTree(match[0], match.index));
 		} else {
-			matches.push(new Syntax.Match(match.index, match[0].length, expr, match[0]));
+			matches.push(new Syntax.Match(match.index, match[0].length, rule, match[0]));
 		}
 	}
 	
@@ -665,7 +670,7 @@ Syntax.Brush.prototype.getMatchesForRule = function (text, expr, offset) {
 		}
 	}
 	
-	if (expr.debug) {
+	if (rule.debug) {
 		Syntax.log("matches", matches);
 	}
 	
