@@ -24,8 +24,5 @@ Syntax.register('bash', function(brush) {
 	brush.push(Syntax.lib.stringEscape);
 	
 	// Numbers
-	brush.push(Syntax.lib.decimalNumber);
-	brush.push(Syntax.lib.hexNumber);
-	
 	brush.push(Syntax.lib.webLink);
 });
