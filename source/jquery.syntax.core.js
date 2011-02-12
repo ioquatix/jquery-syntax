@@ -155,7 +155,7 @@ Syntax.updateMatchesWithOffsets = function (matches, linearOffsets, text) {
 			end += linearOffsets[end];
 			
 			// Start, Length, Text
-			match.shift(linearOffsets[match.offset], end - offset, text);
+			match.adjust(linearOffsets[match.offset], end - offset, text);
 			
 			if (match.children.length > 0)
 				arguments.callee(match.children);
@@ -255,7 +255,17 @@ Syntax.Match = function (offset, length, expr, value) {
 	this.next = null;
 };
 
-Syntax.Match.prototype.shift = function (offset, length, text) {
+// Shifts an entire tree forward or backwards.
+Syntax.Match.prototype.shift = function (offset, text) {
+	this.adjust(offset, null, text);
+	
+	for (var i = 0; i < this.children.length; i++) {
+		this.children[i].shift(offset, text)
+	}
+};
+
+// C the current match to have different offset and length.
+Syntax.Match.prototype.adjust = function (offset, length, text) {
 	this.offset += offset;
 	this.endOffset += offset;
 	
