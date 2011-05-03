@@ -5,13 +5,13 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.register('clang', function(brush) {
-	var keywords = ["@interface", "@implementation", "@protocol", "@end", "@try", "@throw", "@catch", "@finally", "@class", "@selector", "@encode", "@synchronized", "@property", "struct", "break", "continue", "else", "for", "switch", "case", "default", "enum", "goto", "register", "sizeof", "typedef", "volatile", "do", "extern", "if", "return", "static", "union", "while", "asm", "dynamic_cast", "namespace", "reinterpret_cast", "try", "explicit", "static_cast", "typeid", "catch", "operator", "template", "class", "const_cast", "inline", "throw", "virtual"];
+	var keywords = ["@interface", "@implementation", "@protocol", "@end", "@try", "@throw", "@catch", "@finally", "@class", "@selector", "@encode", "@synchronized", "@property", "@synthesize", "@dynamic", "struct", "break", "continue", "else", "for", "switch", "case", "default", "enum", "goto", "register", "sizeof", "typedef", "volatile", "do", "extern", "if", "return", "static", "union", "while", "asm", "dynamic_cast", "namespace", "reinterpret_cast", "try", "explicit", "static_cast", "typeid", "catch", "operator", "template", "class", "const_cast", "inline", "throw", "virtual", "IBOutlet"];
 	
-	var access = ["@private", "@protected", "@public", "private", "protected", "public", "friend", "using"];
+	var access = ["@private", "@protected", "@public", "@required", "@optional", "private", "protected", "public", "friend", "using"];
 	
 	var types = ["mutable", "auto", "const", "double", "float", "int", "short", "char", "long", "signed", "unsigned", "bool", "void", "typename", "id", "register", "wchar_t"];
 	
-	var operators = ["@", "+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">", "[", "]", "new", "delete"];
+	var operators = ["@", "+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">", "[", "]", "new", "delete", "in"];
 	
 	var values = ["this", "true", "false", "NULL", "YES", "NO", "nil"];
 	
@@ -20,6 +20,19 @@ Syntax.register('clang', function(brush) {
 	brush.push(keywords, {klass: 'keyword'});
 	brush.push(operators, {klass: 'operator'});
 	brush.push(access, {klass: 'access'});
+	
+	brush.push({
+		pattern: /@property\((.*)\)[^;]+;/gmi,
+		klass: 'objective-c-property',
+		allow: '*'
+	});
+	
+	var propertyAttributes = ["getter", "setter", "readwrite", "readonly", "assign", "retain", "copy", "nonatomic"];
+	
+	brush.push(propertyAttributes, {
+		klass: 'keyword',
+		only: ['objective-c-property']
+	})
 	
 	// Objective-C classes
 	brush.push(Syntax.lib.camelCaseType);
