@@ -13,7 +13,7 @@ Syntax.register('java', function(brush) {
 	
 	var operators = ["++", "--", "++", "--", "+", "-", "~", "!", "*", "/", "%", "+", "-", "<<", ">>", ">>>", "<", ">", "<=", ">=", "==", "!=", "&", "^", "|", "&&", "||", "?", "=", "+=", "-=", "*=", "/=", "%=", "&=", "^=", "|=", "<<=", ">>=", ">>>=", "instanceof", "new", "delete"];
 	
-	var constants = ["this", "true", "false"];
+	var constants = ["this", "true", "false", "null"];
 	
 	brush.push(constants, {klass: 'constant'});
 	brush.push(types, {klass: 'type'});
