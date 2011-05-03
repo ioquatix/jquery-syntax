@@ -11,7 +11,7 @@ Syntax.register('clang', function(brush) {
 	
 	var types = ["mutable", "auto", "const", "double", "float", "int", "short", "char", "long", "signed", "unsigned", "bool", "void", "typename", "id", "register", "wchar_t"];
 	
-	var operators = ["@", "+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">", "[", "]", "new", "delete", "in"];
+	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">", "[", "]", "new", "delete", "in"];
 	
 	var values = ["this", "true", "false", "NULL", "YES", "NO", "nil"];
 	
@@ -21,6 +21,7 @@ Syntax.register('clang', function(brush) {
 	brush.push(operators, {klass: 'operator'});
 	brush.push(access, {klass: 'access'});
 	
+	// Objective-C properties
 	brush.push({
 		pattern: /@property\((.*)\)[^;]+;/gmi,
 		klass: 'objective-c-property',
@@ -33,6 +34,13 @@ Syntax.register('clang', function(brush) {
 		klass: 'keyword',
 		only: ['objective-c-property']
 	})
+	
+	// Objective-C strings
+	
+	brush.push({
+		pattern: /@(?=")/g,
+		klass: 'string'
+	});
 	
 	// Objective-C classes
 	brush.push(Syntax.lib.camelCaseType);
