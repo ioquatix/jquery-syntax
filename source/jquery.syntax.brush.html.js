@@ -24,20 +24,20 @@ Syntax.register('html', function(brush) {
 	brush.push({
 		pattern: /((<\?php)([\s\S]*?)(\?>))/gm,
 		matches: Syntax.extractMatches(
-			{klass: 'php-tag', allow: ['operator', 'php-script']},
-			{klass: 'operator'},
+			{klass: 'php-tag', allow: ['keyword', 'php-script']},
+			{klass: 'keyword'},
 			{brush: 'php-script'},
-			{klass: 'operator'}
+			{klass: 'keyword'}
 		)
 	});
 	
 	brush.push({
-		pattern: /((<\?rb)([\s\S]*?)(\?>))/gm,
+		pattern: /((<\?rb?)([\s\S]*?)(\?>))/gm,
 		matches: Syntax.extractMatches(
-			{klass: 'ruby-tag', allow: ['operator', 'ruby']},
-			{klass: 'operator'},
+			{klass: 'ruby-tag', allow: ['keyword', 'ruby']},
+			{klass: 'keyword'},
 			{brush: 'ruby'},
-			{klass: 'operator'}
+			{klass: 'keyword'}
 		)
 	});
 	

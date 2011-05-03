@@ -9,7 +9,7 @@ Syntax.brushes.dependency('php', 'php-script');
 Syntax.register('php', function(brush) {
 	brush.push({
 		pattern: /(<\?(php)?)((.|\n)*?)(\?>)/gm,
-		matches: Syntax.extractMatches({klass: 'operator'}, null, {brush: 'php-script'}, null, {klass: 'operator'})
+		matches: Syntax.extractMatches({klass: 'keyword'}, null, {brush: 'php-script'}, null, {klass: 'keyword'})
 	})
 });
 
