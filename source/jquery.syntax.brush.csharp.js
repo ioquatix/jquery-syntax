@@ -23,6 +23,10 @@ Syntax.register('csharp', function(brush) {
 	
 	// Functions
 	brush.push(Syntax.lib.cStyleFunction);
+	brush.push({
+		pattern: /(?:\.)([a-z_][a-z0-9_]+)/gi,
+		matches: Syntax.extractMatches({klass: 'function'})
+	});
 	
 	// Camel Case Types
 	brush.push(Syntax.lib.camelCaseType);
