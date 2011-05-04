@@ -1,0 +1,7 @@
+# This is the basic theme. It adds minor scaffolding to support a website which doesn't have the right
+# css for .syntax and .syntax-container layout.
+depends:
+    - base
+# This adds code to existing css generation files.
+extends:
+    "jquery.syntax.core.sass": "_jquery.syntax.core.sass"
