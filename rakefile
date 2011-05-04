@@ -91,11 +91,16 @@ task :generate_stylesheets, [:theme,:override] do |task, arguments|
 		$stderr.puts command
 		
 		IO.popen(command, "w") do |io|
-			aggregate_theme.includes_for(sass).each do |incl|
+			aggregate_theme.includes_for(sass, :prepend).each do |incl|
 				io.puts("@import #{incl}")
 			end
 			
 			io.puts("@import #{File.basename(sass)}")
+			
+			aggregate_theme.includes_for(sass, :append).each do |incl|
+				io.puts("@import #{incl}")
+			end
+			
 			io.close_write
 		end
 	end
