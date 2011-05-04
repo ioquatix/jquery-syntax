@@ -55,11 +55,16 @@ class Theme
 		end
 	end
 	
-	def includes_for(path)
-		if extension = @extends[File.basename(path)]
-			return @includes + [extension]
-		else
+	def includes_for(path, place)
+		case place
+		when :prepend
 			return @includes
+		when :append
+			if extension = @extends[File.basename(path)]
+				return extension
+			end
 		end
+		
+		return []
 	end
 end
