@@ -1,4 +1,4 @@
-# jQuery.Syntax [release-3.0rc5] #
+# jQuery.Syntax [release-3.0] #
 
 jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamically loads external dependencies (JavaScript & CSS) when required. It uses jQuery to make it cross-browser compatible and to simplify integration.
 
@@ -21,51 +21,38 @@ There are several plugins available (source code - for stable releases see the m
  - DokuWiki: <http://github.com/ioquatix/jquery-syntax-dokuwiki>
  - WordPress: <http://github.com/ioquatix/jquery-syntax-wordpress>
 
-For licensing details, please see the included LICENSE.txt.
-
 ## License ##
 
-The "jQuery.Syntax" project is licensed under the GNU AGPLv3.
-Copyright 2010 Samuel Williams. All rights reserved.
+Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 
-For more information, please see <http://www.oriontransfer.co.nz/software/jquery-syntax>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-This program is free software: you can redistribute it and/or modify it under the terms
-of the GNU Affero General Public License as published by the Free Software Foundation,
-either version 3 of the License, or (at your option) any later version.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License along with this
-program. If not, see <http://www.gnu.org/licenses/>.
-
-"Additional permissions" (as per Section 7 of the AGPLv3)
-
-1. Any HTML file which merely makes function calls to this code, and for that purpose 
-	includes it by reference shall be deemed a separate work for copyright law purposes.
-	
-2. You may distribute non-source (e.g., minimized or compacted) forms of that code 
-	without the copy of the GNU AGPL normally required by section 4, provided you include
-	this license notice and a URL through which recipients can access the Corresponding
-	Source.
-
-If you modify this code, you must include these "Additional permissions" in your version 
-of the code.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 
 ## Change Log ##
 
-### release-3.0rc5 ###
+### release-3.0 ###
+ - Changed license from AGPL to MIT.
+ - Improvements to the following brushes: C#, Objective-C, Java, Ruby, PHP, HTML, SQL, Assembly, Bash
  - Added support for perl style regular expressions.
  - Improved bash brush formatting and command matching.
  - Fixed some issues when highlighting ruby code with scope operator '::' and symbols.
-
-### release-3.0rc4 ###
  - Bug fixes to rakefile - new environment variable PREFIX determines install location.
  - Improvements to XML brush including supporting CDATA tags.
-
-### release-3.0rc3 ###
  - Bug fixes to several brushes including:
     - Objective-C methods (incorrect highlighting of last argument).
     - Diff insertion and deletion how highlight the background row colour.
@@ -74,18 +61,14 @@ of the code.
  - Several examples now included in examples sub-directory.
  - Default install now included in public sub-directory.
  - Fixed minor issue in path detection regular expression.
-
-### release-3.0rc2 ###
  - Installation now staged directly into destination directory.
  - Installation now supports configuration files.
  - Minor fixes to brushes.
-
-### release-3.0rc1 ###
- - Support for marked up content
- - Support for several new languages (Kai, io)
- - Installation process (now the recommended process)
- - Enhanced support for themes
- - Support for derived brushes
+ - Support for marked up content.
+ - Support for several new languages (Kai, io).
+ - Installation process (now the recommended process).
+ - Enhanced support for themes.
+ - Support for derived brushes.
 
 ### release-2.2.2 ###
  - Major Internet Exploder bugfix.

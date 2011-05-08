@@ -1,6 +1,6 @@
-// This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
-// Copyright 2010 Samuel Williams. All rights reserved.
-// For more information, please see <http://www.oriontransfer.co.nz/software/jquery-syntax>
+// This file is part of the "jQuery.Syntax" project, and is distributed under the MIT License.
+// Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
+
 
 if(!Function.prototype.bind){Function.prototype.bind=function(target){var args=Array.prototype.slice.call(arguments,1),fn=this;return function(){return fn.apply(target,args);};};}
 function ResourceLoader(loader){this.dependencies={};this.loading={};this.loader=loader;}

@@ -1,6 +1,6 @@
-// This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
-// Copyright 2010 Samuel Williams. All rights reserved.
-// For more information, please see <http://www.oriontransfer.co.nz/software/jquery-syntax>
+// This file is part of the "jQuery.Syntax" project, and is distributed under the MIT License.
+// Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
+
 
 Syntax.layouts.fixed=function(options,code,container){var fixed=jQuery('<div class="fixed syntax highlighted">'),line=1,space=/^\s*$/;var toolbar=jQuery('<div class="toolbar">');var rawCode=container.clone();rawCode.addClass("raw syntax highlighted");var codeTable=document.createElement('table');var codeTableBody=document.createElement('tbody');codeTable.appendChild(codeTableBody);var numbersColumn=jQuery('<div class="numbers-column">');var codeColumn=jQuery('<div class="code-column">');code.children().each(function(){var lineNumber=document.createElement('div');lineNumber.className="line ln"+line
 lineNumber.innerHTML=line;numbersColumn.append(lineNumber);var lineCode=document.createElement('td');lineCode.className="source "+this.className;if(line%2){lineCode.className+=" alt";}

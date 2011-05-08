@@ -1,7 +1,7 @@
 // brush: "xml" aliases: []
 
-//	This file is part of the "jQuery.Syntax" project, and is licensed under the GNU AGPLv3.
-//	Copyright 2010 Samuel Williams. All rights reserved.
+//	This file is part of the "jQuery.Syntax" project, and is distributed under the MIT License.
+//	Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.register('xml', function(brush) {

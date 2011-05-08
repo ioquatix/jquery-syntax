@@ -1,38 +1,29 @@
-pre.syntax {
-  line-height: 1.6em;
-  letter-spacing: 0.05em;
-  margin: 1em 20pt 1em; }
-
-.syntax-container {
-  padding: 1em 20pt 1em; }
-
 .syntax {
   font-family: Menlo, Monaco, Consolas, monospace;
   line-height: 1.5em; }
   .syntax .function {
     color: #3333ff; }
-  .syntax .keyword {
-    color: #33cc33; }
-  .syntax .access {
-    color: #ffb600;
-    font-weight: bold; }
+  .syntax .keyword, .syntax .access {
+    color: #a90d91; }
   .syntax .type {
-    color: #119911;
+    color: #3239a6;
     font-weight: bold; }
   .syntax .comment {
     color: #66aacc;
     font-style: italic; }
-  .syntax .string, .syntax .constant {
-    color: #ff3333; }
+  .syntax .constant {
+    color: #1c00ce; }
+  .syntax .string {
+    color: #c41a15; }
   .syntax .string .escape {
     color: #ff9999; }
   .syntax .operator {
-    color: #cc0000; }
+    color: black; }
   .syntax .href {
-    color: blue;
+    color: #0e0eff;
     text-decoration: underline; }
   .syntax .variable {
-    color: #2222cc; }
+    color: #3e6d74; }
   .syntax pre {
     overflow: auto;
     font-family: inherit; }
