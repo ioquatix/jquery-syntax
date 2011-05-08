@@ -72,13 +72,59 @@ echo
 
 exit 0</pre>
 
-<p>This next example uses inline HTML to markup <code class="syntax bash"><span class="function">rd-resolve-test</span></code>, as it isn't a standard bash command and there is no way to infer exactly what it is (Bash is context-sensitive).</p>
+<p>
+
+<pre class="syntax bash-script">#!/bin/bash
+
+svc_cluster_ip=10.0.0.10
+svc_priv_dsa=~/.ssh/id_dsa
+
+if [ ! -f $svc_priv_dsa ] ; then
+	echo &quot; ${0##*/} is missing the SSH DSA private key&quot;
+	echo &quot;                         needed to access the SAN Volume controller.&quot;
+	echo &quot; Please specify the correct path!&quot;
+fi
+
+if [ -z $1 ] ; then
+	echo
+	echo &quot; ${0##*/} [ WWPN ]&quot;
+	echo
+	echo &quot;  WWPN    - WWPN, or part of WWPN that is being searched.&quot;
+	echo &quot;            Should be entered in continous format (ie. no dash (-) or colon (:))!&quot;
+	echo
+	exit 1;
+fi
+
+WWPN=$1
+
+list_wwpn_by_host() {
+	local _host=$1
+
+	if [ ! -z $_host ] ; then
+		ssh -i $svc_priv_dsa admin@$svc_cluster_ip svcinfo lshost \
+		-delim : $_host | grep ^WWPN | sed &quot;s,WWPN:,,&quot;
+	fi
+}
+
+#set -x
+
+HOST_LIST=&quot;$( ssh -i $svc_priv_dsa admin@$svc_cluster_ip svcinfo lshost -delim : -nohdr | cut -d: -f2 )&quot;
+
+for HOST in $HOST_LIST; do
+	echo -n &quot;$HOST: &quot;
+	echo `list_wwpn_by_host $HOST`
+done | grep $WWPN
+
+#set +x
+</pre>
+
+<p>This next example uses inline HTML to markup <code class="syntax bash"><span class="function">rd-resolve-test</span></code>.</p>
 
 <pre id="ex2" class="syntax brush-bash">samuel@ayako:~$ which git
 /usr/bin/git
 samuel@ayako:~$ ls -lah
 getconf     getent      getopt      getopts     gettext     gettext.sh  gettextize  
-samuel@ayako:~# <span class="function">rd-resolve-test</span> bob
+samuel@ayako:~# sudo <span class="function">rd-resolve-test</span> bob
 /home/samuel</pre>
 
 <p>Here is the HTML of the above <code class="syntax html">&lt;pre&gt;</code>:</p>
