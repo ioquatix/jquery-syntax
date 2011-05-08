@@ -24,6 +24,8 @@
     text-decoration: underline; }
   .syntax .variable {
     color: #3e6d74; }
+  .syntax .highlight {
+    background-color: #fdfdba; }
   .syntax pre {
     overflow: auto;
     font-family: inherit; }
@@ -42,3 +44,11 @@
     margin: 0 !important;
     background-color: #f0f0f0;
     border: 1px solid #aaaaaa; }
+
+pre.syntax {
+  line-height: 1.6em;
+  letter-spacing: 0.05em;
+  margin: 1em 20pt 1em; }
+
+.syntax-container {
+  padding: 1em 20pt 1em; }

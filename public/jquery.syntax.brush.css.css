@@ -1,7 +1,8 @@
 .syntax .css .selector {
-  color: green; }
+  color: #445588;
+  font-weight: bold; }
 .syntax .css .property {
-  color: red; }
+  color: teal; }
 .syntax .css .color-box {
   position: relative; }
   .syntax .css .color-box .sample {
