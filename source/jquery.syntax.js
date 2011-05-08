@@ -238,7 +238,7 @@ var Syntax = {
 	detectRoot: function () {
 		if (Syntax.root == null) {
 			// Initialize root based on current script path.
-			var scripts = $('script').filter(function(){
+			var scripts = jQuery('script').filter(function(){
 				return this.src.match(/jquery\.syntax/);
 			});
 

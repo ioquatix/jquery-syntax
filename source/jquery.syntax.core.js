@@ -705,7 +705,7 @@ Syntax.Match.prototype.split = function(pattern) {
 	var matches = this.bisectAtOffsets(splits);
 	
 	// Remove any null placeholders.
-	return $.grep(matches, function(n,i){
+	return jQuery.grep(matches, function(n,i){
 		return n;
 	});
 };
