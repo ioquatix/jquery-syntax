@@ -14,12 +14,12 @@ Syntax.lib.rubyStyleSymbol = {pattern: /([:]?):\w+/g, klass: 'constant', matches
 }};
 
 Syntax.register('ruby', function(brush) {
-	var keywords = ["alias", "and", "begin", "break", "case", "class", "def", "define_method", "defined", "do", "else", "elsif", "end", "ensure", "false", "for", "if", "in", "module", "new", "next", "nil", "not", "or", "raise", "redo", "rescue", "retry", "return", "self", "super", "then", "throw", "true", "undef", "unless", "until", "when", "while", "yield"];
+	var keywords = ["alias", "and", "begin", "break", "case", "class", "def", "define_method", "defined?", "do", "else", "elsif", "end", "ensure", "false", "for", "if", "in", "module", "next", "not", "or", "raise", "redo", "rescue", "retry", "return", "then", "throw", "undef", "unless", "until", "when", "while", "yield", "block_given?"];
 	
 	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">"];
-	var values = ["this", "true", "false", "nil"];
+	var values = ["self", "super", "true", "false", "nil"];
 	
-	var access = ["private", "public"];
+	var access = ["private", "protected", "public"];
 	
 	brush.push(access, {klass: 'access'});
 	brush.push(values, {klass: 'constant'});
