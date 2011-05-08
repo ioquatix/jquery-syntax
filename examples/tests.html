@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="jquery-1.6.min.js"></script>
+	
+	<link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
+	<script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
+	
+	<script src="../public/jquery.syntax.js" type="text/javascript"></script>
+	<script src="../public/jquery.syntax.core.js" type="text/javascript"></script>
+	<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
+	
+	<script>
+	$(document).ready(function(){
+		module("Algorithms")
+		
+		test("Basic Tree Construction", function() {
+			var top = new Syntax.Match(0, 20, {}, "--------------------");
+			top.insert(new Syntax.Match(0, 5, {}, "|-1-|"));
+			top.insert(new Syntax.Match(5, 5, {}, "|-2-|"));
+			top.insert(new Syntax.Match(15, 5, {}, "|-3-|"));
+			top.insert(new Syntax.Match(0, 10, {}, "|========|"));
+			
+			equals(top.children.length, 3, "Children inserted correctly");
+			equals(top.children[0].children.length, 1, "Child split correctly");
+			equals(top.children[1].children.length, 1, "Child split correctly");
+			
+			var parts = top.bisectAtOffsets([5, 8, 18]);
+			
+			equals(parts.length, 4, "Children split correctly");
+			equals(parts[0].offset, 0, "Offset matched split point");
+			equals(parts[0].endOffset, 5, "Offset matched split point");
+			equals(parts[1].offset, 5, "Offset matched split point");
+			equals(parts[1].endOffset, 8, "Offset matched split point");
+			equals(parts[2].offset, 8, "Offset matched split point");
+			equals(parts[2].endOffset, 18, "Offset matched split point");
+			equals(parts[3].offset, 18, "Offset matched split point");
+			equals(parts[3].endOffset, 20, "Offset matched split point");
+			
+			equals(parts[0].children.length, 1, "Correct number of children");
+			equals(parts[1].children.length, 1, "Correct number of children");
+			equals(parts[2].children.length, 2, "Children split correctly");
+			equals(parts[3].children.length, 1, "Correct number of children");
+			
+			equals(parts[1].children[0].next, parts[2].children[0], "Child split correctly between parents");
+			
+			top.children = parts;
+			top.insert(new Syntax.Match(0, 20, {}, "~~~~~~~~~~~~~~~~~~~~"));
+			equals(top.children[0].children[0].children[0].children[0].value, "~~~~~", "Child split correctly across top");
+			equals(top.children[1].children[0].children[0].children[0].value, "~~~", "Child split correctly across top");
+			equals(top.children[2].children[0].children[0].children[0].value, "~~", "Child split correctly across top");
+			equals(top.children[2].children[1].value, "~~~~~", "Child split correctly across top");
+			equals(top.children[2].children[2].children[0].value, "~~~", "Child split correctly across top");
+			equals(top.children[3].children[0].children[0].value, "~~", "Child split correctly across top");
+		});
+		
+		test("Tree Bisection", function() {
+			
+		});
+	});
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">jQuery.Syntax Unit Tests</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	<div id="qunit-fixture">test markup, will be hidden</div>
+</body>
+</html>
