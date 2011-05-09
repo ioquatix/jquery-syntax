@@ -39,7 +39,7 @@ Syntax.register('xml', function(brush) {
 	brush.push(Syntax.lib.xmlComment);
 	
 	brush.push({
-		pattern: /<[^>-\s]([^>'"!-/;\?@\[\]^`\{\}\|]|"[^"]*"|'[^']')*>/g,
+		pattern: /<[^>-\s]([^>'"!-\/;\?@\[\]^`\{\}\|]|"[^"]*"|'[^']')*>/g,
 		brush: 'xml-tag'
 	});
 	
