@@ -149,9 +149,13 @@ task :setup_prefix do
 	if ENV['CONFIG']
 		config_path = BASE_PATH + ENV['CONFIG']
 	else
-		config_path = BASE_PATH + "install.yaml"
+		config_path = BASE_PATH + "site.yaml"
+		unless File.exist? config_path
+			config_path = BASE_PATH + "install.yaml"
+		end
 	end
-	
+
+	puts "Using configuration #{config_path}"	
 	$config = YAML::load_file(config_path)
 	
 	if $config['prefix'] && !ENV['PREFIX']
