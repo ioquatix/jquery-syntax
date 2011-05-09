@@ -22,7 +22,7 @@ Syntax.register('super-collider', function(brush) {
 	
 	brush.push({
 		pattern: /\\[a-z_][a-z0-9_]*/gi,
-		klass: "constant"
+		klass: "symbol"
 	});
 	
 	// Comments
