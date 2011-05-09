@@ -21,7 +21,7 @@ Syntax.register('super-collider', function(brush) {
 	});
 	
 	brush.push({
-		pattern: /\\[a-z]+/gi,
+		pattern: /\\[a-z_][a-z0-9_]*/gi,
 		klass: "constant"
 	});
 	
@@ -41,7 +41,7 @@ Syntax.register('super-collider', function(brush) {
 	
 	// Functions
 	brush.push({
-		pattern: /(?:\.)([a-z_][a-z0-9_]+)/gi, 
+		pattern: /(?:\.)([a-z_][a-z0-9_]*)/gi, 
 		matches: Syntax.extractMatches({klass: 'function'})
 	});
 	
