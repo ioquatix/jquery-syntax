@@ -9,13 +9,15 @@ Syntax.register('clang', function(brush) {
 	
 	var access = ["@private", "@protected", "@public", "@required", "@optional", "private", "protected", "public", "friend", "using"];
 	
-	var types = ["mutable", "auto", "const", "double", "float", "int", "short", "char", "long", "signed", "unsigned", "bool", "void", "typename", "id", "register", "wchar_t"];
+	var typeModifiers = ["mutable", "auto", "const", "register", "typename", "abstract"];
+	var types = ["double", "float", "int", "short", "char", "long", "signed", "unsigned", "bool", "void", "id"];
 	
 	var operators = ["+", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">", "[", "]", "new", "delete", "in"];
 	
 	var values = ["this", "true", "false", "NULL", "YES", "NO", "nil"];
 	
 	brush.push(values, {klass: 'constant'});
+	brush.push(typeModifiers, {klass: 'keyword'})
 	brush.push(types, {klass: 'type'});
 	brush.push(keywords, {klass: 'keyword'});
 	brush.push(operators, {klass: 'operator'});
@@ -33,7 +35,7 @@ Syntax.register('clang', function(brush) {
 	brush.push(propertyAttributes, {
 		klass: 'keyword',
 		only: ['objective-c-property']
-	})
+	});
 	
 	// Objective-C strings
 	
@@ -42,9 +44,13 @@ Syntax.register('clang', function(brush) {
 		klass: 'string'
 	});
 	
-	// Objective-C classes
+	// Objective-C classes, C++ classes, C types, etc.
 	brush.push(Syntax.lib.camelCaseType);
 	brush.push(Syntax.lib.cStyleType);
+	brush.push({
+		pattern: /(?:class|struct|enum|namespace)\s+([^{;\s]+)/gmi,
+		matches: Syntax.extractMatches({klass: 'type'})
+	});
 	
 	brush.push({
 		pattern: /#.*$/gmi,
