@@ -522,9 +522,9 @@ Syntax.Match.prototype._insert = function(match) {
 			return child._insert(match);
 		}
 		
-		console.log("Bisect at offsets", match, child.offset, child.endOffset);
+		// console.log("Bisect at offsets", match, child.offset, child.endOffset);
 		var parts = match.bisectAtOffsets([child.offset, child.endOffset]);
-		console.log("parts =", parts);
+		// console.log("parts =", parts);
 		// We now have at most three parts
 		//           {------child------}   {---possibly some other child---}
 		//   |--[0]--|-------[1]-------|--[2]--|
