@@ -28,6 +28,7 @@ Syntax.register('ooc', function(brush) {
 	
 	// ClassNames (CamelCase)
 	brush.push(Syntax.lib.camelCaseType);
+	brush.push(Syntax.lib.cStyleType);
 	brush.push(Syntax.lib.cStyleFunction);
 	
 	brush.push(Syntax.lib.cStyleComment);

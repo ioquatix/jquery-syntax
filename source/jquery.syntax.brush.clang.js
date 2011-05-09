@@ -44,6 +44,7 @@ Syntax.register('clang', function(brush) {
 	
 	// Objective-C classes
 	brush.push(Syntax.lib.camelCaseType);
+	brush.push(Syntax.lib.cStyleType);
 	
 	brush.push({
 		pattern: /#.*$/gmi,
