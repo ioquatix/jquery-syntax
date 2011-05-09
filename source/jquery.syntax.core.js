@@ -225,7 +225,7 @@ Syntax.lib.cStyleComment = {pattern: /\/\*[\s\S]*?\*\//gm, klass: 'comment', all
 Syntax.lib.cppStyleComment = {pattern: /\/\/.*$/gm, klass: 'comment', allow: ['href']};
 Syntax.lib.perlStyleComment = {pattern: /#.*$/gm, klass: 'comment', allow: ['href']};
 
-Syntax.lib.perlStyleRegularExpressions = {pattern: /\B\/([^\/]|\\\/)*?\/[a-z]*(?=\s*[^\w\s'";\/])/g, klass: 'constant'};
+Syntax.lib.perlStyleRegularExpressions = {pattern: /\B\/([^\/]|\\\/)*?\/[a-z]*(?=\s*[^\w\s'"\/])/g, klass: 'constant', incremental: true};
 
 Syntax.lib.cStyleFunction = {pattern: /([a-z_][a-z0-9_]*)\s*\(/gi, matches: Syntax.extractMatches({klass: 'function'})};
 Syntax.lib.camelCaseType = {pattern: /\b_*[A-Z][\w]*\b/g, klass: 'type'};
@@ -813,6 +813,11 @@ Syntax.Brush.prototype.getMatchesForRule = function (text, rule, offset) {
 			matches.push(Syntax.brushes[rule.brush].buildTree(match[0], match.index));
 		} else {
 			matches.push(new Syntax.Match(match.index, match[0].length, rule, match[0]));
+		}
+		
+		if (rule.incremental) {
+			// Don't start scanning from the end of the match..
+			pattern.lastIndex = match.index + 1;
 		}
 	}
 	
