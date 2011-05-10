@@ -5,23 +5,31 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.register('super-collider', function(brush) {
-	var keywords = ["arg", "classvar", "var"];
-	var operators = ["`", "+", "@", ":", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">"];
-	var values = ["self", "super", "true", "false", "nil", "inf"];
-		
+	var keywords = ["const", "arg", "classvar", "var"];
 	brush.push(keywords, {klass: 'keyword'});
+	
+	var operators = ["`", "+", "@", ":", "*", "/", "-", "&", "|", "~", "!", "%", "<", "=", ">"];
 	brush.push(operators, {klass: 'operator'});
+	
+	var values = ["thisFunctionDef", "thisFunction", "thisMethod", "thisProcess", "thisThread", "this", "super", "true", "false", "nil", "inf"];
 	brush.push(values, {klass: 'constant'});
 	
 	brush.push(Syntax.lib.camelCaseType);
 	
+	// Single Characters
 	brush.push({
-		pattern: /\$./g,
+		pattern: /\$(\\)?./g,
 		klass: "constant"
 	});
 	
+	// Symbols
 	brush.push({
 		pattern: /\\[a-z_][a-z0-9_]*/gi,
+		klass: "symbol"
+	});
+	
+	brush.push({
+		pattern: /'[^']+'/g,
 		klass: "symbol"
 	});
 	
@@ -47,4 +55,3 @@ Syntax.register('super-collider', function(brush) {
 	
 	brush.push(Syntax.lib.cStyleFunction);
 });
-
