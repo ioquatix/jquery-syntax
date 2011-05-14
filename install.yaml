@@ -6,4 +6,4 @@ themes:
   - modern
   - bright
 # Enable minification
-# minify: true
+minify: true

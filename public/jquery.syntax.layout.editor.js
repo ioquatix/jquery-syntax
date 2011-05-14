@@ -1,0 +1,27 @@
+// This file is part of the "jQuery.Syntax" project, and is distributed under the MIT License.
+// Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
+
+
+Syntax.Editor=function(container,text){this.container=container;this.current=this.getLines();}
+Syntax.Editor.prototype.getLines=function(){var children=this.container.children,lines=[],offsets=[];for(var j=0;j<children.length;j+=1){if(children[j].nodeType==3){$(children[j]).remove();}}
+for(var i=0;i<children.length;i+=1){var childLines=Syntax.getCDATA([children[i]]).split('\n');childLines.pop();for(var j=0;j<childLines.length;j+=1){offsets.push(i-lines.length);lines.push(childLines[j]);}}
+return{lines:lines,offsets:offsets};}
+Syntax.Editor.prototype.updateChangedLines=function(){var result={};var updated=this.getLines();var i=0,j=0;while(i<this.current.lines.length&&j<updated.lines.length){if(this.current.lines[i]==updated.lines[j]){i+=1;j+=1;}else{break;}}
+result.start=j;i=this.current.lines.length,j=updated.lines.length;while(i>result.start&&j>result.start){if(this.current.lines[i-1]==updated.lines[j-1]){i-=1;j-=1;}else{break;}}
+result.end=j;result.originalEnd=i;result.difference=updated.lines.length-this.current.lines.length;while(result.start>0){if(updated.offsets[result.start]==updated.offsets[result.start-1])
+break;result.start-=1;}
+if(result.difference>0){while(result.end<(updated.lines.length-1)){if(updated.offsets[result.end-1]==updated.offsets[result.end])
+break;result.end+=1;result.originalEnd+=1;}}
+this.current=updated;this.changed=result;return result;}
+Syntax.Editor.prototype.textForLines=function(start,end){return this.current.lines.slice(start,end).join('\n')+'\n';}
+Syntax.Editor.prototype.updateLines=function(changed,newLines){console.log("updateLines",changed.start,changed.originalEnd,"->",changed.start,changed.end,changed);if(changed.start!=changed.originalEnd){var start=changed.start,end=changed.originalEnd;if(changed.difference<0)
+end+=changed.difference;console.log("original",start,end);start+=this.current.offsets[start];console.log("slice",start,end)
+var oldLines=Array.prototype.slice.call(this.container.children,start,end);console.log("Replacing old lines",oldLines,"with",newLines);$(oldLines).replaceWith(newLines);}else{if(changed.start==0)
+$(this.container).prepend(newLines);else{var start=changed.start;start+=this.current.offsets[start];$(this.container.children[start]).after(newLines);}}}
+Syntax.Editor.getCharacterOffset=function(range,node){var treeWalker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT,function(node){var nodeRange=document.createRange();nodeRange.selectNode(node);return nodeRange.compareBoundaryPoints(Range.END_TO_END,range)<1?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;},false);var charCount=0;while(treeWalker.nextNode()){charCount+=treeWalker.currentNode.length;}
+if(range.startContainer.nodeType==3){charCount+=range.startOffset;}
+return charCount;};Syntax.Editor.getNodesForCharacterOffsets=function(offsets,node){var treeWalker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT,function(node){return NodeFilter.FILTER_ACCEPT;},false);var nodes=[],charCount=0,i=0;while(i<offsets.length&&treeWalker.nextNode()){var end=charCount+treeWalker.currentNode.length;while(i<offsets.length&&offsets[i]<end){nodes.push([treeWalker.currentNode,charCount,end]);i+=1;}
+charCount=end;}
+return nodes;};Syntax.Editor.prototype.getClientState=function(){var state={};var selection=window.getSelection();if(selection.rangeCount>0)
+state.range=selection.getRangeAt(0);if(state.range){state.startOffset=Syntax.Editor.getCharacterOffset(state.range,this.container);}
+return state;};Syntax.Editor.prototype.setClientState=function(state){if(state.startOffset){var nodes=Syntax.Editor.getNodesForCharacterOffsets([state.startOffset],this.container);var range=document.createRange();range.setStart(nodes[0][0],state.startOffset-nodes[0][1]);range.setEnd(nodes[0][0],state.startOffset-nodes[0][1]);var selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);}};Syntax.layouts.editor=function(options,code){var container=jQuery('<div class="editor syntax highlighted" contentEditable="true">');code.children().each(function(){var line=document.createElement('div');line.className="source "+this.className;line.appendChild(this);container.append(line);});var editor=new Syntax.Editor(container.get(0));var updateContainer=function(lineHint){var clientState=editor.getClientState();var changed=editor.updateChangedLines();var text=editor.textForLines(changed.start,changed.end);console.log("textForLines",changed.start,changed.end,text);if(changed.start==changed.end){editor.updateLines(changed,[]);}else{Syntax.highlightText(text,options,function(html){var newLines=[];html.children().each(function(){var line=document.createElement('div');line.className="source "+this.className;line.appendChild(this);newLines.push(line);});editor.updateLines(changed,newLines);editor.setClientState(clientState);});}};container.bind('keyup',function(){updateContainer();});container.bind('paste',function(event){updateContainer();});container.bind('keydown',function(event){if(event.keyCode==9){event.preventDefault();document.execCommand('insertHTML',true,"    ");}});ED=editor;return jQuery('<div class="syntax-container">').append(container);};
