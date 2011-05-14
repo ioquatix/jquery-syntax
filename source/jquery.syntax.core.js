@@ -36,12 +36,19 @@ Syntax.getCDATA = function (elems) {
 		
 			// Use textContent || innerText for elements
 			} else if (elem.nodeType === 1) {
-				if (typeof(elem.textContent) === 'string')
-					cdata += elem.textContent;
+				if (elem.nodeName.toUpperCase() == "BR")
+					cdata += "\n";
 				else if (typeof(elem.innerText) === 'string')
 					cdata += elem.innerText;
+				//else if (typeof(elem.textContent) === 'string')
+				//	cdata += elem.textContent;
 				else
 					arguments.callee(elem.childNodes);
+				
+				// If we encounter a <div>, this must be a complete line.
+				// So we normalise this back to whitespace:
+				if (elem.nodeName.toUpperCase() == "DIV" && cdata[cdata.length-1] != '\n')
+					cdata += '\n';
 			
 			// Traverse everything else, except comment nodes
 			} else if (elem.nodeType !== 8) {
