@@ -789,7 +789,7 @@ Syntax.Brush.prototype.push = function () {
 
 		if (rule.pattern && rule.pattern.global) {
 			this.rules.push(jQuery.extend({owner: this}, rule));
-		} else if (typeof(console) != "undefined") {
+		} else {
 			Syntax.log("Syntax Error: Malformed rule: ", rule);
 		}
 	}
