@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
+
+		<script src="jquery-1.6.min.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.js" type="text/javascript"></script>
+		<script src="../public/jquery.syntax.cache.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+			$(function() {
+				jQuery.syntax();
+			});
+		</script>
+
+	</head>
+	<body>
+		<h1>Syntax: PHP</h1>
+		
+    <pre class="syntax php">&lt;?php
+    $curl = curl_init();
+    $options = array(CURLOPT_URL =&gt; 'http://api.twitter.com/1/statuses/public_timeline.json', CURLOPT_RETURNTRANSFER =&gt; true);            
+    curl_setopt_array($curl, $options);
+    $json = curl_exec($curl);
+    $obj = json_decode($json);
+    $val5 = trim($_GET['val5']);
+    $val10 = trim($_GET['val10']);
+    $val20 = trim($_GET['val20']);
+    $count = -1;
+    if($val5){$count = 4;} 
+    if($val10){$count = 9;}		
+    if($val20){$count = 19;}
+    if($val1){$count = -1;}
+    if($count&lt;0){
+    	echo &quot;&lt;img class='twitter-bird' src='twitter-bird.png' width='490px' height='315px' /&gt;&quot;;
+    } else {
+    	if($obj){
+    		foreach($obj as $var =&gt; $value)
+    		{    
+    			if($var&lt;=$count){
+    					echo &quot;&lt;div id='user-tweets-container'&gt;&quot;;
+    					echo &quot;&lt;a class='a-img' href='http://www.twitter.com/&quot; . $obj[$var]-&gt;user-&gt;screen_name . &quot;' target='_blank'&gt;&lt;img src='&quot; . $obj[$var]-&gt;user-&gt;profile_image_url . &quot;' width='48px' height='48px'/&gt;&lt;/a&gt;&quot;;
+    					echo &quot;&lt;p class='text'&gt;&lt;a class='screen_name' href='http://www.twitter.com/&quot; . $obj[$var]-&gt;user-&gt;screen_name . &quot;' target='_blank'&gt;&quot; . $obj[$var]-&gt;user-&gt;screen_name . &quot;&lt;/a&gt;&amp;nbsp;&quot;;        
+    					echo $obj[$var]-&gt;text . &quot;&lt;/p&gt;&lt;br/&gt;&quot;;        
+    					echo &quot;&lt;/div&gt;&quot;;
+    			}
+    		}
+    	}else{
+    		echo &quot;&lt;p class='text'&gt;&lt;br&gt;Not able to retrieve Tweets... Please try again later...&lt;/p&gt;&lt;br/&gt;&quot;;        
+    	}
+    }
+    ?&gt;</pre>
+	</body>
+</html>
