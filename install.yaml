@@ -1,8 +1,9 @@
 # The path to install the code
 prefix: "public"
 # The options for the stylesheet generation
-generate_stylesheets:
-    theme: "clean"
-    # override: blue
+themes:
+  - base
+  - modern
+  - bright
 # Enable minification
-minify: true
+# minify: true

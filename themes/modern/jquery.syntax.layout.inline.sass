@@ -2,12 +2,8 @@
 //	Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 //	See <jquery.syntax.js> for licensing details.
 
-@import "_layout"
-
-code.syntax
-  @include modern-gradient(white, $background-primary)
-  @include modern-border-radius(0.6em)
-  @include modern-box-shadow
-  border: 1px solid $border-primary
-  margin: 0px 2px 0px
-  padding: 1px 3px 1px
+.syntax-container.syntax-theme-modern
+  code.syntax
+    @include modern-gradient(white, $background-primary)
+    @include modern-border-radius(0.6em)
+    @include modern-box-shadow

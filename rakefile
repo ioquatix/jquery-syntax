@@ -46,11 +46,23 @@ task :update_aliases do
 		end
 	end
 	
+	styles = {}
+	Dir["**/jquery.syntax.*.css"].each do |path|
+		basename = File.basename(path, ".css")
+		styles[basename] ||= []
+		styles[basename] << path
+	end
+	
 	code.puts
 	code.puts "// CSS Extensions"
-	Dir["jquery.syntax.*.css"].each do |path|
-		basename = File.basename(path, ".css")
-		code.puts "Syntax.styles[#{basename.dump}] = #{path.dump};"
+	styles.each do |basename, paths|
+		code.puts "Syntax.styles[#{basename.inspect}] = #{paths.inspect};"
+	end
+	
+	code.puts
+	code.puts "// Theme Configuration"
+	Dir["**/theme.js"].each do |path|
+		code.write File.read(path)
 	end
 	
 	File.open(CACHE_FILE, "w") do |f|
@@ -58,37 +70,22 @@ task :update_aliases do
 	end
 	
 	puts "*** Written updated cache file #{CACHE_FILE} ***"
-	puts code.string
+	# puts code.string
 end
 
-task :generate_stylesheets, [:theme,:override] do |task, arguments|
+task :generate_stylesheets, [:theme] do |task, arguments|
 	theme = arguments[:theme] || "base"
-	override = arguments[:override] || "master.sass"
-	output = "./"
+	output = File.join("./", theme)
+	FileUtils.mkdir_p(output)
 	
-	puts "Building CSS: #{theme}/#{override}"
-	
-	theme_tmp = File.join(Dir.tmpdir, "jQuery.Syntax-#{Time.now.to_i}")
-	FileUtils.mkdir_p(theme_tmp)
-	
-	aggregate_theme = Theme.new(theme_tmp, File.join(File.dirname(__FILE__), "themes"))
+	aggregate_theme = Theme.new(output, File.join(File.dirname(__FILE__), "themes"))
 	aggregate_theme.load_theme(theme)
 	
-	unless File.exist?(override)
-		override = File.join(theme_tmp, override)
-	end
-	
-	unless File.exist?(override)
-		raise StandardError.new("Could not find master/override #{override} in #{theme_tmp}.")
-	end
-	
-	aggregate_theme.includes << override
-	
-	Dir.glob(File.join(theme_tmp, "jquery.syntax.*.sass")) do |sass|
-		output_path = File.join(output, File.basename(sass, ".sass") + ".css")
-		command = "sass -I #{theme_tmp.dump} --stdin #{output_path}"
+	Dir.glob(File.join(output, "jquery.syntax.*.{sass,scss}")) do |sass|
+		output_name = File.basename(sass).sub(/\.(sass|scss)$/, ".css")
+		output_path = File.join(output, output_name)
 		
-		$stderr.puts command
+		command = "sass -I #{output.dump} --stdin #{output_path}"
 		
 		IO.popen(command, "w") do |io|
 			aggregate_theme.includes_for(sass, :prepend).each do |incl|
@@ -105,7 +102,13 @@ task :generate_stylesheets, [:theme,:override] do |task, arguments|
 		end
 	end
 	
-	FileUtils.rm_rf(theme_tmp)
+	Dir.glob(File.join(output, "*.{sass,scss}")) do |path|
+		FileUtils.rm path
+	end
+	
+	Dir.glob(File.join(output, "_*")) do |path|
+		FileUtils.rm path
+	end
 end
 
 # This builds a combined jquery.syntax.js and jquery.syntax.cache.js and minifies the result
@@ -130,8 +133,9 @@ end
 task :compress_all => [:build_combined] do
 	files = Dir["jquery.syntax*.js"]
 	
+	puts "Minifying JavaScript..."
 	files.each do |path|
-		puts "Minifying #{File.basename(path)}..."
+		# puts "Minifying #{File.basename(path)}..."
 		IO.popen(JSMIN_EXEC, "r+") do |min|
 			min.write(File.read(path))
 			
@@ -177,15 +181,14 @@ end
 task :install => :setup_prefix do |task, arguments|
 	Rake::Task[:clean].invoke(arguments[:config])
 	
-	Rake::Task[:generate_stylesheets].invoke(
-		$config['generate_stylesheets']['theme'], 
-		$config['generate_stylesheets']['override']
-	)
+	$config['themes'].each do |theme|
+		Rake::Task[:generate_stylesheets].execute(:theme => theme)
+	end
 	
 	js_files = Dir[BASE_PATH + "source/jquery.syntax*.js"]
 	
 	js_files.each do |path|
-		$stderr.puts "Copying #{File.basename(path)}..."
+		# $stderr.puts "Copying #{File.basename(path)}..."
 		
 		output_path = File.basename(path)
 		
@@ -199,8 +202,8 @@ task :install => :setup_prefix do |task, arguments|
 end
 
 task :clean => :setup_prefix  do |task, arguments|
-	Dir.glob("jquery.syntax.*") do |path|
-		FileUtils.rm path, :verbose => true
+	Dir.glob("*") do |path|
+		FileUtils.rm_r path
 	end
 end
 

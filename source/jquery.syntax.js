@@ -108,10 +108,12 @@ var Syntax = {
 	root: null, 
 	aliases: {},
 	styles: {},
+	themes: {},
 	lib: {},
 	defaultOptions: {
 		cacheScripts: true,
-		cacheStyleSheets: true
+		cacheStyleSheets: true,
+		theme: "base"
 	},
 	
 	brushes: new ResourceLoader(function (name, callback) {
@@ -170,9 +172,12 @@ var Syntax = {
 	
 	getResource: function (prefix, name, callback) {
 		var basename = prefix + "." + name;
+		var styles = this.styles[basename];
 		
-		if (this.styles[basename]) {
-			this.getStyles(this.root + this.styles[basename]);
+		if (styles) {
+			for (var i = 0; i < styles.length; i += 1) {
+				this.getStyles(this.root + styles[i]);
+			}
 		}
 		
 		Syntax.getScript(this.root + basename + '.js', callback);

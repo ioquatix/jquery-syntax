@@ -968,6 +968,18 @@ Syntax.highlight = function (elements, options, callback) {
 			Syntax.layouts.get(options.layout, function(layout) {
 				html = layout(options, html, container);
 
+				// If there is a theme specified, ensure it is added to the top level class.
+				if (options.theme) {
+					// Load dependencies
+					var themes = Syntax.themes[options.theme];
+					for (var i = 0; i < themes.length; i += 1) {
+						html.addClass("syntax-theme-" + themes[i]);
+					}
+
+					// Add the base theme
+					html.addClass("syntax-theme-" + options.theme);
+				}
+
 				if (brush.postprocess) {
 					html = brush.postprocess(options, html, container);
 				}

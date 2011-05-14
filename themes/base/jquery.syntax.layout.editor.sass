@@ -3,5 +3,12 @@
 //	See <jquery.syntax.js> for licensing details.
 
 .syntax-container.syntax-theme-base
-  code.syntax
-    background-color: $background-primary
+  div.editor.syntax
+    background-color: white
+    border: 1px inset $border-primary
+    padding: 0.2em !important
+    margin: 0 !important
+    white-space: pre
+  
+  div.editor.syntax:focus
+    outline: none

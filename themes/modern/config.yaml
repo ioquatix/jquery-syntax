@@ -1,4 +1,0 @@
-depends:
-  - base
-includes:
-  - _modern.scss
