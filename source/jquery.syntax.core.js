@@ -24,7 +24,7 @@ if (!String.prototype.repeat) {
 // This version fixes it... for pre elements only. Other elements
 // in IE will have the whitespace manipulated.
 Syntax.getCDATA = function (elems) {
-	var cdata = "", elem;
+	var cdata = '', elem;
 	
 	(function (elems) {
 		for (var i = 0; elems[i]; i++) {
@@ -36,7 +36,7 @@ Syntax.getCDATA = function (elems) {
 		
 			// Use textContent || innerText for elements
 			} else if (elem.nodeType === 1) {
-				if (elem.nodeName.toUpperCase() == "BR")
+				if (elem.nodeName.toUpperCase() == 'BR')
 					cdata += "\n";
 				else if (typeof(elem.innerText) === 'string')
 					cdata += elem.innerText;
@@ -47,7 +47,7 @@ Syntax.getCDATA = function (elems) {
 				
 				// If we encounter a <div>, this must be a complete line.
 				// So we normalise this back to whitespace:
-				if (elem.nodeName.toUpperCase() == "DIV" && cdata[cdata.length-1] != '\n')
+				if (elem.nodeName.toUpperCase() == 'DIV' && cdata[cdata.length-1] != '\n')
 					cdata += '\n';
 			
 			// Traverse everything else, except comment nodes
@@ -57,7 +57,7 @@ Syntax.getCDATA = function (elems) {
 		}
 	})(elems);
 	
-	return cdata.replace(/\r\n?/g, "\n");
+	return cdata.replace(/\r\n?/g, '\n');
 }
 
 // Convert to stack based implementation
@@ -872,7 +872,7 @@ Syntax.Brush.prototype.buildTree = function(text, offset, additionalMatches) {
 	offset = offset || 0;
 	
 	// Fixes code that uses \r\n for line endings. /$/ matches both \r\n, which is a problem..
-	text = text.replace(/\r/g, "");
+	text = text.replace(/\r/g, '');
 	
 	var matches = this.getMatches(text, offset);
 	
