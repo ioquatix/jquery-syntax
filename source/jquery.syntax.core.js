@@ -732,27 +732,6 @@ Syntax.Brush = function () {
 	this.processes = {};
 };
 
-Syntax.Brush.convertStringToTokenPattern = function (pattern, escape) {
-	var prefix = "\\b", postfix = "\\b";
-	
-	if (!pattern.match(/^\w/)) {
-		if (!pattern.match(/\w$/)) {
-			prefix = postfix = "";
-		} else {
-			prefix = "\\B";
-		}
-	} else {
-		if (!pattern.match(/\w$/)) {
-			postfix = "\\B";
-		}
-	}
-	
-	if (escape)
-		pattern = RegExp.escape(pattern)
-	
-	return prefix + pattern + postfix;
-}
-
 // Add a parent to the brush. This brush should be loaded as a dependency.
 Syntax.Brush.prototype.derives = function (name) {
 	this.parents.push(name);
@@ -775,13 +754,50 @@ Syntax.Brush.prototype.allKlasses = function () {
 	return klasses;
 }
 
+Syntax.Brush.convertStringToTokenPattern = function (pattern, escape) {
+	var prefix = "\\b", postfix = "\\b";
+	
+	if (!pattern.match(/^\w/)) {
+		if (!pattern.match(/\w$/)) {
+			prefix = postfix = "";
+		} else {
+			prefix = "\\B";
+		}
+	} else {
+		if (!pattern.match(/\w$/)) {
+			postfix = "\\B";
+		}
+	}
+	
+	if (escape)
+		pattern = RegExp.escape(pattern)
+	
+	return prefix + pattern + postfix;
+}
+
 Syntax.Brush.prototype.push = function () {
 	if (jQuery.isArray(arguments[0])) {
 		var patterns = arguments[0], rule = arguments[1];
 		
+		var all = "(";
+		
 		for (var i = 0; i < patterns.length; i += 1) {
-			this.push(jQuery.extend({pattern: patterns[i]}, rule));
+			if (i > 0) all += "|";
+			
+			var p = patterns[i];
+			
+			if (p instanceof RegExp) {
+				all += p.source;
+			} else {
+				all += Syntax.Brush.convertStringToTokenPattern(p, true);
+			}
 		}
+		
+		all += ")";
+		
+		this.push(jQuery.extend({
+			pattern: new RegExp(all, rule.options || 'g')
+		}, rule));
 	} else {
 		var rule = arguments[0];
 		
