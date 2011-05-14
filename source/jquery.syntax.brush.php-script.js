@@ -18,6 +18,12 @@ Syntax.register('php-script', function(brush) {
 	brush.push(operators, {klass: 'operator'});
 	brush.push(access, {klass: 'access'});
 	
+	// Variables
+	brush.push({
+		pattern: /\$[a-z_][a-z0-9]*/gi,
+		klass: 'variable'
+	});
+	
 	// ClassNames (CamelCase)
 	brush.push(Syntax.lib.camelCaseType);
 	brush.push(Syntax.lib.cStyleFunction);
