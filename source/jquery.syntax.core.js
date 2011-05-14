@@ -925,6 +925,37 @@ Syntax.Brush.prototype.process = function(text, matches) {
 	return html;
 };
 
+Syntax.highlightText = function(text, options, callback) {
+	var brushName = (options.brush || 'plain').toLowerCase();
+	
+	brushName = Syntax.aliases[brushName] || brushName;
+	
+	Syntax.brushes.get(brushName, function(brush) {
+		if (options.tabWidth) {
+			// Calculate the tab expansion and offsets
+			replacement = Syntax.convertTabsToSpaces(text, options.tabWidth);
+			
+			// Update any existing matches
+			if (options.matches && options.matches.length) {
+				var linearOffsets = Syntax.convertToLinearOffsets(replacement.offsets, text.length);
+				options.matches = Syntax.updateMatchesWithOffsets(options.matches, linearOffsets, replacement.text);
+			}
+			
+			text = replacement.text;
+		}
+		
+		var html = brush.process(text, options.matches);
+		
+		if (options.linkify !== false) {
+			jQuery('span.href', html).each(function(){
+				jQuery(this).replaceWith(jQuery('<a>').attr('href', this.innerHTML).text(this.innerHTML));
+			});
+		}
+		
+		callback(html, brush, text, options);
+	});
+}
+
 Syntax.highlight = function (elements, options, callback) {
 	if (typeof(options) === 'function') {
 		callback = options;
@@ -932,6 +963,7 @@ Syntax.highlight = function (elements, options, callback) {
 	}
 	
 	options.layout = options.layout || 'preformatted';
+	options.matches = [];
 	
 	if (typeof(options.tabWidth) === 'undefined') {
 		options.tabWidth = 4;
@@ -940,54 +972,30 @@ Syntax.highlight = function (elements, options, callback) {
 	elements.each(function () {
 		var container = jQuery(this);
 		
-		// We can augment the plain text to extract existing annotations.
-		var matches = Syntax.extractElementMatches(container);
+		// We can augment the plain text to extract existing annotations (e.g. <span class="foo">...</span>).
+		options.matches = options.matches.concat(Syntax.extractElementMatches(container));
+		
 		var text = Syntax.getCDATA(container);
 		
 		var match = text.match(/-\*- mode: (.+?);(.*?)-\*-/i);
 		var endOfSecondLine = text.indexOf("\n", text.indexOf("\n") + 1);
-		
+
 		if (match && match.index < endOfSecondLine) {
 			options.brush = options.brush || match[1];
 			var modeline = match[2];
-			
+
 			var mode = /([a-z\-]+)\:(.*?)\;/gi;
-			
+
 			while((match = mode.exec(modeline)) !== null) {
 				var setter = Syntax.modeLineOptions[match[1]];
-				
+
 				if (setter) {
 					setter(match[1], match[2], options);
 				}
 			}
 		}
 		
-		var brushName = (options.brush || 'plain').toLowerCase();
-		
-		brushName = Syntax.aliases[brushName] || brushName;
-		
-		Syntax.brushes.get(brushName, function(brush) {
-			if (options.tabWidth) {
-				// Calculate the tab expansion and offsets
-				replacement = Syntax.convertTabsToSpaces(text, options.tabWidth);
-				
-				// Update any existing matches
-				if (matches && matches.length) {
-					var linearOffsets = Syntax.convertToLinearOffsets(replacement.offsets, text.length);
-					matches = Syntax.updateMatchesWithOffsets(matches, linearOffsets, replacement.text);
-				}
-				
-				text = replacement.text;
-			}
-			
-			var html = brush.process(text, matches);
-			
-			if (options.linkify !== false) {
-				jQuery('span.href', html).each(function(){
-					jQuery(this).replaceWith(jQuery('<a>').attr('href', this.innerHTML).text(this.innerHTML));
-				});
-			}
-			
+		Syntax.highlightText(text, options, function(html, brush/*, text, options*/) {
 			Syntax.layouts.get(options.layout, function(layout) {
 				html = layout(options, html, container);
 
