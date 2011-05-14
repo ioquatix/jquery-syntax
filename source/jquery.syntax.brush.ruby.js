@@ -31,7 +31,7 @@ Syntax.register('ruby', function(brush) {
 	});
 	
 	// Regular expressions
-	brush.push(Syntax.lib.perlStyleRegularExpressions);
+	brush.push(Syntax.lib.perlStyleRegularExpression);
 	
 	brush.push({pattern: /(@+|\$)[\w]+/g, klass: 'variable'});
 	

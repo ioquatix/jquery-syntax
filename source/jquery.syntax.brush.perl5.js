@@ -19,7 +19,7 @@ Syntax.register('perl5', function(brush) {
 	brush.push(builtins, {klass: 'function'});
 	
 	// Regular expressions
-	brush.push(Syntax.lib.perlStyleRegularExpressions);
+	brush.push(Syntax.lib.perlStyleRegularExpression);
 	
 	// Comments
 	brush.push(Syntax.lib.perlStyleComment);
