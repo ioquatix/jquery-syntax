@@ -10,33 +10,34 @@ Syntax.Editor = function(container, text) {
 // This function generates an array of accumulated line offsets e.g.
 // If line 8 is actually in child element 6, indices[8] = -2
 Syntax.Editor.prototype.getLines = function() {
-	var children = this.container.children, lines = [], offsets = [];
+	var children = this.container.childNodes, lines = [], offsets = [];
 	
 	// Sometimes, e.g. when deleting text, children elements are not complete lines.
 	// We need to accumulate incomplete lines (1), and then append them to the 
 	// start of the next complete line (2)
-	var text = "";
+	var text = "", startChild = 0;
 	for (var i = 0; i < children.length; i += 1) {
 		var childLines = Syntax.getCDATA([children[i]]).split('\n');
 		
 		if (childLines.length > 1) {
 			childLines[0] = text + childLines[0]; // (2)
-			text = "";
-			childLines.pop();
+			text = childLines.pop();
 		} else {
 			text += childLines[0]; // (1)
 			continue;
 		}
 		
 		for (var j = 0; j < childLines.length; j += 1) {
-			offsets.push(i - lines.length);
+			offsets.push(startChild - lines.length);
 			lines.push(childLines[j]);
 		}
+		
+		startChild = i + 1;
 	}
 	
 	offsets.push(offsets[offsets.length-1]);
 	
-	Syntax.log(offsets, lines, children);
+	Syntax.log("getLines", offsets, lines, children);
 	
 	return {lines: lines, offsets: offsets};
 }
@@ -146,7 +147,7 @@ Syntax.Editor.prototype.updateLines = function(changed, newLines) {
 	
 		Syntax.log("slice", start, end)
 	
-		var oldLines = Array.prototype.slice.call(this.container.children, start, end);
+		var oldLines = Array.prototype.slice.call(this.container.childNodes, start, end);
 	
 		Syntax.log("Replacing old lines", oldLines, "with", newLines);
 	
@@ -159,7 +160,7 @@ Syntax.Editor.prototype.updateLines = function(changed, newLines) {
 			
 			start += this.current.offsets[start];
 			
-			$(this.container.children[start]).after(newLines);
+			$(this.container.childNodes[start]).after(newLines);
 		}
 	}
 }
@@ -252,8 +253,6 @@ Syntax.layouts.editor = function(options, code/*, container*/) {
 		
 		var text = editor.textForLines(changed.start, changed.end);
 		Syntax.log("textForLines", changed.start, changed.end, text);
-		//Syntax.log("Updating lines from", changed.start, "to", changed.end, "original end", changed.originalEnd);
-		//Syntax.log("Children length", editor.container.children.length, editor.lines.length);
 		
 		if (changed.start == changed.end) {
 			editor.updateLines(changed, []);
