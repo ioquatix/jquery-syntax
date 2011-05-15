@@ -12,22 +12,31 @@ Syntax.Editor = function(container, text) {
 Syntax.Editor.prototype.getLines = function() {
 	var children = this.container.children, lines = [], offsets = [];
 	
-	for (var j = 0; j < children.length; j += 1) {
-		if (children[j].nodeType == 3) {
-			$(children[j]).remove();
-		}
-	}
-	
+	// Sometimes, e.g. when deleting text, children elements are not complete lines.
+	// We need to accumulate incomplete lines (1), and then append them to the 
+	// start of the next complete line (2)
+	var text = "";
 	for (var i = 0; i < children.length; i += 1) {
 		var childLines = Syntax.getCDATA([children[i]]).split('\n');
 		
-		childLines.pop();
+		if (childLines.length > 1) {
+			childLines[0] = text + childLines[0]; // (2)
+			text = "";
+			childLines.pop();
+		} else {
+			text += childLines[0]; // (1)
+			continue;
+		}
 		
 		for (var j = 0; j < childLines.length; j += 1) {
 			offsets.push(i - lines.length);
 			lines.push(childLines[j]);
 		}
 	}
+	
+	offsets.push(offsets[offsets.length-1]);
+	
+	Syntax.log(offsets, lines, children);
 	
 	return {lines: lines, offsets: offsets};
 }
@@ -108,7 +117,7 @@ Syntax.Editor.prototype.textForLines = function(start, end) {
 }
 
 Syntax.Editor.prototype.updateLines = function(changed, newLines) {
-	console.log("updateLines", changed.start, changed.originalEnd, "->", changed.start, changed.end, changed);
+	Syntax.log("updateLines", changed.start, changed.originalEnd, "->", changed.start, changed.end, changed);
 	
 	// We have two cases to handle, either we are replacing lines
 	//	(1a) Replacing old lines with one more more new lines (update)
@@ -117,7 +126,7 @@ Syntax.Editor.prototype.updateLines = function(changed, newLines) {
 	//	(2a) We are inserting lines at the start of the element
 	//	(2b) We are inserting lines after an existing element.
 	
-	if (changed.start != changed.originalEnd) {
+	if (changed.start != changed.end) {
 		// When text is deleted, at most two elements can remain:
 		//	(1) Whatever was partially remaining on the first line.
 		//	(2) Whatever was partially remaining on the last line.
@@ -125,21 +134,21 @@ Syntax.Editor.prototype.updateLines = function(changed, newLines) {
 		// changed.difference tells us how many elements have already been removed.
 		
 		// Cases (1a) and (1b)
-		var start = changed.start, end = changed.originalEnd;
+		var start = changed.start, end = changed.end;
 		
-		if (changed.difference < 0)
-			end += changed.difference;
+		//if (changed.difference < 0)
+		//end += changed.difference;
 	
-		console.log("original", start, end);
+		Syntax.log("original", start, end);
 	
 		start += this.current.offsets[start];
-		//end += this.current.offsets[end];
+		end += this.current.offsets[end];
 	
-		console.log("slice", start, end)
+		Syntax.log("slice", start, end)
 	
 		var oldLines = Array.prototype.slice.call(this.container.children, start, end);
 	
-		console.log("Replacing old lines", oldLines, "with", newLines);
+		Syntax.log("Replacing old lines", oldLines, "with", newLines);
 	
 		$(oldLines).replaceWith(newLines);
 	} else {
@@ -155,31 +164,23 @@ Syntax.Editor.prototype.updateLines = function(changed, newLines) {
 	}
 }
 
-// http://jsfiddle.net/timdown/2YcaX/3/
-Syntax.Editor.getCharacterOffset = function(range, node) {
-	// Are \n being considered?
-	var treeWalker = document.createTreeWalker(
-		node,
-		NodeFilter.SHOW_TEXT,
-		function(node) {
-			var nodeRange = document.createRange();
-			nodeRange.selectNode(node);
-			return nodeRange.compareBoundaryPoints(Range.END_TO_END, range) < 1 ?
-				NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-		},
-		false
-	);
-	
-	var charCount = 0;
-	while (treeWalker.nextNode()) {
-		charCount += treeWalker.currentNode.length;
+// http://jsfiddle.net/TjXEG/1/
+Syntax.Editor.getCharacterOffset = function(element) {
+	var caretOffset = 0;
+	if (typeof window.getSelection != "undefined") {
+		var range = window.getSelection().getRangeAt(0);
+		var preCaretRange = range.cloneRange();
+		preCaretRange.selectNodeContents(element);
+		preCaretRange.setEnd(range.endContainer, range.endOffset);
+		caretOffset = preCaretRange.toString().length;
+	} else if (typeof document.selection != "undefined" && document.selection.type != "Control") {
+		var textRange = document.selection.createRange();
+		var preCaretTextRange = document.body.createTextRange();
+		preCaretTextRange.moveToElementText(element);
+		preCaretTextRange.setEndPoint("EndToEnd", textRange);
+		caretOffset = preCaretTextRange.text.length;
 	}
-	
-	if (range.startContainer.nodeType == 3) {
-		charCount += range.startOffset;
-	}
-	
-	return charCount;
+	return caretOffset;
 };
 
 Syntax.Editor.getNodesForCharacterOffsets = function(offsets, node) {
@@ -217,7 +218,7 @@ Syntax.Editor.prototype.getClientState = function() {
 		state.range = selection.getRangeAt(0);
 	
 	if (state.range) {
-		state.startOffset = Syntax.Editor.getCharacterOffset(state.range, this.container);
+		state.startOffset = Syntax.Editor.getCharacterOffset(this.container);
 	}
 	
 	return state;
@@ -240,14 +241,7 @@ Syntax.Editor.prototype.setClientState = function(state) {
 Syntax.layouts.editor = function(options, code/*, container*/) {
 	var container = jQuery('<div class="editor syntax highlighted" contentEditable="true">');
 	
-	// Setup the initial html for the layout
-	code.children().each(function() {
-		var line = document.createElement('div');
-		line.className = "source " + this.className;
-		
-		line.appendChild(this);
-		container.append(line);
-	});
+	container.append(code.children());
 	
 	var editor = new Syntax.Editor(container.get(0));
 		
@@ -256,29 +250,17 @@ Syntax.layouts.editor = function(options, code/*, container*/) {
 		var clientState = editor.getClientState();
 		var changed = editor.updateChangedLines();
 		
-
-		
 		var text = editor.textForLines(changed.start, changed.end);
-		console.log("textForLines", changed.start, changed.end, text);
-		//console.log("Updating lines from", changed.start, "to", changed.end, "original end", changed.originalEnd);
-		//console.log("Children length", editor.container.children.length, editor.lines.length);
+		Syntax.log("textForLines", changed.start, changed.end, text);
+		//Syntax.log("Updating lines from", changed.start, "to", changed.end, "original end", changed.originalEnd);
+		//Syntax.log("Children length", editor.container.children.length, editor.lines.length);
 		
 		if (changed.start == changed.end) {
 			editor.updateLines(changed, []);
 		} else {
 			// Lines have been added, update the highlighting.
 			Syntax.highlightText(text, options, function(html) {
-				var newLines = [];
-			
-				html.children().each(function() {
-					var line = document.createElement('div');
-					line.className = "source " + this.className;
-				
-					line.appendChild(this);
-					newLines.push(line);
-				});
-			
-				editor.updateLines(changed, newLines);
+				editor.updateLines(changed, html.children().get());
 			
 				// Restore cusor position/selection if possible
 				editor.setClientState(clientState);
@@ -298,12 +280,12 @@ Syntax.layouts.editor = function(options, code/*, container*/) {
 	container.bind('keydown', function(event){
 		if (event.keyCode == 9) {
 			event.preventDefault();
-			document.execCommand('insertHTML', true, "    ");
+			document.execCommand('insertHTML', false, "    ");
 		}
-		// else if (event.keyCode == 13) {
-		//	event.preventDefault();
-		//	document.execCommand('insertHTML', true, "\n");
-		//}
+		else if (event.keyCode == 13) {
+			event.preventDefault();
+			document.execCommand('insertHTML', false, "\n");
+		}
 	});
 	
 	ED = editor;
