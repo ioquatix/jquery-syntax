@@ -263,6 +263,8 @@ var Syntax = {
 	log: function() {
 		if (typeof(console) != "undefined" && console.log) {
 			console.log.apply(console, arguments);
+		} else if (window.console.log) {
+			window.console.log.apply(window.console, arguments);
 		}
 	}
 };
