@@ -17,7 +17,7 @@ Syntax.Editor.prototype.getLines = function() {
 	// start of the next complete line (2)
 	var text = "", startChild = 0;
 	for (var i = 0; i < children.length; i += 1) {
-		var childLines = Syntax.getCDATA([children[i]]).split('\n');
+		var childLines = Syntax.innerText([children[i]]).split('\n');
 		
 		if (childLines.length > 1) {
 			childLines[0] = text + childLines[0]; // (2)
@@ -35,7 +35,15 @@ Syntax.Editor.prototype.getLines = function() {
 		startChild = i + 1;
 	}
 	
-	offsets.push(offsets[offsets.length-1]);
+	// Final line, any remaining text
+	if (text != "") {
+		offsets.push(startChild - lines.length);
+		lines.push(text);
+	} else {
+		startChild -= 1;
+	}
+	
+	offsets.push(startChild);
 	
 	Syntax.log("getLines", offsets, lines, children);
 	
@@ -118,8 +126,6 @@ Syntax.Editor.prototype.textForLines = function(start, end) {
 }
 
 Syntax.Editor.prototype.updateLines = function(changed, newLines) {
-	Syntax.log("updateLines", changed.start, changed.originalEnd, "->", changed.start, changed.end, changed);
-	
 	// We have two cases to handle, either we are replacing lines
 	//	(1a) Replacing old lines with one more more new lines (update)
 	//	(1b) Replacing old lines with zero new lines (removal)
@@ -137,20 +143,11 @@ Syntax.Editor.prototype.updateLines = function(changed, newLines) {
 		// Cases (1a) and (1b)
 		var start = changed.start, end = changed.end;
 		
-		//if (changed.difference < 0)
-		//end += changed.difference;
-	
-		Syntax.log("original", start, end);
-	
 		start += this.current.offsets[start];
 		end += this.current.offsets[end];
-	
-		Syntax.log("slice", start, end)
-	
+		
 		var oldLines = Array.prototype.slice.call(this.container.childNodes, start, end);
-	
-		Syntax.log("Replacing old lines", oldLines, "with", newLines);
-	
+		
 		$(oldLines).replaceWith(newLines);
 	} else {
 		if (changed.start == 0)
@@ -251,8 +248,11 @@ Syntax.layouts.editor = function(options, code/*, container*/) {
 		var clientState = editor.getClientState();
 		var changed = editor.updateChangedLines();
 		
+		// Sometimes there are problems where multiple spans exist on the same line.
+		if (changed.difference < 0 && changed.start > 0)
+			changed.start -= 1;
+		
 		var text = editor.textForLines(changed.start, changed.end);
-		Syntax.log("textForLines", changed.start, changed.end, text);
 		
 		if (changed.start == changed.end) {
 			editor.updateLines(changed, []);
@@ -286,8 +286,6 @@ Syntax.layouts.editor = function(options, code/*, container*/) {
 			document.execCommand('insertHTML', false, "\n");
 		}
 	});
-	
-	ED = editor;
 	
 	return jQuery('<div class="syntax-container">').append(container);
 };

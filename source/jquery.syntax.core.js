@@ -23,7 +23,7 @@ if (!String.prototype.repeat) {
 // The jQuery version of container.text() is broken on IE6.
 // This version fixes it... for pre elements only. Other elements
 // in IE will have the whitespace manipulated.
-Syntax.getCDATA = function (elems) {
+Syntax.innerText = function (elems) {
 	var cdata = '', elem;
 	
 	(function (elems) {
@@ -74,7 +74,7 @@ Syntax.extractElementMatches = function (elems, offset, tabWidth) {
 				offset += elem.nodeValue.length;
 			
 			} else if (elem.nodeType === 1) {
-				var text = Syntax.getCDATA(elem.childNodes);
+				var text = Syntax.innerText(elem.childNodes);
 				var expr = {klass: elem.className, force: true, element: elem};
 				
 				matches.push(new Syntax.Match(offset, text.length, expr, text));
@@ -975,7 +975,7 @@ Syntax.highlight = function (elements, options, callback) {
 		// We can augment the plain text to extract existing annotations (e.g. <span class="foo">...</span>).
 		options.matches = options.matches.concat(Syntax.extractElementMatches(container));
 		
-		var text = Syntax.getCDATA(container);
+		var text = Syntax.innerText(container);
 		
 		var match = text.match(/-\*- mode: (.+?);(.*?)-\*-/i);
 		var endOfSecondLine = text.indexOf("\n", text.indexOf("\n") + 1);
