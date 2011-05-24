@@ -4,8 +4,10 @@
 
 Syntax.layouts.inline = function(options, code, container) {
 	var inline = jQuery('<code class="syntax highlighted"></code>');
-	
 	inline.append(code.children());
 	
-	return inline;
+	var container = jQuery('<span class="syntax-container">');
+	container.append(inline);
+	
+	return container;
 };
