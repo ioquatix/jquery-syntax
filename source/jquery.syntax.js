@@ -68,7 +68,7 @@ ResourceLoader.prototype._loaded = function (name) {
 	this.loading[name] = null;
 
 	if (!resource) {
-		alert("Could not load resource named " + name);
+		alert("ResourceLoader: Could not load resource named " + name);
 	} else {
 		for (var i = 0; i < loading.length; i += 1) {
 			loading[i](resource);
