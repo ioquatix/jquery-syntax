@@ -20,44 +20,18 @@ if (!String.prototype.repeat) {
 	};
 }
 
-// The jQuery version of container.text() is broken on IE6.
-// This version fixes it... for pre elements only. Other elements
-// in IE will have the whitespace manipulated.
-Syntax.innerText = function (elems) {
-	var cdata = '', elem;
+Syntax.innerText = function(element) {
+	var text;
 	
-	(function (elems) {
-		for (var i = 0; elems[i]; i++) {
-			elem = elems[i];
-
-			// Get the text from text nodes and CDATA nodes
-			if (elem.nodeType === 3 || elem.nodeType === 4) {
-				cdata += elem.nodeValue;
-		
-			// Use textContent || innerText for elements
-			} else if (elem.nodeType === 1) {
-				if (elem.nodeName.toUpperCase() == 'BR')
-					cdata += "\n";
-				else if (typeof(elem.innerText) === 'string')
-					cdata += elem.innerText;
-				//else if (typeof(elem.textContent) === 'string')
-				//	cdata += elem.textContent;
-				else
-					arguments.callee(elem.childNodes);
-				
-				// If we encounter a <div>, this must be a complete line.
-				// So we normalise this back to whitespace:
-				if (elem.nodeName.toUpperCase() == 'DIV' && cdata[cdata.length-1] != '\n')
-					cdata += '\n';
-			
-			// Traverse everything else, except comment nodes
-			} else if (elem.nodeType !== 8) {
-				arguments.callee(elem.childNodes);
-			}
-		}
-	})(elems);
+	if (element.nodeName == 'BR') {
+		return '\n';
+	} else if (document.body.innerText) {
+		text = element.innerText;
+	} else {
+		text = element.innerHTML.replace(/<br\/?>/gi,'\n').replace(/<[^>]+>/gi, "");
+	}
 	
-	return cdata.replace(/\r\n?/g, '\n');
+	return text.replace(/\r\n?/g, '\n');
 }
 
 // Convert to stack based implementation
@@ -74,7 +48,7 @@ Syntax.extractElementMatches = function (elems, offset, tabWidth) {
 				offset += elem.nodeValue.length;
 			
 			} else if (elem.nodeType === 1) {
-				var text = Syntax.innerText(elem.childNodes);
+				var text = Syntax.innerText(elem);
 				var expr = {klass: elem.className, force: true, element: elem};
 				
 				matches.push(new Syntax.Match(offset, text.length, expr, text));
@@ -975,7 +949,7 @@ Syntax.highlight = function (elements, options, callback) {
 		// We can augment the plain text to extract existing annotations (e.g. <span class="foo">...</span>).
 		options.matches = options.matches.concat(Syntax.extractElementMatches(container));
 		
-		var text = Syntax.innerText(container);
+		var text = Syntax.innerText(this);
 		
 		var match = text.match(/-\*- mode: (.+?);(.*?)-\*-/i);
 		var endOfSecondLine = text.indexOf("\n", text.indexOf("\n") + 1);
