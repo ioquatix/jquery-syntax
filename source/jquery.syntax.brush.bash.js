@@ -25,4 +25,9 @@ Syntax.register('bash', function(brush) {
 	
 	// Numbers
 	brush.push(Syntax.lib.webLink);
+	
+	brush.push({
+		klass: 'stderr',
+		allow: ['string', 'comment', 'constant', 'href']
+	});
 });
