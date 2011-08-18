@@ -14,7 +14,7 @@ To customise the install process, including destination directory and theme, edi
 
 jQuery.Syntax depends on jQuery 1.4.1+.
 
-For downloads, documentation, compatibility, please visit <http://www.oriontransfer.co.nz/software/jquery-syntax/>
+For downloads, documentation, compatibility, please visit <http://www.oriontransfer.co.nz/software/jquery-syntax/>.
 
 There are several plugins available (source code - for stable releases see the main project page above):
 
