@@ -912,9 +912,11 @@ Syntax.Brush.prototype.process = function(text, matches) {
 					container = match.expression.process(container, match);
 				}
 				
-				var process = match.expression.owner.processes[match.expression.klass];
-				if (process) {
-					container = process(container, match);
+				if (match.expression.owner) {
+					var process = match.expression.owner.processes[match.expression.klass];
+					if (process) {
+						container = process(container, match);
+					}
 				}
 			}
 			return container;
