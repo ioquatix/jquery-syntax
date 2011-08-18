@@ -862,7 +862,7 @@ Syntax.Brush.prototype.push = function () {
 			rule.pattern = new XRegExp(rule.pattern);
 		}
 
-		if (rule.pattern && rule.pattern.global) {
+		if (rule.pattern && rule.pattern.global || typeof(rule.pattern) == 'undefined') {
 			this.rules.push(jQuery.extend({owner: this}, rule));
 		} else {
 			Syntax.log("Syntax Error: Malformed rule: ", rule);
@@ -874,8 +874,12 @@ Syntax.Brush.prototype.getMatchesForRule = function (text, rule, offset) {
 	var matches = [], match = null;
 	
 	// Short circuit (user defined) function:
-	if (typeof rule.apply != "undefined") {
+	if (typeof(rule.apply) != 'undefined') {
 		return rule.apply(text, rule, offset);
+	}
+	
+	if (typeof(rule.pattern) == 'undefined') {
+		return matches;
 	}
 	
 	// Duplicate the pattern so that the function is reentrant.
