@@ -2,4 +2,4 @@
 // Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 
 
-Syntax.layouts.inline=function(options,code,container){var inline=jQuery('<code class="syntax highlighted"></code>');inline.append(code.children());return inline;};
+Syntax.layouts.inline=function(options,code,container){var inline=jQuery('<code class="syntax highlighted"></code>');inline.append(code.children());var container=jQuery('<span class="syntax-container">');container.append(inline);return container;};

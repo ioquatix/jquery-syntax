@@ -7,3 +7,5 @@
   .syntax-theme-base .syntax .bash .bash-script {
     font-style: normal;
     color: black; }
+  .syntax-theme-base .syntax .bash .stderr {
+    color: red; }
