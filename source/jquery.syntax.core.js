@@ -55,13 +55,17 @@ Syntax.extractElementMatches = function (elems, offset, tabWidth) {
 			
 			} else if (elem.nodeType === 1) {
 				var text = Syntax.innerText(elem);
-				var expr = {klass: elem.className, force: true, element: elem};
 				
-				matches.push(new Syntax.Match(offset, text.length, expr, text));
+				matches.push(new Syntax.Match(offset, text.length, {
+					klass: elem.className,
+					force: true,
+					element: elem,
+					allow: '*'
+				}, text));
 			}
 			
 			// Traverse everything, except comment nodes
-			if (elem.nodeType !== 8) {
+			if (elem.nodeType !== 8 && elem.children) {
 				arguments.callee(elem.childNodes, offset);
 			}
 		}
