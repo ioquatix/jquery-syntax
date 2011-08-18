@@ -114,6 +114,15 @@ Syntax.convertTabsToSpaces = function (text, tabSize) {
 	return {text: text, offsets: offsets};
 };
 
+// This function converts from a compressed set of offsets of the form:
+//	[
+//		[offset, width, totalOffset],
+//		...
+//	]
+// This means that at a $offset, a tab (single character) was expanded to $width
+// single space characters.
+// This function produces a lookup table of offsets, where a given character offset
+// is mapped to how far the character has been offset.
 Syntax.convertToLinearOffsets = function (offsets, length) {
 	var current = 0, changes = [];
 	
@@ -121,11 +130,19 @@ Syntax.convertToLinearOffsets = function (offsets, length) {
 	// has been shifted right by offset[current][2]
 	for (var i = 0; i < length; i++) {
 		if (offsets[current] && i > offsets[current][0]) {
-			if (offsets[current+1] && i <= offsets[current+1][0]) {
-				changes.push(offsets[current][2]);
+			// Is there a next offset?
+			if (offsets[current+1]) {
+				// Is the index less than the start of the next offset?
+				if (i <= offsets[current+1][0]) {
+					changes.push(offsets[current][2]);
+				} else {
+					// If so, move to the next offset.
+					current += 1;
+					i -= 1;
+				}
 			} else {
-				current += 1;
-				i -= 1;
+				// If there is no next offset we assume this one to the end.
+				changes.push(offsets[current][2]);
 			}
 		} else {
 			changes.push(changes[changes.length-1] || 0);
