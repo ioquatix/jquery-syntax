@@ -23,12 +23,18 @@ if (!String.prototype.repeat) {
 Syntax.innerText = function(element) {
 	var text;
 	
+	if (!element) {
+		return "";
+	}
+	
 	if (element.nodeName == 'BR') {
 		return '\n';
+	} else if (element.textContent) {
+		// W3C: FF, Safari, Chrome, etc.
+		text = element.textContent;
 	} else if (document.body.innerText) {
+		// IE, other older browsers.
 		text = element.innerText;
-	} else {
-		text = element.innerHTML.replace(/<br\/?>/gi,'\n').replace(/<[^>]+>/gi, "");
 	}
 	
 	return text.replace(/\r\n?/g, '\n');
