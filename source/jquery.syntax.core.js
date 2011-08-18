@@ -433,19 +433,70 @@ Syntax.Match.prototype._splice = function(i, match) {
 // This function implements a full insertion procedure, and will break up the match to fit.
 // This operation is potentially very expensive, but is used to insert custom ranges into
 // the tree, if they are specified by the user. A custom <span> may cover multiple leafs in
-// the tree, thus naturally it needs to be broken up.
+// the tree, thus some parts of the tree may need to be split. This behavior is controlled
+// by whole - if true, the tree is split, if false, the match is split.
 // You should avoid using this function except in very specific cases.
-Syntax.Match.prototype.insert = function(match) {
+Syntax.Match.prototype.insert = function(match, whole) {
 	if (!this.contains(match))
 		return null;
 	
-	return this._insert(match);
+	if (whole) {
+		var top = this, i = 0;
+		while (i < top.children.length) {
+			if (top.children[i].contains(match)) {
+				top = top.children[i];
+				i = 0;
+			} else {
+				i += 1;
+			}
+		}
+		
+		return top._insertWhole(match);
+	} else {
+		return this._insert(match);
+	}
+}
+
+Syntax.Match.prototype._insertWhole = function(match) {
+	var parts = this.bisectAtOffsets([match.offset, match.endOffset])
+	this.children = [];
+	
+	if (parts[0]) {
+		this.children = this.children.concat(parts[0].children);
+	}
+	
+	if (parts[1]) {
+		match.children = [];
+		
+		// Update the match's expression based on the current position in the tree:
+		if (this.expression && this.expression.owner) {
+			match.expression = this.expression.owner.getRuleForKlass(match.expression.klass) || match.expression;
+		}
+		
+		// This probably isn't ideal, it would be better to convert all children and children-of-children
+		// into a linear array and reinsert - it would be slightly more accurate in many cases.
+		for (var i = 0; i < parts[1].children.length; i += 1) {
+			var child = parts[1].children[i];
+			
+			if (match.canContain(child)) {
+				match.children.push(child);
+			}
+		}
+		
+		this.children.push(match);
+	}
+	
+	if (parts[2]) {
+		this.children = this.children.concat(parts[2].children);
+	}
+	
+	return this;
 }
 
 // This is not a general tree insertion function. It is optimised to run in almost constant
 // time, but data must be inserted in sorted order, otherwise you will have problems.
 // This function also ensures that matches won't be broken up unless absolutely necessary.
-Syntax.Match.prototype.insertAtEnd = function (match) {
+Syntax.Match.prototype.insertAtEnd = function(match) {
 	if (!this.contains(match)) {
 		Syntax.log("Syntax Error: Child is not contained in parent node!");
 		return null;
@@ -858,6 +909,16 @@ Syntax.Brush.prototype.getMatchesForRule = function (text, rule, offset) {
 	
 	return matches;
 };
+
+Syntax.Brush.prototype.getRuleForKlass = function (klass) {
+	for (var i = 0; i < this.rules.length; i += 1) {
+		if (this.rules[i].klass == klass) {
+			return this.rules[i];
+		}
+	}
+	
+	return null;
+}
 
 Syntax.Brush.prototype.getMatches = function(text, offset) {
 	var matches = [];
