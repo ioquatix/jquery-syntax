@@ -215,10 +215,15 @@ Syntax.lib.webLinkProcess = function (queryURI, lucky) {
 	}
 	
 	return function (element, match) {
-		return jQuery('<a>').
-			attr('href', queryURI + encodeURIComponent(element.text())).
-			attr('class', element.attr('class')).
-			append(element.contents());
+		var a = document.createElement('a');
+		a.href = queryURI + encodeURIComponent(Syntax.innerText(element));
+		a.className = element.className;
+		a.childNodes = element.childNodes;
+		
+		while (element.childNodes.length > 0)
+			a.appendChild(element.childNodes[0]);
+		
+		return a;
 	};
 };
 

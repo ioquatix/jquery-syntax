@@ -33,9 +33,18 @@ Syntax.register('css', function(brush) {
 		pattern: new RegExp(colorMatcher.join("|"), "gi"),
 		klass: 'color',
 		process: function (element, match) {
-			var text = jQuery(element).text();
-			var colorBox = jQuery('<span class="color-box"><span class="sample" style="background-color: ' + text + '"></span>&nbsp;&nbsp;</span>');
-			return jQuery(element).append(colorBox);
+			var text = Syntax.innerText(element);
+			var colourBox = document.createElement('span');
+			colourBox.className = 'colour-box';
+			
+			var sampleColour = document.createElement('span');
+			sampleColour.className = 'sample';
+			sampleColour.style.backgroundColor = text;
+			sampleColour.appendChild(document.createTextNode('&nbsp;&nbsp;'))
+			colourBox.appendChild(sampleColour);
+			
+			element.appendChild(colourBox);
+			return element;
 		}
 	});
 		
