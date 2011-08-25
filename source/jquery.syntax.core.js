@@ -196,7 +196,7 @@ Syntax.extractMatches = function() {
 			
 			if (match[index].length > 0) {
 				if (rule.brush) {
-					matches.push(Syntax.brushes[rule.brush].buildTree(match[index], RegExp.indexOf(match, index)));
+					matches.push(Syntax.Brush.buildTree(rule, match[index], RegExp.indexOf(match, index)));
 				} else {
 					var expression = jQuery.extend({owner: expr.owner}, rule);
 					
@@ -789,8 +789,8 @@ Syntax.Brush = function () {
 Syntax.Brush.prototype.derives = function (name) {
 	this.parents.push(name);
 	this.rules.push({
-		apply: function(text, expr, offset) {
-			return Syntax.brushes[name].getMatches(text, offset);
+		apply: function(text, expr) {
+			return Syntax.brushes[name].getMatches(text);
 		}
 	});
 }
@@ -828,6 +828,32 @@ Syntax.Brush.convertStringToTokenPattern = function (pattern, escape) {
 	return prefix + pattern + postfix;
 }
 
+Syntax.Brush.MatchPattern = function (text, rule) {
+	if (!rule.pattern)
+		return;
+	
+	// Duplicate the pattern so that the function is reentrant.
+	var matches = [], pattern = new RegExp;
+	pattern.compile(rule.pattern);
+	
+	while((match = pattern.exec(text)) !== null) {
+		if (rule.matches) {
+			matches = matches.concat(rule.matches(match, rule));
+		} else if (rule.brush) {
+			matches.push(Syntax.Brush.buildTree(rule, match[0], match.index));
+		} else {
+			matches.push(new Syntax.Match(match.index, match[0].length, rule, match[0]));
+		}
+		
+		if (rule.incremental) {
+			// Don't start scanning from the end of the match..
+			pattern.lastIndex = match.index + 1;
+		}
+	}
+	
+	return matches;
+}
+
 Syntax.Brush.prototype.push = function () {
 	if (jQuery.isArray(arguments[0])) {
 		var patterns = arguments[0], rule = arguments[1];
@@ -862,6 +888,9 @@ Syntax.Brush.prototype.push = function () {
 		if (typeof(XRegExp) !== 'undefined') {
 			rule.pattern = new XRegExp(rule.pattern);
 		}
+		
+		// Default pattern extraction algorithm
+		rule.apply = rule.apply || Syntax.Brush.MatchPattern;
 
 		if (rule.pattern && rule.pattern.global || typeof(rule.pattern) == 'undefined') {
 			this.rules.push(jQuery.extend({owner: this}, rule));
@@ -871,45 +900,16 @@ Syntax.Brush.prototype.push = function () {
 	}
 };
 
-Syntax.Brush.prototype.getMatchesForRule = function (text, rule, offset) {
+Syntax.Brush.prototype.getMatchesForRule = function (text, rule) {
 	var matches = [], match = null;
 	
 	// Short circuit (user defined) function:
 	if (typeof(rule.apply) != 'undefined') {
-		return rule.apply(text, rule, offset);
-	}
-	
-	if (typeof(rule.pattern) == 'undefined') {
-		return matches;
-	}
-	
-	// Duplicate the pattern so that the function is reentrant.
-	var pattern = new RegExp;
-	pattern.compile(rule.pattern);
-	
-	while((match = pattern.exec(text)) !== null) {
-		if (rule.matches) {
-			matches = matches.concat(rule.matches(match, rule));
-		} else if (rule.brush) {
-			matches.push(Syntax.brushes[rule.brush].buildTree(match[0], match.index));
-		} else {
-			matches.push(new Syntax.Match(match.index, match[0].length, rule, match[0]));
-		}
-		
-		if (rule.incremental) {
-			// Don't start scanning from the end of the match..
-			pattern.lastIndex = match.index + 1;
-		}
-	}
-	
-	if (offset && offset > 0) {
-		for (var i = 0; i < matches.length; i += 1) {
-			matches[i].shift(offset);
-		}
+		matches = rule.apply(text, rule);
 	}
 	
 	if (rule.debug) {
-		Syntax.log("matches", matches);
+		Syntax.log("Syntax matches:", rule, text, matches);
 	}
 	
 	return matches;
@@ -935,13 +935,27 @@ Syntax.Brush.prototype.getMatches = function(text, offset) {
 	return matches;
 };
 
+Syntax.Brush.buildTree = function(rule, text, offset, additionalMatches) {
+	var match = Syntax.brushes[rule.brush].buildTree(text, offset, additionalMatches);
+	
+	jQuery.extend(match.expression, rule);
+	
+	return match;
+}
+
 Syntax.Brush.prototype.buildTree = function(text, offset, additionalMatches) {
 	offset = offset || 0;
 	
 	// Fixes code that uses \r\n for line endings. /$/ matches both \r\n, which is a problem..
 	text = text.replace(/\r/g, '');
 	
-	var matches = this.getMatches(text, offset);
+	var matches = this.getMatches(text);
+	
+	if (offset && offset > 0) {
+		for (var i = 0; i < matches.length; i += 1) {
+			matches[i].shift(offset);
+		}
+	}
 	
 	var top = new Syntax.Match(offset, text.length, {klass: this.allKlasses().join(" "), allow: '*', owner: this}, text);
 
