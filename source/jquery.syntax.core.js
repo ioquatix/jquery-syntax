@@ -301,21 +301,22 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 	// Using jQuery jQuery.fn.append() can reduce performance by as much as 1/3rd.
 	if (typeof(node) === 'string') {
 		node = document.createTextNode(node);
-	} else {
-		node = node[0];
 	}
 	
-	container[0].appendChild(node);
+	container.appendChild(node);
 };
 
 Syntax.Match.prototype.reduce = function (append, process) {
 	var start = this.offset;
-	var container = jQuery('<span></span>');
+	var container = document.createElement('span');
 	
 	append = append || Syntax.Match.defaultReduceCallback;
 	
 	if (this.expression && this.expression.klass) {
-		container.addClass(this.expression.klass);
+		if (container.className.length > 0)
+			container.className += ' ';
+		
+		container.className += this.expression.klass;
 	}
 	
 	for (var i = 0; i < this.children.length; i += 1) {
@@ -968,7 +969,8 @@ Syntax.Brush.prototype.process = function(text, matches) {
 	
 	var lines = top.split(/\n/g);
 	
-	var html = jQuery('<pre class="syntax"></pre>');
+	var html = document.createElement('pre');
+	html.className = 'syntax';
 	
 	for (var i = 0; i < lines.length; i += 1) {
 		var line = lines[i].reduce(null, function (container, match) {
@@ -987,7 +989,7 @@ Syntax.Brush.prototype.process = function(text, matches) {
 			return container;
 		});
 		
-		html.append(line);
+		html.appendChild(line);
 	}
 	
 	return html;
@@ -1065,7 +1067,7 @@ Syntax.highlight = function (elements, options, callback) {
 		
 		Syntax.highlightText(text, options, function(html, brush/*, text, options*/) {
 			Syntax.layouts.get(options.layout, function(layout) {
-				html = layout(options, html, container);
+				html = layout(options, $(html), $(container));
 
 				// If there is a theme specified, ensure it is added to the top level class.
 				if (options.theme) {
