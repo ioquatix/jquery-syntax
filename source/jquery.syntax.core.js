@@ -218,8 +218,8 @@ Syntax.lib.webLinkProcess = function (queryURI, lucky) {
 		var a = document.createElement('a');
 		a.href = queryURI + encodeURIComponent(Syntax.innerText(element));
 		a.className = element.className;
-		a.childNodes = element.childNodes;
 		
+		// Move children from <element> to <a>
 		while (element.childNodes.length > 0)
 			a.appendChild(element.childNodes[0]);
 		
