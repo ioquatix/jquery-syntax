@@ -214,7 +214,11 @@ Syntax.lib.webLinkProcess = function (queryURI, lucky) {
 		queryURI = "http://www.google.com/search?btnI=I&q=" + encodeURIComponent(queryURI + " ");
 	}
 	
-	return function (element, match) {
+	return function (element, match, options) {
+		// Per-code block linkification control.
+		if (options.linkify === false)
+			return element;
+		
 		var a = document.createElement('a');
 		a.href = queryURI + encodeURIComponent(Syntax.innerText(element));
 		a.className = element.className;
@@ -983,7 +987,7 @@ Syntax.Brush.prototype.buildTree = function(text, offset, additionalMatches) {
 };
 
 // Matches is optional, and provides a set of pre-existing matches.
-Syntax.Brush.prototype.process = function(text, matches) {
+Syntax.Brush.prototype.process = function(text, matches, options) {
 	var top = this.buildTree(text, 0, matches);
 	
 	var lines = top.split(/\n/g);
@@ -995,13 +999,13 @@ Syntax.Brush.prototype.process = function(text, matches) {
 		var line = lines[i].reduce(null, function (container, match) {
 			if (match.expression) {
 				if (match.expression.process) {
-					container = match.expression.process(container, match);
+					container = match.expression.process(container, match, options);
 				}
 				
 				if (match.expression.owner) {
 					var process = match.expression.owner.processes[match.expression.klass];
 					if (process) {
-						container = process(container, match);
+						container = process(container, match, options);
 					}
 				}
 			}
@@ -1033,7 +1037,7 @@ Syntax.highlightText = function(text, options, callback) {
 			text = replacement.text;
 		}
 		
-		var html = brush.process(text, options.matches);
+		var html = brush.process(text, options.matches, options);
 		
 		if (options.linkify !== false) {
 			jQuery('span.href', html).each(function(){
