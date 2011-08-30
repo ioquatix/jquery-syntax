@@ -934,11 +934,11 @@ Syntax.Brush.prototype.getRuleForKlass = function (klass) {
 	return null;
 }
 
-Syntax.Brush.prototype.getMatches = function(text, offset) {
+Syntax.Brush.prototype.getMatches = function(text) {
 	var matches = [];
 	
 	for (var i = 0; i < this.rules.length; i += 1) {
-		matches = matches.concat(this.getMatchesForRule(text, this.rules[i], offset));
+		matches = matches.concat(this.getMatchesForRule(text, this.rules[i]));
 	}
 	
 	return matches;
