@@ -20,6 +20,8 @@ if (!String.prototype.repeat) {
 	};
 }
 
+// Return the inner text of an element - must preserve whitespace.
+// Avoid returning \r characters.
 Syntax.innerText = function(element) {
 	var text;
 	
@@ -78,6 +80,7 @@ Syntax.extractElementMatches = function (elems, offset, tabWidth) {
 	return matches;
 }
 
+// Basic layout doesn't do anything e.g. identity layout.
 Syntax.layouts.preformatted = function (options, html, container) {
 	return html;
 };
@@ -86,6 +89,7 @@ Syntax.modeLineOptions = {
 	'tab-width': function(name, value, options) { options.tabWidth = parseInt(value, 10); }
 };
 
+// Should be obvious right?
 Syntax.convertTabsToSpaces = function (text, tabSize) {
 	var space = [], pattern = /\r|\n|\t/g, tabOffset = 0, offsets = [], totalOffset = 0;
 	tabSize = tabSize || 4
@@ -152,6 +156,8 @@ Syntax.convertToLinearOffsets = function (offsets, length) {
 	return changes;
 }
 
+// Used for tab expansion process, by shifting matches when tab charaters were converted to
+// spaces.
 Syntax.updateMatchesWithOffsets = function (matches, linearOffsets, text) {
 	(function (matches) {
 		for (var i = 0; i < matches.length; i++) {
@@ -173,6 +179,9 @@ Syntax.updateMatchesWithOffsets = function (matches, linearOffsets, text) {
 	return matches;
 };
 
+// A helper function which automatically matches expressions with capture groups from the regular expression match.
+// Each argument position corresponds to the same index regular expression group.
+// Or, override by providing rule.index
 Syntax.extractMatches = function() {
 	var rules = arguments;
 	
@@ -209,6 +218,7 @@ Syntax.extractMatches = function() {
 	};
 };
 
+// Used to create processing functions that automatically link to remote documentation.
 Syntax.lib.webLinkProcess = function (queryURI, lucky) {
 	if (lucky) {
 		queryURI = "http://www.google.com/search?btnI=I&q=" + encodeURIComponent(queryURI + " ");
@@ -231,6 +241,7 @@ Syntax.lib.webLinkProcess = function (queryURI, lucky) {
 	};
 };
 
+// Global brush registration function.
 Syntax.register = function (name, callback) {
 	var brush = Syntax.brushes[name] = new Syntax.Brush();
 	brush.klass = name;
@@ -238,6 +249,7 @@ Syntax.register = function (name, callback) {
 	callback(brush);
 };
 
+// Library of helper patterns
 Syntax.lib.cStyleComment = {pattern: /\/\*[\s\S]*?\*\//gm, klass: 'comment', allow: ['href']};
 Syntax.lib.cppStyleComment = {pattern: /\/\/.*$/gm, klass: 'comment', allow: ['href']};
 Syntax.lib.perlStyleComment = {pattern: /#.*$/gm, klass: 'comment', allow: ['href']};
@@ -260,6 +272,7 @@ Syntax.lib.multiLineDoubleQuotedString = {pattern: /"([^\\"]|\\.)*"/g, klass: 's
 Syntax.lib.multiLineSingleQuotedString = {pattern: /'([^\\']|\\.)*'/g, klass: 'string'};
 Syntax.lib.stringEscape = {pattern: /\\./g, klass: 'escape', only: ['string']};
 
+// Main match constructor. Make sure value is the correct size.
 Syntax.Match = function (offset, length, expression, value) {
 	this.offset = offset;
 	this.endOffset = offset + length;
@@ -297,14 +310,17 @@ Syntax.Match.prototype.adjust = function (offset, length, text) {
 	}
 };
 
+// Sort helper for sorting matches in forward order (e.g. same as the text that they were extracted from)
 Syntax.Match.sort = function (a,b) {
 	return (a.offset - b.offset) || (b.length - a.length);
 };
 
+// Is the given match contained in the range of the parent match?
 Syntax.Match.prototype.contains = function (match) {
 	return (match.offset >= this.offset) && (match.endOffset <= this.endOffset);
 };
 
+// Reduce a givent tree node into an html node.
 Syntax.Match.defaultReduceCallback = function (node, container) {
 	// We avoid using jQuery in this function since it is incredibly performance sensitive.
 	// Using jQuery jQuery.fn.append() can reduce performance by as much as 1/3rd.
@@ -315,6 +331,7 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 	container.appendChild(node);
 };
 
+// Convert a tree of matches into some flat form (typically HTML nodes).
 Syntax.Match.prototype.reduce = function (append, process) {
 	var start = this.offset;
 	var container = document.createElement('span');
@@ -358,6 +375,7 @@ Syntax.Match.prototype.reduce = function (append, process) {
 	return container;
 };
 
+// Main nesting check - can a match contain the given match?
 Syntax.Match.prototype.canContain = function (match) {
 	// This is a special conditional for explicitly added ranges by the user.
 	// Since user added it, we honour it no matter what.
@@ -398,6 +416,8 @@ Syntax.Match.prototype.canContain = function (match) {
 	return false;
 };
 
+// Return true if the given match can be spliced in as a child.
+// Checked automatically when calling _splice.
 Syntax.Match.prototype.canHaveChild = function(match) {
 	var only = match.expression.only;
 	
@@ -424,6 +444,9 @@ Syntax.Match.prototype.canHaveChild = function(match) {
 	return true;
 };
 
+// Add a child into the list of children for a given match, if it is acceptable to do so.
+// Updates the owner of the match.
+// Returns null if splice failed.
 Syntax.Match.prototype._splice = function(i, match) {
 	if (this.canHaveChild(match)) {
 		this.children.splice(i, 0, match);
@@ -563,7 +586,8 @@ Syntax.Match.prototype.insertAtEnd = function(match) {
 };
 
 // This insertion function is relatively complex because it is required to split the match over
-// several children.
+// several children. This function is used infrequently and is mostly for completeness. However,
+// it might be possible to remove it to reduce code.
 Syntax.Match.prototype._insert = function(match) {
 	if (this.children.length == 0)
 		return this._splice(0, match);
@@ -765,6 +789,9 @@ Syntax.Match.prototype.bisectAtOffsets = function(splits) {
 	return parts;
 };
 
+// Split a match at points in the tree that match a specific regular expression pattern.
+// Uses the fast tree bisection algorithm, performance should be bounded O(S log N) where N is
+// the total number of matches and S is the number of splits (?).
 Syntax.Match.prototype.split = function(pattern) {
 	var splits = [], match;
 	
@@ -934,6 +961,7 @@ Syntax.Brush.prototype.getRuleForKlass = function (klass) {
 	return null;
 }
 
+// Get all matches from a given block of text.
 Syntax.Brush.prototype.getMatches = function(text) {
 	var matches = [];
 	
@@ -944,6 +972,8 @@ Syntax.Brush.prototype.getMatches = function(text) {
 	return matches;
 };
 
+// A helper function for building a tree from a specific rule.
+// Typically used where sub-trees are required, e.g. CSS brush in HTML brush.
 Syntax.Brush.buildTree = function(rule, text, offset, additionalMatches) {
 	var match = Syntax.brushes[rule.brush].buildTree(text, offset, additionalMatches);
 	
@@ -952,6 +982,12 @@ Syntax.Brush.buildTree = function(rule, text, offset, additionalMatches) {
 	return match;
 }
 
+// This function builds a tree from a given block of text.
+// This is done by applying all rules to the text to get a complete list of matches,
+// sorting them in order, and inserting them into a syntax tree data structure.
+// Additional matches are forcefully inserted into the tree.
+// Provide an offset if the text is offset in a larger block of text. Matches
+// will be shifted along appropriately.
 Syntax.Brush.prototype.buildTree = function(text, offset, additionalMatches) {
 	offset = offset || 0;
 	
@@ -960,6 +996,7 @@ Syntax.Brush.prototype.buildTree = function(text, offset, additionalMatches) {
 	
 	var matches = this.getMatches(text);
 	
+	// Shift matches if offset is provided.
 	if (offset && offset > 0) {
 		for (var i = 0; i < matches.length; i += 1) {
 			matches[i].shift(offset);
@@ -986,7 +1023,17 @@ Syntax.Brush.prototype.buildTree = function(text, offset, additionalMatches) {
 	return top;
 };
 
-// Matches is optional, and provides a set of pre-existing matches.
+// This function builds a syntax tree from the given text and matches (optional).
+// The syntax tree is then flattened into html using a variety of functions.
+//
+// By default, you can't control reduction process through this function, but
+// it is possible to control the element conversion process by replace
+// .reduce(null, ...) with  .reduce(reduceCallback, ...)
+// See Syntax.Match.defaultReduceCallback for more details about interface.
+//
+// Matches is optional, and provides a set of pre-existing matches to add
+// to the tree.
+// Options are passed to element level processing functions.
 Syntax.Brush.prototype.process = function(text, matches, options) {
 	var top = this.buildTree(text, 0, matches);
 	
@@ -1018,6 +1065,10 @@ Syntax.Brush.prototype.process = function(text, matches, options) {
 	return html;
 };
 
+// Highlights a given block of text with a given set of options.
+// options.brush should specify the brush to use, either by direct reference
+// or name.
+// Callback will be called with (highlighted_html, brush_used, original_text, options)
 Syntax.highlightText = function(text, options, callback) {
 	var brushName = (options.brush || 'plain').toLowerCase();
 	
@@ -1049,6 +1100,8 @@ Syntax.highlightText = function(text, options, callback) {
 	});
 }
 
+// Highlight a given set of elements with a set of options.
+// Callback will be called once per element with (options, highlighted_html, original_container)
 Syntax.highlight = function (elements, options, callback) {
 	if (typeof(options) === 'function') {
 		callback = options;
