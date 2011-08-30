@@ -835,7 +835,7 @@ Syntax.Brush.convertStringToTokenPattern = function (pattern, escape) {
 
 Syntax.Brush.MatchPattern = function (text, rule) {
 	if (!rule.pattern)
-		return;
+		return [];
 	
 	// Duplicate the pattern so that the function is reentrant.
 	var matches = [], pattern = new RegExp;
