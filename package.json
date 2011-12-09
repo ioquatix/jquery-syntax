@@ -1,0 +1,19 @@
+{
+	name: "syntax",
+	version: "3.1",
+	title: "jQuery.Syntax",
+	author: {
+		name: "Samuel Williams",
+		email: "samuel@oriontransfer.org",
+		url: "http://www.oriontransfer.co.nz/samuel-williams"
+	},
+	licenses: [
+		{type: "MIT", url: "http://www.oriontransfer.co.nz/projects/jquery-syntax/license.en"}
+	],
+	dependencies: {
+		"jquery": ">=1.4.1"
+	},
+	description: "jQuery.Syntax is an extremely fast and lightweight syntax highlighter written in JavaScript. It has dynamic loading of syntax source files and integrates cleanly using CSS or modelines.",
+	keywords: ["syntax", "highlighting", "highlighter", "source", "code", "formatting"],
+	homepage: "http://www.oriontransfer.co.nz/projects/jquery-syntax"
+}
