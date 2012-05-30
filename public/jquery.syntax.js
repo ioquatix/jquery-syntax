@@ -111,8 +111,8 @@ var Syntax = {
 	themes: {},
 	lib: {},
 	defaultOptions: {
-		cacheScripts: false,
-		cacheStyleSheets: false,
+		cacheScripts: true,
+		cacheStyleSheets: true,
 		theme: "base"
 	},
 	

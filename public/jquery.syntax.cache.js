@@ -39,29 +39,31 @@ Syntax.alias("xml", []);
 Syntax.alias("yaml", []);
 
 // CSS Extensions
-Syntax.styles["jquery.syntax.layout.list"] = ["base/jquery.syntax.layout.list.css"];
-Syntax.styles["jquery.syntax.layout.inline"] = ["base/jquery.syntax.layout.inline.css", "modern/jquery.syntax.layout.inline.css"];
-Syntax.styles["jquery.syntax.brush.ruby"] = ["base/jquery.syntax.brush.ruby.css"];
-Syntax.styles["jquery.syntax.layout.plain"] = ["base/jquery.syntax.layout.plain.css", "modern/jquery.syntax.layout.plain.css"];
-Syntax.styles["jquery.syntax.brush.xml"] = ["base/jquery.syntax.brush.xml.css"];
-Syntax.styles["jquery.syntax.brush.bash-script"] = ["base/jquery.syntax.brush.bash-script.css"];
-Syntax.styles["jquery.syntax.brush.assembly"] = ["base/jquery.syntax.brush.assembly.css"];
-Syntax.styles["jquery.syntax.brush.python"] = ["base/jquery.syntax.brush.python.css"];
-Syntax.styles["jquery.syntax.brush.css"] = ["base/jquery.syntax.brush.css.css"];
-Syntax.styles["jquery.syntax.brush.clang"] = ["base/jquery.syntax.brush.clang.css"];
-Syntax.styles["jquery.syntax.brush.applescript"] = ["base/jquery.syntax.brush.applescript.css"];
-Syntax.styles["jquery.syntax.layout.fixed"] = ["base/jquery.syntax.layout.fixed.css"];
-Syntax.styles["jquery.syntax.layout.editor"] = ["base/jquery.syntax.layout.editor.css", "modern/jquery.syntax.layout.editor.css"];
 Syntax.styles["jquery.syntax.brush.protobuf"] = ["base/jquery.syntax.brush.protobuf.css"];
-Syntax.styles["jquery.syntax.layout.table"] = ["base/jquery.syntax.layout.table.css"];
-Syntax.styles["jquery.syntax.brush.bash"] = ["base/jquery.syntax.brush.bash.css"];
-Syntax.styles["jquery.syntax.core"] = ["base/jquery.syntax.core.css", "bright/jquery.syntax.core.css"];
-Syntax.styles["jquery.syntax.brush.html"] = ["base/jquery.syntax.brush.html.css"];
-Syntax.styles["jquery.syntax.brush.ocaml"] = ["base/jquery.syntax.brush.ocaml.css"];
-Syntax.styles["jquery.syntax.brush.diff"] = ["base/jquery.syntax.brush.diff.css"];
 Syntax.styles["jquery.syntax.brush.apache"] = ["base/jquery.syntax.brush.apache.css"];
+Syntax.styles["jquery.syntax.brush.css"] = ["base/jquery.syntax.brush.css.css"];
+Syntax.styles["jquery.syntax.layout.table"] = ["base/jquery.syntax.layout.table.css", "grey/jquery.syntax.layout.table.css"];
+Syntax.styles["jquery.syntax.core"] = ["base/jquery.syntax.core.css", "bright/jquery.syntax.core.css", "paper/jquery.syntax.core.css"];
+Syntax.styles["jquery.syntax.layout.inline"] = ["grey/jquery.syntax.layout.inline.css", "modern/jquery.syntax.layout.inline.css", "paper/jquery.syntax.layout.inline.css"];
+Syntax.styles["jquery.syntax.layout.editor"] = ["base/jquery.syntax.layout.editor.css", "grey/jquery.syntax.layout.editor.css", "modern/jquery.syntax.layout.editor.css"];
+Syntax.styles["jquery.syntax.brush.ocaml"] = ["base/jquery.syntax.brush.ocaml.css"];
+Syntax.styles["jquery.syntax.brush.bash-script"] = ["base/jquery.syntax.brush.bash-script.css"];
+Syntax.styles["jquery.syntax.layout.fixed"] = ["base/jquery.syntax.layout.fixed.css", "grey/jquery.syntax.layout.fixed.css", "paper/jquery.syntax.layout.fixed.css"];
+Syntax.styles["jquery.syntax.brush.clang"] = ["base/jquery.syntax.brush.clang.css"];
+Syntax.styles["jquery.syntax.brush.ruby"] = ["base/jquery.syntax.brush.ruby.css"];
+Syntax.styles["jquery.syntax.brush.python"] = ["base/jquery.syntax.brush.python.css"];
+Syntax.styles["jquery.syntax.brush.bash"] = ["base/jquery.syntax.brush.bash.css"];
+Syntax.styles["jquery.syntax.brush.assembly"] = ["base/jquery.syntax.brush.assembly.css"];
+Syntax.styles["jquery.syntax.brush.applescript"] = ["base/jquery.syntax.brush.applescript.css"];
+Syntax.styles["jquery.syntax.brush.html"] = ["base/jquery.syntax.brush.html.css"];
+Syntax.styles["jquery.syntax.layout.plain"] = ["base/jquery.syntax.layout.plain.css", "grey/jquery.syntax.layout.plain.css", "modern/jquery.syntax.layout.plain.css"];
+Syntax.styles["jquery.syntax.layout.list"] = ["base/jquery.syntax.layout.list.css", "grey/jquery.syntax.layout.list.css"];
+Syntax.styles["jquery.syntax.brush.xml"] = ["base/jquery.syntax.brush.xml.css"];
+Syntax.styles["jquery.syntax.brush.diff"] = ["base/jquery.syntax.brush.diff.css"];
 
 // Theme Configuration
 Syntax.themes["base"] = []
-Syntax.themes["bright"] = ["base"]
+Syntax.themes["bright"] = ["grey", "base"]
+Syntax.themes["grey"] = ["base"]
 Syntax.themes["modern"] = ["base"]
+Syntax.themes["paper"] = ["base"]
