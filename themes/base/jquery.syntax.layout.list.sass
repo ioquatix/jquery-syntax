@@ -6,30 +6,19 @@
 
 .syntax-container.syntax-theme-base
   ol.syntax
-    background-color: darken($background-primary, 5%)
-    border: 1px solid $border-primary
     padding: 0 0 0 5em !important
     margin: 0 !important
   
     li
       padding: 0 !important
       margin: 0 !important
-      color: darken($background-primary, 35%)
       +pre-wrap
     
     li div.source
-      color: $code-primary
       margin-left: -0.5em
-      border-left: 1px solid $border-primary
-      background-color: $background-primary
       padding: 0 0.4em 0 !important
-    
-    li.alt div.source
-      background-color: lighten($background-primary, 2%)
   
   ul.syntax
-    background-color: darken($background-primary, 5%)
-    border: 1px solid $border-primary
     padding: 0 !important
     margin: 0 !important
     list-style-type: none
@@ -41,9 +30,4 @@
   
     li div.source
       margin: 0 !important
-      color: $code-primary
-      background-color: $background-primary
       padding: 0 0.4em 0 !important
-    
-    li.alt div.source
-      background-color: lighten($background-primary, 2%)

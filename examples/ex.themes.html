@@ -12,9 +12,10 @@
 				//Syntax.defaultOptions.replace = true;
 				//Syntax.defaultOptions.layout = 'fixed';
 				
-				$('#base').syntax({brush: 'ruby', theme: 'base', layout: 'fixed', replace: true});
+				$('#grey').syntax({brush: 'ruby', theme: 'grey', layout: 'fixed', replace: true});
 				$('#bright').syntax({brush: 'ruby', theme: 'bright', layout: 'fixed', replace: true});
 				$('#modern').syntax({brush: 'ruby', theme: 'modern', layout: 'plain', replace: true});
+				$('#paper').syntax({brush: 'ruby', theme: 'paper', layout: 'fixed', replace: true});
 			});
 		</script>
 
@@ -22,9 +23,9 @@
 	<body>
 		<h1>Syntax: Ruby</h1>
 		
-		<h2>Base Theme</h2>
+		<h2>Grey Theme</h2>
 		
-		<pre id="base" class="syntax brush-ruby">#!/usr/bin/env ruby
+		<pre id="grey" class="syntax brush-ruby">#!/usr/bin/env ruby
 require &#x27;set&#x27;
 
 DEBUG = false
@@ -61,6 +62,24 @@ end
 		<h2>Modern Theme</h2>
 	
 		<pre id="modern" class="syntax brush-ruby">#!/usr/bin/env ruby
+require &#x27;set&#x27;
+
+DEBUG = false
+
+class Array
+  def map_to(with)
+    r = {}
+
+    each_with_index { |v,i| r[v] = with[i] }
+
+    return r
+  end
+end
+</pre>
+
+		<h2>Paper Theme</h2>
+	
+		<pre id="paper" class="syntax brush-ruby">#!/usr/bin/env ruby
 require &#x27;set&#x27;
 
 DEBUG = false

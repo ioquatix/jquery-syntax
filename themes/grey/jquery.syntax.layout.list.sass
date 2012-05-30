@@ -1,0 +1,30 @@
+//	This file is part of the "jQuery.Syntax" project, and is distributed under the MIT License.
+//	Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
+//	See <jquery.syntax.js> for licensing details.
+
+.syntax-container.syntax-theme-grey
+  ol.syntax
+    background-color: darken($background-primary, 5%)
+    border: 1px solid $border-primary
+  
+    li
+      color: darken($background-primary, 35%)
+    
+    li div.source
+      color: $code-primary
+      border-left: 1px solid $border-primary
+      background-color: $background-primary
+    
+    li.alt div.source
+      background-color: lighten($background-primary, 2%)
+  
+  ul.syntax
+    background-color: darken($background-primary, 5%)
+    border: 1px solid $border-primary
+  
+    li div.source
+      color: $code-primary
+      background-color: $background-primary
+    
+    li.alt div.source
+      background-color: lighten($background-primary, 2%)

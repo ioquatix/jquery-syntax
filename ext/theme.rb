@@ -32,7 +32,7 @@ class Theme
 	
 		# Is there a configuration file?
 		if File.exist? theme_config_path
-			config = YAML::load_file(theme_config_path)
+			config = YAML::load_file(theme_config_path) || {}
 		end
 	
 		# Load any dependencies recursively - if you have bad configuration this might
