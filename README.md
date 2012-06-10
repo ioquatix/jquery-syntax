@@ -1,4 +1,4 @@
-# jQuery.Syntax [release-3.0] #
+# jQuery.Syntax [release-3.1] #
 
 jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamically loads external dependencies (JavaScript & CSS) when required. It uses jQuery to make it cross-browser compatible and to simplify integration.
 
@@ -44,6 +44,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ## Change Log ##
+
+### release-3.1 ###
+ - Support for Scala, Go, OCaml/F#, Protocol Buffers, Super Collider.
+ - New theme system for dynamically loading and changing themes.
+ - Improved regular expression matching across all PCRE-syntax languages.
+ - Improved highlighting API allows for dynamically highlighting blocks of text using `Syntax.highlightText`.
+ - Initial version of editor layout, currently broken but under development.
+ - Performance improvements and bug fixes.
 
 ### release-3.0 ###
  - Changed license from AGPL to MIT.
