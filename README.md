@@ -5,7 +5,7 @@ jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamicall
 To use jQuery.Syntax with minimal work, simply review the examples and use the files in the public sub-directory.
 
 For more advanced usage and customisation, you will need to install the following dependencies to use jQuery.Syntax:
-	$ sudo gem install rake haml
+	$ sudo gem install rake sass
 
 To install jQuery.Syntax into the standard 'public' directory
 	$ rake install
