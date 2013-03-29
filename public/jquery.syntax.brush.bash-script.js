@@ -37,7 +37,7 @@ Syntax.register('bash-statement', function(brush) {
 	// Probably need to write a real parser here rather than using regular expressions, it is too fragile
 	// and misses lots of edge cases (e.g. nested brackets, delimiters).
 	brush.push({
-		pattern: /^\s*((?:\S+?=\$?(?:\[[^\]]+\]|\(\(.*?\)\)|"(?:[^"]|\\")+"|'(?:[^']|\\')+'|\S+)\s*)*)((?:\S+)?)/gmi,
+		pattern: /^\s*((?:\S+?=\$?(?:\[[^\]]+\]|\(\(.*?\)\)|"(?:[^"]|\\")+"|'(?:[^']|\\')+'|\S+)\s*)*)((?:(\\ |\S)+)?)/gmi,
 		matches: Syntax.extractMatches(
 			{klass: 'env', allow: ['variable', 'string', 'operator', 'constant', 'expression']},
 			{klass: 'function', allow: ['variable', 'string']}

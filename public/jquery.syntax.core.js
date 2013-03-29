@@ -1143,7 +1143,7 @@ Syntax.highlight = function (elements, options, callback) {
 		
 		Syntax.highlightText(text, options, function(html, brush/*, text, options*/) {
 			Syntax.layouts.get(options.layout, function(layout) {
-				html = layout(options, $(html), $(container));
+				html = layout(options, jQuery(html), jQuery(container));
 
 				// If there is a theme specified, ensure it is added to the top level class.
 				if (options.theme) {

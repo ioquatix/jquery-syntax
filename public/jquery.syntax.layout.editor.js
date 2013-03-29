@@ -15,37 +15,35 @@ Syntax.Editor.prototype.getLines = function() {
 	// Sometimes, e.g. when deleting text, children elements are not complete lines.
 	// We need to accumulate incomplete lines (1), and then append them to the 
 	// start of the next complete line (2)
-	var remainder = null, startChild = 0, nextChild = 0;
+	var text = "", startChild = 0;
 	for (var i = 0; i < children.length; i += 1) {
-		var childLines = ((remainder || '') + Syntax.innerText(children[i])).split('\n');
+		var childLines = Syntax.innerText([children[i]]).split('\n');
 		
-		remainder = childLines.pop();
-		
-		// There were no complete lines.
-		if (childLines.length == 0) {
+		if (childLines.length > 1) {
+			childLines[0] = text + childLines[0]; // (2)
+			text = childLines.pop();
+		} else {
+			text += childLines[0]; // (1)
 			continue;
 		}
 		
-		startChild = nextChild;
-		
 		for (var j = 0; j < childLines.length; j += 1) {
 			offsets.push(startChild - lines.length);
-			lines.push(childLines[j] + '\n');
+			lines.push(childLines[j]);
 		}
 		
-		nextChild = i + 1;
+		startChild = i + 1;
 	}
 	
 	// Final line, any remaining text
-	if (remainder != null) {
-		//if (!(lines[lines.length-1] == '\n' && remainder == '')) {
-			offsets.push(startChild - lines.length);
-			lines.push(remainder);
-		//}
+	if (text != "") {
+		offsets.push(startChild - lines.length);
+		lines.push(text);
+	} else {
+		startChild -= 1;
 	}
 	
-	startChild += 1;
-	offsets.push(startChild - lines.length);
+	offsets.push(startChild);
 	
 	Syntax.log("getLines", offsets, lines, children);
 	
@@ -124,7 +122,7 @@ Syntax.Editor.prototype.updateChangedLines = function() {
 }
 
 Syntax.Editor.prototype.textForLines = function(start, end) {
-	return this.current.lines.slice(start, end).join('');
+	return this.current.lines.slice(start, end).join('\n') + '\n';
 }
 
 Syntax.Editor.prototype.updateLines = function(changed, newLines) {
@@ -149,8 +147,6 @@ Syntax.Editor.prototype.updateLines = function(changed, newLines) {
 		end += this.current.offsets[end];
 		
 		var oldLines = Array.prototype.slice.call(this.container.childNodes, start, end);
-		
-		Syntax.log("updateLines", changed.start, changed.end, "->", start, end, "HTML", oldLines, newLines);
 		
 		$(oldLines).replaceWith(newLines);
 	} else {
@@ -230,15 +226,13 @@ Syntax.Editor.prototype.setClientState = function(state) {
 	if (state.startOffset) {
 		var nodes = Syntax.Editor.getNodesForCharacterOffsets([state.startOffset], this.container);
 		
-		if (nodes[0]) {
-			var range = document.createRange();
-			range.setStart(nodes[0][0], state.startOffset - nodes[0][1]);
-			range.setEnd(nodes[0][0], state.startOffset - nodes[0][1]);
+		var range = document.createRange();
+		range.setStart(nodes[0][0], state.startOffset - nodes[0][1]);
+		range.setEnd(nodes[0][0], state.startOffset - nodes[0][1]);
 		
-			var selection = window.getSelection();
-			selection.removeAllRanges();
-			selection.addRange(range);
-		}
+		var selection = window.getSelection();
+		selection.removeAllRanges();
+		selection.addRange(range);
 	}
 };
 
@@ -248,9 +242,10 @@ Syntax.layouts.editor = function(options, code/*, container*/) {
 	container.append(code.children());
 	
 	var editor = new Syntax.Editor(container.get(0));
-	var updateTimeout = null;
 		
-	var updateContainer = function() {
+	var updateContainer = function(lineHint) {
+		// Need to save cursor position/selection
+		var clientState = editor.getClientState();
 		var changed = editor.updateChangedLines();
 		
 		// Sometimes there are problems where multiple spans exist on the same line.
@@ -264,39 +259,21 @@ Syntax.layouts.editor = function(options, code/*, container*/) {
 		} else {
 			// Lines have been added, update the highlighting.
 			Syntax.highlightText(text, options, function(html) {
-				var clientState = editor.getClientState();
-				
 				editor.updateLines(changed, html.children().get());
-				
+			
+				// Restore cusor position/selection if possible
 				editor.setClientState(clientState);
 			});
 		}
-		
-		if (updateTimeout) {
-			clearTimeout(updateTimeout);
-		}
-		
-		updateTimeout = setTimeout(function(){
-			var text = Syntax.innerText(editor.container);
-			
-			Syntax.highlightText(text, options, function(html) {
-				var clientState = editor.getClientState();
-				
-				$(editor.container).empty();
-				$(editor.container).append(html.children());
-				
-				editor.setClientState(clientState);
-			})
-		}, 1000);
 	};
 	
 	// 'blur keyup paste mouseup'
 	container.bind('keyup', function(){
-		//updateContainer();
+		updateContainer();
 	});
 	
 	container.bind('paste', function(event){
-		//updateContainer();
+		updateContainer();
 	});
 	
 	container.bind('keydown', function(event){
@@ -305,27 +282,10 @@ Syntax.layouts.editor = function(options, code/*, container*/) {
 			document.execCommand('insertHTML', false, "    ");
 		}
 		else if (event.keyCode == 13) {
-			//var range = document.selection.createRange();
-			var range = window.getSelection().getRangeAt(0);
-			Syntax.log("range", range);
-			range.deleteContents();
-			
-			var br = document.createElement('br');
-			range.insertNode(br);
 			event.preventDefault();
-			
-			range.setStart(br, 0);
-			range.setEnd(br, 0);
-			
-			var selection = window.getSelection();
-			selection.removeAllRanges();
-			selection.addRange(range);
-			
-		//	document.execCommand('insertHTML', false, "<br/>");
+			document.execCommand('insertHTML', false, "\n");
 		}
 	});
-	
-	ED = editor;
 	
 	return jQuery('<div class="syntax-container">').append(container);
 };

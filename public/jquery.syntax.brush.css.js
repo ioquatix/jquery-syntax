@@ -40,7 +40,7 @@ Syntax.register('css', function(brush) {
 			var sampleColour = document.createElement('span');
 			sampleColour.className = 'sample';
 			sampleColour.style.backgroundColor = text;
-			sampleColour.appendChild(document.createTextNode('&nbsp;&nbsp;'))
+			sampleColour.appendChild(document.createTextNode('  '))
 			colourBox.appendChild(sampleColour);
 			
 			element.appendChild(colourBox);
