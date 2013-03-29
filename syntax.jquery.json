@@ -1,0 +1,25 @@
+{
+    "name": "syntax",
+    "title": "jQuery.Syntax",
+    "description": "jQuery plugin for source code highlighting.",
+    "keywords": [
+        "source", "code", "syntax", "highlight", "highlighter"
+    ],
+    "version": "3.1.1",
+    "author": {
+        "name": "Samuel Williams",
+        "url": "http://www.codeotaku.com"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://github.com/ioquatix/jquery-syntax"
+        }
+    ],
+    "homepage": "http://www.codeotaku.com/projects/jquery-syntax",
+    "docs": "http://www.codeotaku.com/projects/jquery-syntax/how-to-install",
+    "download": "https://github.com/ioquatix/jquery-syntax",
+    "dependencies": {
+        "jquery": ">=1.5"
+    }
+}
