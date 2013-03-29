@@ -9,7 +9,7 @@ require 'tmpdir'
 require 'pathname'
 require 'yaml'
 
-require 'ext/theme'
+require './ext/theme'
 
 JSMIN_EXEC = File.dirname(__FILE__) + "/ext/jsmin.rb"
 CACHE_FILE = "jquery.syntax.cache.js"
@@ -20,7 +20,7 @@ LICENSE = <<EOF
 
 EOF
 
-BASE_PATH = Pathname.new(Dir.getwd)
+BASE_PATH = Pathname(Dir.getwd)
 $config = nil
 
 if ENV['PREFIX']
@@ -163,17 +163,17 @@ task :setup_prefix do
 	$config = YAML::load_file(config_path)
 	
 	if $config['prefix'] && !ENV['PREFIX']
-		ENV['PREFIX'] = config_path.dirname + ($config['prefix'] || 'public')
+		prefix = config_path.dirname + ($config['prefix'] || 'public')
 	elsif ENV['PREFIX']
-		ENV['PREFIX'] = BASE_PATH + ENV['PREFIX']
+		prefix = BASE_PATH + ENV['PREFIX']
 	else
-		ENV['PREFIX'] = BASE_PATH + 'public'
+		prefix = BASE_PATH + 'public'
 	end
 	
-	prefix = Pathname.new(ENV['PREFIX'])
 	prefix.mkpath
-	
 	Dir.chdir(prefix)
+	
+	ENV['PREFIX'] = prefix.to_s
 	
 	puts "Working in #{Dir.getwd}..."
 end
