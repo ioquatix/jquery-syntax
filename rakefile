@@ -11,7 +11,7 @@ require 'yaml'
 
 require './ext/theme'
 
-JSMIN_EXEC = File.dirname(__FILE__) + "/ext/jsmin.rb"
+JSMIN_EXEC = ["java", "-jar", File.dirname(__FILE__) + "/ext/closure/compiler.jar"]
 CACHE_FILE = "jquery.syntax.cache.js"
 MINIFIED_FILE = "jquery.syntax.min.js"
 LICENSE = <<EOF
