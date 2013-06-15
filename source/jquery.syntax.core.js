@@ -576,9 +576,6 @@ Syntax.Match.prototype.insertAtEnd = function(match) {
 			// Displacement: After
 			return this._splice(i+1, match);
 		}
-		
-		// Could not find a suitable placement: this is probably an error.
-		return null;
 	} else {
 		// Displacement: Contains [but currently no children]
 		return this._splice(0, match);

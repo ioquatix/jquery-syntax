@@ -40,7 +40,7 @@ Syntax.register('ruby', function(brush) {
 		matches: Syntax.extractMatches({
 			brush: 'ruby',
 			only: ['string']
-		}),
+		})
 	});
 	
 	// Regular expressions
