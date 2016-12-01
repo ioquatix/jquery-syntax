@@ -20,6 +20,6 @@
   "homepage": "https://github.com/ioquatix/jquery-syntax",
   "ignore": [
     "node_modules",
-    "bower_components",
+    "bower_components"
   ]
 }
