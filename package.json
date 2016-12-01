@@ -1,6 +1,6 @@
 {
 	"name": "syntax",
-	"version": "3.1",
+	"version": "3.1.1",
 	"title": "jQuery.Syntax",
 	"author": {
 		"name": "Samuel Williams",
@@ -14,6 +14,6 @@
 		"jquery": ">=1.4.1"
 	},
 	"description": "jQuery.Syntax is an extremely fast and lightweight syntax highlighter written in JavaScript. It has dynamic loading of syntax source files and integrates cleanly using CSS or modelines.",
-	"keywords": ["syntax", "highlighting", "highlighter", "source", "code", "formatting"],
+	"keywords": ["syntax", "highlighting", "highlighter", "source", "code", "formatting", "jquery-plugin", "ecosystem:jquery"],
 	"homepage": "https://github.com/ioquatix/jquery-syntax"
 }
