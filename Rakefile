@@ -19,6 +19,7 @@ LICENSE = <<EOF
 EOF
 
 BASE_PATH = Pathname(Dir.getwd)
+DIST_PATH = 'dist'
 $config = nil
 
 if ENV['PREFIX']
@@ -161,11 +162,11 @@ task :setup_prefix do
 	$config = YAML::load_file(config_path)
 	
 	if $config['prefix'] && !ENV['PREFIX']
-		prefix = config_path.dirname + ($config['prefix'] || 'public')
+		prefix = config_path.dirname + ($config['prefix'] || DIST_PATH)
 	elsif ENV['PREFIX']
 		prefix = BASE_PATH + ENV['PREFIX']
 	else
-		prefix = BASE_PATH + 'public'
+		prefix = BASE_PATH + DIST_PATH
 	end
 	
 	prefix.mkpath
