@@ -16,8 +16,6 @@ CACHE_FILE = "jquery.syntax.cache.js"
 MINIFIED_FILE = "jquery.syntax.min.js"
 LICENSE = <<EOF
 // This file is part of the "jQuery.Syntax" project, and is distributed under the MIT License.
-// Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
-
 EOF
 
 BASE_PATH = Pathname(Dir.getwd)
