@@ -83,11 +83,11 @@ There are several plugins available:
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-## License ##
+## License
 
 Released under the MIT license.
 
-Copyright, 2011, 2013, by [Samuel G. D. Williams](http://www.codeotaku.com/samuel-williams).
+Copyright, 2016, by [Samuel G. D. Williams](http://www.codeotaku.com/samuel-williams).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
