@@ -256,5 +256,7 @@ jQuery.fn.syntax = function (options, callback) {
 };
 
 jQuery.syntax = function (options, callback) {
-	jQuery(Syntax.codeSelector, options.context).syntax(options, callback);
+	var context = options ? options.context : null;
+	
+	jQuery(Syntax.codeSelector, context).syntax(options, callback);
 };
