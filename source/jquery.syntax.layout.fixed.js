@@ -51,20 +51,5 @@ Syntax.layouts.fixed = function(options, code, container) {
 	fixed.append(numbersColumn);
 	fixed.append(codeColumn);
 	
-	a = jQuery('<a href="#">View Raw Code</a>');
-	a.click(function (event) {
-		event.preventDefault();
-		
-		if (jQuery(fixed).is(':visible')) {
-			rawCode.height(jQuery(fixed).height());
-			jQuery(fixed).replaceWith(rawCode);
-		} else {
-			jQuery(rawCode).replaceWith(fixed);
-		}
-	});
-	
-	toolbar.append(a);
-	toolbar.append('<a href="http://www.oriontransfer.co.nz/software/jquery-syntax" target="oriontransfer">?</a>');
-	
 	return jQuery('<div class="syntax-container">').append(toolbar).append(fixed);
 };

@@ -43,10 +43,9 @@ Syntax.innerText = function(element) {
 }
 
 // Convert to stack based implementation
-Syntax.extractElementMatches = function (elems, offset, tabWidth) {
+Syntax.extractElementMatches = function (elems, offset) {
 	var matches = [], current = [elems];
 	offset = offset || 0;
-	tabWidth = tabWidth || 4;
 	
 	(function (elems) {
 		for (var i = 0; elems[i]; i++) {
@@ -85,38 +84,6 @@ Syntax.layouts.preformatted = function (options, html, container) {
 	return html;
 };
 
-Syntax.modeLineOptions = {
-	'tab-width': function(name, value, options) { options.tabWidth = parseInt(value, 10); }
-};
-
-// Should be obvious right?
-Syntax.convertTabsToSpaces = function (text, tabSize) {
-	var space = [], pattern = /\r|\n|\t/g, tabOffset = 0, offsets = [], totalOffset = 0;
-	tabSize = tabSize || 4
-	
-	for (var i = ""; i.length <= tabSize; i = i + " ") {
-		space.push(i);
-	}
-
-	text = text.replace(pattern, function(match) {
-		var offset = arguments[arguments.length - 2];
-		if (match === "\r" || match === "\n") {
-			tabOffset = -(offset + 1);
-			return match;
-		} else {
-			var width = tabSize - ((tabOffset + offset) % tabSize);
-			tabOffset += width - 1;
-			
-			// Any match after this offset has been shifted right by totalOffset
-			totalOffset += width - 1
-			offsets.push([offset, width, totalOffset]);
-			
-			return space[width];
-		}
-	});
-	
-	return {text: text, offsets: offsets};
-};
 
 // This function converts from a compressed set of offsets of the form:
 //	[
@@ -576,9 +543,6 @@ Syntax.Match.prototype.insertAtEnd = function(match) {
 			// Displacement: After
 			return this._splice(i+1, match);
 		}
-		
-		// Could not find a suitable placement: this is probably an error.
-		return null;
 	} else {
 		// Displacement: Contains [but currently no children]
 		return this._splice(0, match);
@@ -1039,7 +1003,7 @@ Syntax.Brush.prototype.process = function(text, matches, options) {
 	
 	var lines = top.split(/\n/g);
 	
-	var html = document.createElement('pre');
+	var html = document.createElement('code');
 	html.className = 'syntax';
 	
 	for (var i = 0; i < lines.length; i += 1) {
@@ -1069,28 +1033,14 @@ Syntax.Brush.prototype.process = function(text, matches, options) {
 // options.brush should specify the brush to use, either by direct reference
 // or name.
 // Callback will be called with (highlighted_html, brush_used, original_text, options)
-Syntax.highlightText = function(text, options, callback) {
-	var brushName = (options.brush || 'plain').toLowerCase();
+Syntax.highlightText = function(text, brush, matches, options, callback) {
+	brush = (brush || 'plain').toLowerCase();
+	brush = Syntax.aliases[brush] || brush;
 	
-	brushName = Syntax.aliases[brushName] || brushName;
-	
-	Syntax.brushes.get(brushName, function(brush) {
-		if (options.tabWidth) {
-			// Calculate the tab expansion and offsets
-			replacement = Syntax.convertTabsToSpaces(text, options.tabWidth);
-			
-			// Update any existing matches
-			if (options.matches && options.matches.length) {
-				var linearOffsets = Syntax.convertToLinearOffsets(replacement.offsets, text.length);
-				options.matches = Syntax.updateMatchesWithOffsets(options.matches, linearOffsets, replacement.text);
-			}
-			
-			text = replacement.text;
-		}
+	Syntax.brushes.get(brush, function(brush) {
+		var html = brush.process(text, matches, options);
 		
-		var html = brush.process(text, options.matches, options);
-		
-		if (options.linkify !== false) {
+		if (options.linkify) {
 			jQuery('span.href', html).each(function(){
 				jQuery(this).replaceWith(jQuery('<a>').attr('href', this.innerHTML).text(this.innerHTML));
 			});
@@ -1100,51 +1050,61 @@ Syntax.highlightText = function(text, options, callback) {
 	});
 }
 
-// Highlight a given set of elements with a set of options.
-// Callback will be called once per element with (options, highlighted_html, original_container)
-Syntax.highlight = function (elements, options, callback) {
-	if (typeof(options) === 'function') {
-		callback = options;
-		options = {};
-	}
+Syntax.extractBrushName = function (className) {
+	// brush names are by default lower case - normalize so we can detect it.
+	className = className.toLowerCase();
 	
-	options.layout = options.layout || 'preformatted';
-	options.matches = [];
+	var match = className.match(/(brush|language)-([\S]+)/);
 	
-	if (typeof(options.tabWidth) === 'undefined') {
-		options.tabWidth = 4;
-	}
-	
-	elements.each(function () {
-		var container = jQuery(this);
+	if (match) {
+		return match[2];
+	} else {
+		var classes = className.split(/ /);
 		
-		// We can augment the plain text to extract existing annotations (e.g. <span class="foo">...</span>).
-		options.matches = options.matches.concat(Syntax.extractElementMatches(container));
-		
-		var text = Syntax.innerText(this);
-		
-		var match = text.match(/-\*- mode: (.+?);(.*?)-\*-/i);
-		var endOfSecondLine = text.indexOf("\n", text.indexOf("\n") + 1);
-
-		if (match && match.index < endOfSecondLine) {
-			options.brush = options.brush || match[1];
-			var modeline = match[2];
-
-			var mode = /([a-z\-]+)\:(.*?)\;/gi;
-
-			while((match = mode.exec(modeline)) !== null) {
-				var setter = Syntax.modeLineOptions[match[1]];
-
-				if (setter) {
-					setter(match[1], match[2], options);
+		if (jQuery.inArray("syntax", classes) !== -1) {
+			for (var i = 0; i < classes.length; i += 1) {
+				var name = Syntax.aliases[classes[i]];
+				
+				if (name) {
+					return name;
 				}
 			}
 		}
-		
-		Syntax.highlightText(text, options, function(html, brush/*, text, options*/) {
-			Syntax.layouts.get(options.layout, function(layout) {
-				html = layout(options, jQuery(html), jQuery(container));
+	}
+	
+	return null;
+}
 
+Syntax.extractTextBrushName = function (text) {
+	var match = text.match(/-\*- mode: (.+?);(.*?)-\*-/i);
+	var endOfSecondLine = text.indexOf("\n", text.indexOf("\n") + 1);
+
+	if (match && match.index < endOfSecondLine) {
+		return brush;
+	}
+}
+
+// Highlight a given set of elements with a set of options.
+// Callback will be called once per element with (options, highlighted_html, original_container)
+Syntax.highlight = function (elements, options, callback) {
+	elements.each(function () {
+		var container = jQuery(this);
+		var brush = options.brush || Syntax.extractBrushName(this.className);
+		var text = Syntax.innerText(this);
+
+		// We can augment the plain text to extract existing annotations (e.g. <span class="foo">...</span>).
+		var matches = Syntax.extractElementMatches(container);
+		
+		if (options.matches) {
+			Array.prototype.push(matches, options.matches);
+		}
+		
+		Syntax.highlightText(text, brush, matches, options, function(html, brush/*, text, options*/) {
+			Syntax.layouts.get(options.layout, function(layout) {
+				if (layout) {
+					html = layout(options, jQuery(html), container);
+				}
+				
 				// If there is a theme specified, ensure it is added to the top level class.
 				if (options.theme) {
 					// Load dependencies

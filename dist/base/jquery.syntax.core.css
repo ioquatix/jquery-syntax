@@ -1,30 +1,31 @@
-.syntax-theme-base .syntax {
+.syntax-theme-base {
+  tab-size: 4;
   font-family: Menlo, Monaco, Consolas, monospace;
-  line-height: 1.5em; }
-  .syntax-theme-base .syntax .function {
-    color: #3333ff; }
-  .syntax-theme-base .syntax .keyword, .syntax-theme-base .syntax .access {
+  line-height: 1.15em; }
+  .syntax-theme-base .function {
+    color: #33f; }
+  .syntax-theme-base .keyword, .syntax-theme-base .access {
     color: #7a0968; }
-  .syntax-theme-base .syntax .type {
-    color: #3239d6; }
-  .syntax-theme-base .syntax .comment {
-    color: #66aacc; }
-  .syntax-theme-base .syntax .constant {
+  .syntax-theme-base .type {
+    color: #3239D6; }
+  .syntax-theme-base .comment {
+    color: #6ac; }
+  .syntax-theme-base .constant {
     color: #1c00ce; }
-  .syntax-theme-base .syntax .string, .syntax-theme-base .syntax .symbol {
+  .syntax-theme-base .string, .syntax-theme-base .symbol {
     color: #c41a15; }
-  .syntax-theme-base .syntax .string .escape {
-    color: #ff9999; }
-  .syntax-theme-base .syntax .operator {
-    color: black; }
-  .syntax-theme-base .syntax .href {
+  .syntax-theme-base .string .escape {
+    color: #f99; }
+  .syntax-theme-base .operator {
+    color: #000000; }
+  .syntax-theme-base .href {
     color: #0e0eff;
     text-decoration: underline; }
-  .syntax-theme-base .syntax .variable {
+  .syntax-theme-base .variable {
     color: #466997; }
-  .syntax-theme-base .syntax .highlight {
+  .syntax-theme-base .highlight {
     background-color: #fdfdba; }
-  .syntax-theme-base .syntax pre {
+  .syntax-theme-base pre {
     overflow: auto;
     font-family: inherit; }
 
@@ -41,4 +42,4 @@
     padding: 0 0.4em 0 !important;
     margin: 0 !important;
     background-color: #f0f0f0;
-    border: 1px solid #aaaaaa; }
+    border: 1px solid #aaa; }

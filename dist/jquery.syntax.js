@@ -92,9 +92,11 @@ ResourceLoader.prototype.dependency = function (current, next) {
 	}
 };
 
-// This function must be reentrant for the same name and different callbacks.
+// This function must be reentrant for the same name. Additionally, if name is undefined, the callback will be invoked but with no argument.
 ResourceLoader.prototype.get = function (name, callback) {
-	if (this.loading[name]) {
+	if (name == undefined) {
+		callback();
+	} else if (this.loading[name]) {
 		this.loading[name].push(callback)
 	} else if (this[name]) {
 		callback(this[name]);
@@ -110,10 +112,15 @@ var Syntax = {
 	styles: {},
 	themes: {},
 	lib: {},
+	
+	cacheScripts: true,
+	cacheStyleSheets: true,
+	codeSelector: 'code:not(.highlighted)',
+	
 	defaultOptions: {
-		cacheScripts: true,
-		cacheStyleSheets: true,
-		theme: "base"
+		theme: "base",
+		replace: true,
+		linkify: true
 	},
 	
 	brushes: new ResourceLoader(function (name, callback) {
@@ -134,7 +141,7 @@ var Syntax = {
 		var link = jQuery('<link>');
 		jQuery("head").append(link);
 
-		if (!Syntax.defaultOptions.cacheStyleSheets) {
+		if (!Syntax.cacheStyleSheets) {
 			path = path + "?" + Math.random()
 		}
 		
@@ -162,7 +169,7 @@ var Syntax = {
 		script.onload = callback;
 		script.type = "text/javascript";
 		
-		if (!Syntax.defaultOptions.cacheScripts)
+		if (!Syntax.cacheScripts)
 			path = path + '?' + Math.random()
 		
 		script.src = path;
@@ -171,6 +178,8 @@ var Syntax = {
 	},
 	
 	getResource: function (prefix, name, callback) {
+		Syntax.detectRoot();
+		
 		var basename = prefix + "." + name;
 		var styles = this.styles[basename];
 		
@@ -215,31 +224,6 @@ var Syntax = {
 		return names;
 	},
 	
-	extractBrushName: function (className) {
-		// brush names are by default lower case - normalize so we can detect it.
-		className = className.toLowerCase();
-		
-		var match = className.match(/brush-([\S]+)/);
-		
-		if (match) {
-			return match[1];
-		} else {
-			var classes = className.split(/ /);
-			
-			if (jQuery.inArray("syntax", classes) !== -1) {
-				for (var i = 0; i < classes.length; i += 1) {
-					var name = Syntax.aliases[classes[i]];
-					
-					if (name) {
-						return name;
-					}
-				}
-			}
-		}
-		
-		return null;
-	},
-	
 	detectRoot: function () {
 		if (Syntax.root == null) {
 			// Initialize root based on current script path.
@@ -258,60 +242,19 @@ var Syntax = {
 				}
 			}
 		}
-	},
-	
-	log: function() {
-		if (typeof(console) != "undefined" && console.log) {
-			console.log.apply(console, arguments);
-		} else if (window.console && window.console.log) {
-			window.console.log.apply(window.console, arguments);
-		}
 	}
 };
 
 jQuery.fn.syntax = function (options, callback) {
-	Syntax.detectRoot();
-	
-	var elements = this;
-	
-	Syntax.loader.get('core', function () {
-		Syntax.highlight(elements, options, callback);
-	});
-};
-
-jQuery.syntax = function (options, callback) {
-	options = options || {};
-	var context = options.context;
-	
-	if (options.root) {
-		Syntax.root = options.root;
-	} else {
-		Syntax.detectRoot();
-	}
+	if (this.length == 0) return;
 	
 	options = jQuery.extend(Syntax.defaultOptions, options)
 	
-	options.blockSelector = options.blockSelector || 'pre.syntax:not(.highlighted)';
-	options.inlineSelector = options.inlineSelector || 'code.syntax:not(.highlighted)';
-	
-	options.blockLayout = options.blockLayout || 'list';
-	options.inlineLayout = options.inlineLayout || 'inline';
-	
-	// Allow the user to specify callbacks without replacement.
-	if (typeof options.replace == "undefined")
-		options.replace = true;
-	
-	jQuery(options.blockSelector, context).each(function () {
-		jQuery(this).syntax(jQuery.extend({}, options, {
-			brush: Syntax.extractBrushName(this.className),
-			layout: options.blockLayout
-		}), callback);
-	});
-	
-	jQuery(options.inlineSelector, context).each(function () {
-		jQuery(this).syntax(jQuery.extend({}, options, {
-			brush: Syntax.extractBrushName(this.className),
-			layout: options.inlineLayout
-		}), callback);
-	});
+	Syntax.loader.get('core', function (elements) {
+		Syntax.highlight(this, options, callback);
+	}.bind(this));
+};
+
+jQuery.syntax = function (options, callback) {
+	jQuery(Syntax.codeSelector, options.context).syntax(options, callback);
 };

@@ -10,7 +10,7 @@
   -webkit-box-shadow: 1px 1px 3px #ddd;
   box-shadow: 1px 1px 3px #ddd;
   padding: 0.6em;
-  border: 1px solid #aaaaaa; }
+  border: 1px solid #aaa; }
   .syntax-container.syntax-theme-modern .syntax.plain pre {
     margin: 0;
     font-family: inherit;

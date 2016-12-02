@@ -1,5 +1,5 @@
 # The path to install the code - this directory should NOT contain any other files as they will be erased during the install process.
-prefix: "public"
+prefix: "dist"
 # The options for the stylesheet generation
 themes:
   - base

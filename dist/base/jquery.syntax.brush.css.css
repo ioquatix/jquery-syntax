@@ -1,12 +1,12 @@
 .syntax-theme-base .syntax .css .selector {
-  color: #445588;
+  color: #458;
   font-weight: bold; }
 .syntax-theme-base .syntax .css .property {
   color: teal; }
 .syntax-theme-base .syntax .css .color-box {
   position: relative; }
   .syntax-theme-base .syntax .css .color-box .sample {
-    border: 1px solid black;
+    border: 1px solid #000;
     position: absolute;
     left: 0.2em;
     right: 0.2em;

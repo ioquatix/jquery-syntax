@@ -1,8 +1,7 @@
 .syntax-theme-base .syntax .bash {
-  color: #555555;
-  font-style: italic; }
+  color: #555; }
   .syntax-theme-base .syntax .bash .prompt {
-    color: #00cc00;
+    color: #0c0;
     font-weight: bold; }
   .syntax-theme-base .syntax .bash .bash-script {
     font-style: normal;

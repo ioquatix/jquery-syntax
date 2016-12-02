@@ -2,26 +2,26 @@
   font-family: Menlo, Monaco, Consolas, monospace;
   line-height: 1.5em; }
   .syntax-container.syntax-theme-bright .syntax .function {
-    color: #3333ff; }
+    color: #33f; }
   .syntax-container.syntax-theme-bright .syntax .keyword {
-    color: #33cc33; }
+    color: #3c3; }
   .syntax-container.syntax-theme-bright .syntax .access {
     color: #ffb600;
     font-weight: bold; }
   .syntax-container.syntax-theme-bright .syntax .type {
-    color: #119911;
+    color: #191;
     font-weight: bold; }
   .syntax-container.syntax-theme-bright .syntax .comment {
-    color: #66aacc;
+    color: #6ac;
     font-style: italic; }
   .syntax-container.syntax-theme-bright .syntax .string, .syntax-container.syntax-theme-bright .syntax .constant {
-    color: #ff3333; }
+    color: #f33; }
   .syntax-container.syntax-theme-bright .syntax .string .escape {
-    color: #ff9999; }
+    color: #f99; }
   .syntax-container.syntax-theme-bright .syntax .operator {
-    color: #cc0000; }
+    color: #c00; }
   .syntax-container.syntax-theme-bright .syntax .href {
-    color: blue;
+    color: #00f;
     text-decoration: underline; }
   .syntax-container.syntax-theme-bright .syntax .variable {
-    color: #2222cc; }
+    color: #22c; }
