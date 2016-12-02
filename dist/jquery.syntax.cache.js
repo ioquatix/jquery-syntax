@@ -35,6 +35,7 @@ Syntax.alias("scala", []);
 Syntax.alias("smalltalk", []);
 Syntax.alias("sql", []);
 Syntax.alias("super-collider", ["sc"]);
+Syntax.alias("html", []);
 Syntax.alias("xml", []);
 Syntax.alias("yaml", []);
 
