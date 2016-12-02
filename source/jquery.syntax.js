@@ -219,10 +219,10 @@ var Syntax = {
 		// brush names are by default lower case - normalize so we can detect it.
 		className = className.toLowerCase();
 		
-		var match = className.match(/brush-([\S]+)/);
+		var match = className.match(/(brush|language)-([\S]+)/);
 		
 		if (match) {
-			return match[1];
+			return match[2];
 		} else {
 			var classes = className.split(/ /);
 			
