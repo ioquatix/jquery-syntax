@@ -1105,6 +1105,8 @@ Syntax.highlight = function (elements, options, callback) {
 			Syntax.layouts.get(options.layout, function(layout) {
 				if (layout) {
 					html = layout(options, jQuery(html), container);
+				} else {
+					html = jQuery(html);
 				}
 				
 				// If there is a theme specified, ensure it is added to the top level class.
