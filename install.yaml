@@ -8,4 +8,4 @@ themes:
   - bright
   - paper
 # Enable minification
-# minify: true
+minify: false
