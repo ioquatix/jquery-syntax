@@ -187,7 +187,7 @@ task :install => :setup_prefix do |task, arguments|
 	js_files = Dir[BASE_PATH + "source/jquery.syntax*.js"]
 	
 	js_files.each do |path|
-		# $stderr.puts "Copying #{File.basename(path)}..."
+		$stderr.puts "Copying #{File.basename(path)}..."
 		
 		output_path = File.basename(path)
 		
