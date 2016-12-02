@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="index.css" type="text/css" media="screen" />
+
+		<script src="jquery-1.6.min.js" type="text/javascript"></script>
+		<script src="../dist/jquery.syntax.js" type="text/javascript"></script>
+		<script src="../dist/jquery.syntax.cache.js" type="text/javascript"></script>
+	
+		<script type="text/javascript">
+			$(function() {
+				jQuery.syntax();
+			});
+		</script>
+	</head>
+	<body>
+		<h1>Syntax: Python</h1>
+		
+	<pre><code class="language-swift">//
+//  TTKeyboardViewController.swift
+//  Truth Tables
+//
+//  Created by Samuel Williams on 16/10/16.
+//  Copyright © 2016 Orion Transfer Ltd. All rights reserved.
+//
+
+import UIKit
+
+class TTKeyboardViewController: UIInputViewController {
+	var nextKeyboardButton : UIButton?
+
+	required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
+	}
+
+	init() {
+		super.init(nibName: "TTKeyboardView", bundle: nil)
+	}
+
+	override func loadView() {
+		super.loadView()
+
+		self.view.translatesAutoresizingMaskIntoConstraints = false
+	}
+
+	override func viewDidLoad() {
+		super.viewDidLoad()
+
+		self.view.backgroundColor = UIColor.init(patternImage: UIImage.init(named: "Background.jpg")!)
+
+		// Perform custom UI setup here
+//		self.nextKeyboardButton = UIButton.init(type: .system)
+//
+//		self.nextKeyboardButton?.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: .normal)
+//		self.nextKeyboardButton?.sizeToFit()
+//		self.nextKeyboardButton?.translatesAutoresizingMaskIntoConstraints = false
+//
+//		self.nextKeyboardButton?.addTarget(self, action: #selector(self.handleInputModeList(from:with:)), for: .allTouchEvents)
+//
+//		self.view.addSubview(self.nextKeyboardButton!)
+//
+//		self.nextKeyboardButton?.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+//		self.nextKeyboardButton?.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+	}
+
+	@IBAction func inputPressed(_ sender: AnyObject?) {
+		if let button = sender as? UIButton! {
+			if let priorText = self.textDocumentProxy.documentContextBeforeInput {
+				if let lastCharacter = priorText.characters.last {
+					if lastCharacter != " " {
+						self.textDocumentProxy.insertText(" ")
+					}
+				}
+			}
+
+			self.textDocumentProxy.insertText(button.currentTitle!)
+		}
+	}
+
+	@IBAction func deletePressed(_ sender: AnyObject?) {
+		self.textDocumentProxy.deleteBackward()
+	}
+
+	@IBAction func donePressed(_ sender: AnyObject?) {
+		self.textDocumentProxy.insertText("\n")
+	}
+}
+</code></pre>
+	</body>
+</html>
