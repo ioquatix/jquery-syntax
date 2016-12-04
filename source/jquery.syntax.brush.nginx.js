@@ -5,11 +5,22 @@
 //	See <jquery.syntax.js> for licensing details.
 
 Syntax.register('nginx', function(brush) {
-	var keywords = ["server", "location", "http", "if", "break", "return"];
+	brush.push({
+		pattern: /((\w+).*?);/g,
+		matches: Syntax.extractMatches(
+			{klass: 'directive', allow: '*'},
+			{klass: 'function'}
+		)
+	});
+	
+	brush.push({
+		pattern: /(\w+).*?{/g,
+		matches: Syntax.extractMatches(
+			{klass: 'keyword'}
+		)
+	});
 	
 	brush.push({pattern: /(\$)[\w]+/g, klass: 'variable'});
-	
-	brush.push(keywords, {klass: 'keyword'});
 	
 	brush.push(Syntax.lib.perlStyleComment);
 	brush.push(Syntax.lib.singleQuotedString);
