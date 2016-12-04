@@ -129,10 +129,6 @@ var Syntax = {
 		Syntax.getResource('jquery.syntax.brush', name, callback);
 	}),
 	
-	layouts: new ResourceLoader(function (name, callback) {
-		Syntax.getResource('jquery.syntax.layout', name, callback);
-	}),
-	
 	loader: new ResourceLoader(function (name, callback) {
 		Syntax.getResource('jquery.syntax', name, callback);
 	}),

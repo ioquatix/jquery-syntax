@@ -3,8 +3,6 @@ prefix: "dist"
 # The options for the stylesheet generation
 themes:
   - base
-  - grey
-  - modern
   - bright
   - paper
 # Enable minification
