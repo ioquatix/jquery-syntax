@@ -77,6 +77,8 @@ task :generate_stylesheets, [:theme] do |task, arguments|
 	output = File.join("./", theme)
 	FileUtils.mkdir_p(output)
 	
+	cache_path = File.expand_path(".sass-cache", __dir__)
+	
 	aggregate_theme = Theme.new(output, File.join(File.dirname(__FILE__), "themes"))
 	aggregate_theme.load_theme(theme)
 	
@@ -84,7 +86,7 @@ task :generate_stylesheets, [:theme] do |task, arguments|
 		output_name = File.basename(sass).sub(/\.(sass|scss)$/, ".css")
 		output_path = File.join(output, output_name)
 		
-		command = "sass --sourcemap=none -I #{output.dump} --stdin #{output_path}"
+		command = ["sass", "--sourcemap=none", "-I", output, "--stdin", output_path, "--cache-location", cache_path]
 		
 		IO.popen(command, "w") do |io|
 			aggregate_theme.includes_for(sass, :prepend).each do |incl|
