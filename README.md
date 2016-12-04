@@ -25,7 +25,7 @@ jQuery.Syntax is typically used to highlight both block code elements and inline
 	<script type="text/javascript">
 		// This function is executed when the page has finished loading.
 		jQuery(function($) {
-			$.syntax();
+			$.syntax({theme: 'bright'});
 		});
 	</script>
 	
