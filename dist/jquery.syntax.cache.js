@@ -56,16 +56,9 @@ Syntax.styles["jquery.syntax.brush.python"] = ["base/jquery.syntax.brush.python.
 Syntax.styles["jquery.syntax.brush.ruby"] = ["base/jquery.syntax.brush.ruby.css"];
 Syntax.styles["jquery.syntax.brush.xml"] = ["base/jquery.syntax.brush.xml.css"];
 Syntax.styles["jquery.syntax.core"] = ["base/jquery.syntax.core.css", "bright/jquery.syntax.core.css", "paper/jquery.syntax.core.css"];
-Syntax.styles["jquery.syntax.layout.editor"] = ["base/jquery.syntax.layout.editor.css", "grey/jquery.syntax.layout.editor.css", "modern/jquery.syntax.layout.editor.css"];
-Syntax.styles["jquery.syntax.layout.fixed"] = ["base/jquery.syntax.layout.fixed.css", "grey/jquery.syntax.layout.fixed.css", "modern/jquery.syntax.layout.fixed.css", "paper/jquery.syntax.layout.fixed.css"];
-Syntax.styles["jquery.syntax.layout.list"] = ["base/jquery.syntax.layout.list.css", "grey/jquery.syntax.layout.list.css"];
-Syntax.styles["jquery.syntax.layout.plain"] = ["base/jquery.syntax.layout.plain.css", "grey/jquery.syntax.layout.plain.css", "modern/jquery.syntax.layout.plain.css"];
-Syntax.styles["jquery.syntax.layout.table"] = ["base/jquery.syntax.layout.table.css", "grey/jquery.syntax.layout.table.css"];
-Syntax.styles["jquery.syntax.layout.inline"] = ["grey/jquery.syntax.layout.inline.css", "modern/jquery.syntax.layout.inline.css", "paper/jquery.syntax.layout.inline.css"];
+Syntax.styles["jquery.syntax.editor"] = ["base/jquery.syntax.editor.css"];
 
 // Theme Configuration
 Syntax.themes["base"] = []
-Syntax.themes["bright"] = ["grey", "base"]
-Syntax.themes["grey"] = ["base"]
-Syntax.themes["modern"] = ["base"]
+Syntax.themes["bright"] = ["base"]
 Syntax.themes["paper"] = ["base"]

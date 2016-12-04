@@ -1,3 +1,18 @@
+pre code.syntax-theme-base {
+  display: block; }
+  pre code.syntax-theme-base > span {
+    display: block;
+    white-space: pre-wrap; }
+  pre code.syntax-theme-base .indent {
+    display: block;
+    float: left; }
+  pre code.syntax-theme-base .text {
+    white-space: pre-wrap;
+    display: block;
+    overflow: hidden;
+    padding-left: 1rem;
+    text-indent: -1rem; }
+
 .syntax-theme-base {
   font-family: Menlo, Monaco, Consolas, monospace;
   line-height: 1.15em; }

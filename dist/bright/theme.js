@@ -1,1 +1,1 @@
-Syntax.themes["bright"] = ["grey", "base"]
+Syntax.themes["bright"] = ["base"]

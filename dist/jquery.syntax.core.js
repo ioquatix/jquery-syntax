@@ -79,73 +79,6 @@ Syntax.extractElementMatches = function (elems, offset) {
 	return matches;
 }
 
-// Basic layout doesn't do anything e.g. identity layout.
-Syntax.layouts.preformatted = function (options, html, container) {
-	return html;
-};
-
-
-// This function converts from a compressed set of offsets of the form:
-//	[
-//		[offset, width, totalOffset],
-//		...
-//	]
-// This means that at a $offset, a tab (single character) was expanded to $width
-// single space characters.
-// This function produces a lookup table of offsets, where a given character offset
-// is mapped to how far the character has been offset.
-Syntax.convertToLinearOffsets = function (offsets, length) {
-	var current = 0, changes = [];
-	
-	// Anything with offset after offset[current][0] but smaller than offset[current+1][0]
-	// has been shifted right by offset[current][2]
-	for (var i = 0; i < length; i++) {
-		if (offsets[current] && i > offsets[current][0]) {
-			// Is there a next offset?
-			if (offsets[current+1]) {
-				// Is the index less than the start of the next offset?
-				if (i <= offsets[current+1][0]) {
-					changes.push(offsets[current][2]);
-				} else {
-					// If so, move to the next offset.
-					current += 1;
-					i -= 1;
-				}
-			} else {
-				// If there is no next offset we assume this one to the end.
-				changes.push(offsets[current][2]);
-			}
-		} else {
-			changes.push(changes[changes.length-1] || 0);
-		}
-	}
-	
-	return changes;
-}
-
-// Used for tab expansion process, by shifting matches when tab charaters were converted to
-// spaces.
-Syntax.updateMatchesWithOffsets = function (matches, linearOffsets, text) {
-	(function (matches) {
-		for (var i = 0; i < matches.length; i++) {
-			var match = matches[i];
-			
-			// Calculate the new start and end points
-			var offset = match.offset + linearOffsets[match.offset];
-			var end = match.offset + match.length;
-			end += linearOffsets[end];
-			
-			// Start, Length, Text
-			match.adjust(linearOffsets[match.offset], end - offset, text);
-			
-			if (match.children.length > 0)
-				arguments.callee(match.children);
-		}
-	})(matches);
-	
-	return matches;
-};
-
 // A helper function which automatically matches expressions with capture groups from the regular expression match.
 // Each argument position corresponds to the same index regular expression group.
 // Or, override by providing rule.index
@@ -312,6 +245,11 @@ Syntax.Match.prototype.reduce = function (append, process) {
 			container.className += ' ';
 		
 		container.className += this.expression.klass;
+	}
+	
+	if (this.className) {
+		container.className += ' ';
+		container.className += this.className;
 	}
 	
 	for (var i = 0; i < this.children.length; i += 1) {
@@ -773,6 +711,31 @@ Syntax.Match.prototype.split = function(pattern) {
 	});
 };
 
+Syntax.Match.prototype.splitLines = function() {
+	var lines = this.split(/\n/g);
+	
+	for (var i = 0; i < lines.length; i += 1) {
+		var line = lines[i];
+		var indentOffset = line.value.search(/\S/);
+		
+		var top = new Syntax.Match(line.offset, line.length, line.expression, line.value);
+		
+		if (indentOffset > 0) {
+			var parts = line.bisectAtOffsets([line.offset + indentOffset]);
+			top.children = parts;
+			parts[0].expression = {klass: 'indent'};
+			parts[1].expression = {klass: 'text'};
+		} else {
+			line.expression = {klass: 'text'};
+			top.children = [line];
+		}
+		
+		lines[i] = top;
+	}
+	
+	return lines;
+}
+
 Syntax.Brush = function () {
 	// The primary class of this brush. Must be unique.
 	this.klass = null;
@@ -795,7 +758,7 @@ Syntax.Brush.prototype.derives = function (name) {
 			return Syntax.brushes[name].getMatches(text);
 		}
 	});
-}
+};
 
 // Return an array of all classes that the brush consists of.
 // A derivied brush is its own klass + the klass of any and all parents.
@@ -1003,7 +966,7 @@ Syntax.Brush.prototype.buildTree = function(text, offset, additionalMatches) {
 Syntax.Brush.prototype.process = function(text, matches, options) {
 	var top = this.buildTree(text, 0, matches);
 	
-	var lines = top.split(/\n/g);
+	var lines = top.splitLines();
 	
 	var html = document.createElement('code');
 	html.className = 'syntax';
@@ -1102,37 +1065,31 @@ Syntax.highlight = function (elements, options, callback) {
 		}
 		
 		Syntax.highlightText(text, brush, matches, options, function(html, brush/*, text, options*/) {
-			Syntax.layouts.get(options.layout, function(layout) {
-				if (layout) {
-					html = layout(options, jQuery(html), container);
-				} else {
-					html = jQuery(html);
-				}
-				
-				// If there is a theme specified, ensure it is added to the top level class.
-				if (options.theme) {
-					// Load dependencies
-					var themes = Syntax.themes[options.theme];
-					for (var i = 0; i < themes.length; i += 1) {
-						html.addClass("syntax-theme-" + themes[i]);
-					}
+			html = jQuery(html);
 
-					// Add the base theme
-					html.addClass("syntax-theme-" + options.theme);
+			// If there is a theme specified, ensure it is added to the top level class.
+			if (options.theme) {
+				// Load dependencies
+				var themes = Syntax.themes[options.theme];
+				for (var i = 0; i < themes.length; i += 1) {
+					html.addClass("syntax-theme-" + themes[i]);
 				}
 
-				if (brush.postprocess) {
-					html = brush.postprocess(options, html, container);
-				}
+				// Add the base theme
+				html.addClass("syntax-theme-" + options.theme);
+			}
 
-				if (callback) {
-					html = callback(options, html, container);
-				}
+			if (brush.postprocess) {
+				html = brush.postprocess(options, html, container);
+			}
 
-				if (html && options.replace === true) {
-					container.replaceWith(html);
-				}
-			});
+			if (callback) {
+				html = callback(options, html, container);
+			}
+
+			if (html && options.replace === true) {
+				container.replaceWith(html);
+			}
 		});
 	});
 };

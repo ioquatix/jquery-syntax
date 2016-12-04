@@ -1,28 +1,31 @@
-.syntax-container.syntax-theme-paper .syntax {
+code.syntax-theme-paper {
   font-family: "Bitstream Vera Sans Mono", "Courier", monospace;
   line-height: 1.5em; }
-  .syntax-container.syntax-theme-paper .syntax .function {
+  code.syntax-theme-paper .function {
     color: #33f; }
-  .syntax-container.syntax-theme-paper .syntax .keyword {
+  code.syntax-theme-paper .keyword {
     color: #cb4b16; }
-  .syntax-container.syntax-theme-paper .syntax .access {
+  code.syntax-theme-paper .access {
     color: #ffb600;
     font-weight: bold; }
-  .syntax-container.syntax-theme-paper .syntax .type {
+  code.syntax-theme-paper .type {
     color: #268bd2; }
-  .syntax-container.syntax-theme-paper .syntax .comment {
+  code.syntax-theme-paper .comment {
     color: #998;
     font-style: italic; }
-  .syntax-container.syntax-theme-paper .syntax .string {
+  code.syntax-theme-paper .string {
     color: #2aa198; }
-  .syntax-container.syntax-theme-paper .syntax .string .escape {
+  code.syntax-theme-paper .string .escape {
     color: #2ab1a8; }
-  .syntax-container.syntax-theme-paper .syntax .operator {
+  code.syntax-theme-paper .operator {
     color: #268bd2; }
-  .syntax-container.syntax-theme-paper .syntax .href {
+  code.syntax-theme-paper .href {
     color: #00f;
     text-decoration: underline; }
-  .syntax-container.syntax-theme-paper .syntax .variable {
+  code.syntax-theme-paper .variable {
     color: #b58900; }
-  .syntax-container.syntax-theme-paper .syntax .constant {
+  code.syntax-theme-paper .constant {
     color: #099; }
+
+pre code.syntax-theme-paper > span:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.05); }
