@@ -1,16 +1,16 @@
-.syntax-theme-base .syntax .add {
+.syntax-theme-base .add {
   color: green; }
-.syntax-theme-base .syntax .del {
+.syntax-theme-base .del {
   color: red; }
-.syntax-theme-base .syntax .insert {
+.syntax-theme-base .insert {
   color: green; }
-.syntax-theme-base .syntax .insert-line {
+.syntax-theme-base .insert-line {
   background-color: #cfc !important; }
-.syntax-theme-base .syntax .remove {
+.syntax-theme-base .remove {
   color: red; }
-.syntax-theme-base .syntax .remove-line {
+.syntax-theme-base .remove-line {
   background-color: #fcc !important; }
-.syntax-theme-base .syntax .offset {
+.syntax-theme-base .offset {
   color: blue; }
-.syntax-theme-base .syntax .offset-line {
+.syntax-theme-base .offset-line {
   background-color: #ccf !important; }

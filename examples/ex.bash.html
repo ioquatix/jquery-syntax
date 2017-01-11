@@ -8,8 +8,8 @@
 		<script src="../dist/jquery.syntax.cache.js" type="text/javascript"></script>
 
 		<script type="text/javascript">
-			$(function() {
-				jQuery.syntax();
+			jQuery(function($) {
+				$.syntax();
 			});
 		</script>
 
@@ -19,7 +19,7 @@
 		
 		<p>Bash is context-sensitive - a script could mean different things depending on what is defined in the environment. Thus, to present Bash code clearly, you will need to use inline markup, such as the last example on this page.</p>
 		
-		<pre class="syntax brush-bash-script">#!/bin/bash
+		<pre><code class="syntax language-bash-script">#!/bin/bash
 # Counting to 11 in 10 different ways.
 
 n=1; echo -n &quot;$n &quot;
@@ -70,11 +70,11 @@ echo -n &quot;$n &quot;
 
 echo
 
-exit 0</pre>
+exit 0</code></pre>
 
 <p>
 
-<pre class="syntax bash-script">#!/bin/bash
+<pre><code class="syntax bash-script">#!/bin/bash
 
 svc_cluster_ip=10.0.0.10
 svc_priv_dsa=~/.ssh/id_dsa
@@ -116,16 +116,16 @@ for HOST in $HOST_LIST; do
 done | grep $WWPN
 
 #set +x
-</pre>
+</code></pre>
 
 <p>This next example uses inline HTML to markup and highlight <code class="syntax bash-script">rd-resolve-test bob</code>.</p>
 
-<pre id="ex2" class="syntax brush-bash">samuel@ayako:~$ which git
+<pre id="ex2"><code class="syntax brush-bash">samuel@ayako:~$ which git
 /usr/bin/git
 samuel@ayako:~$ ls -lah
 getconf     getent      getopt      getopts     gettext     gettext.sh  gettextize  
 samuel@ayako:~# sudo <span class="highlight"><span class="function">rd-resolve-test</span> bob</span>
-/home/samuel</pre>
+/home/samuel</code></pre>
 
 <p>Here is the HTML of the above <code class="syntax html">&lt;pre&gt;</code>:</p>
 

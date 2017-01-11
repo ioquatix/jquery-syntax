@@ -35,7 +35,7 @@ task :update_aliases do
 	
 	code.puts "// Brush Aliases"
 	
-	Dir["jquery.syntax.brush.*.js"].each do |path|
+	Dir["jquery.syntax.brush.*.js"].sort.each do |path|
 		File.open(path, "r") do |f|
 			first_line = f.readline rescue ""
 			
@@ -46,7 +46,7 @@ task :update_aliases do
 	end
 	
 	styles = {}
-	Dir["**/jquery.syntax.*.css"].each do |path|
+	Dir["**/jquery.syntax.*.css"].sort.each do |path|
 		basename = File.basename(path, ".css")
 		styles[basename] ||= []
 		styles[basename] << path
@@ -60,7 +60,7 @@ task :update_aliases do
 	
 	code.puts
 	code.puts "// Theme Configuration"
-	Dir["**/theme.js"].each do |path|
+	Dir["**/theme.js"].sort.each do |path|
 		code.write File.read(path)
 	end
 	

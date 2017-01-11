@@ -8,8 +8,8 @@
 		<script src="../dist/jquery.syntax.cache.js" type="text/javascript"></script>
 		
 		<script type="text/javascript">
-			$(function() {
-				jQuery.syntax();
+			jQuery(function($) {
+				$.syntax();
 			});
 		</script>
  
@@ -19,7 +19,7 @@
 		
 		<h2>C++</h2>
 		
-		<pre class="syntax brush-clang">#include &lt;iostream&gt;
+		<pre><code class="syntax brush-clang">#include &lt;iostream&gt;
 
 // If we increase row by 1, the offset will increase by sz (number of elements per row i.e. number of columns)
 // If we increase col by 1, the offset will increase by 1
@@ -142,11 +142,11 @@ int main (int argc, char * const argv[]) {
 	transposedMatrix.debug();
 
 	return 0;
-}</pre>
+}</code></pre>
 
 	<h2>Objective-C Header</h2>
 
-	<pre class="syntax brush-clang">//
+	<pre><code class="syntax brush-clang">//
 //  GHInventoryEditor.h
 //  Goblin Hacker
 //
@@ -217,11 +217,11 @@ int main (int argc, char * const argv[]) {
 
 - (IBAction)avatarJewelry: (id)sender;
 
-@end</pre>
+@end</code></pre>
 
 	<h2>Objective-C Implementation</h2>
 	
-	<pre class="syntax brush-clang">//
+	<pre><code class="syntax brush-clang">//
 //  GPointSet.m
 //  Gocoa
 //
@@ -307,17 +307,17 @@ void adjacentPoints (NSPoint p, NSPoint pts[4]) { //pts must have four elements
 	return result;
 }
 
-@end</pre>
+@end</code></pre>
 
 	<h2>Strings with embedded escapes</h2>
 	
-	<pre class="syntax brush-clang">
+	<pre><code class="syntax brush-clang">
 const char * text = "The elephant\n was in the room.";
-	</pre>
+	</code></pre>
 
 	<h2>Types and Functions</h2>
 
-	<pre class="syntax c++">
+	<pre><code class="syntax c++">
 int   pthread_setcancelstate(int, int *);
 int   pthread_setcanceltype(int, int *);
 int   pthread_setconcurrency(int);
@@ -331,7 +331,7 @@ namespace Bob {
 		
 	}
 }
-	</pre>
+	</code></pre>
 	
 	</body>
 </html>

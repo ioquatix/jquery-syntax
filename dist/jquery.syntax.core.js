@@ -1040,15 +1040,6 @@ Syntax.extractBrushName = function (className) {
 	return null;
 }
 
-Syntax.extractTextBrushName = function (text) {
-	var match = text.match(/-\*- mode: (.+?);(.*?)-\*-/i);
-	var endOfSecondLine = text.indexOf("\n", text.indexOf("\n") + 1);
-
-	if (match && match.index < endOfSecondLine) {
-		return brush;
-	}
-}
-
 // Highlight a given set of elements with a set of options.
 // Callback will be called once per element with (options, highlighted_html, original_container)
 Syntax.highlight = function (elements, options, callback) {

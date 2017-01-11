@@ -8,8 +8,8 @@
 		<script src="../dist/jquery.syntax.cache.js" type="text/javascript"></script>
 	
 		<script type="text/javascript">
-			$(function() {
-				jQuery.syntax();
+			jQuery(function($) {
+				$.syntax();
 			});
 		</script>
 
@@ -19,9 +19,7 @@
 		
 		<h2>Hello World &amp; Mode-line Support</h2>
 		
-		<p>The following example does not have a class specifying the brush to use. This is extracted from the mode-line. This line also specifies other options, in this case the tab-width.</p>
-		
-		<pre class="syntax">(* -*- mode: applescript; tab-width: 4; -*-
+		<pre><code class="syntax applescript">(*
 Copyright (C) 2009 Orion Transfer Ltd. All Rights Reserved. See http://www.oriontransfer.co.nz/ for more information.
 Drop files on top of this application to produce a zip archive on the desktop containing compressed JPEGs at a maximum size of 800px.
 *)
@@ -117,6 +115,6 @@ to resize_and_save(image_alias, destination_alias)
 		end if
 	end tell
 end resize_and_save
-</pre>
+</code></pre>
 	</body>
 </html>
