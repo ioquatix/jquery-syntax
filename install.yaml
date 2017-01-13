@@ -6,4 +6,4 @@ themes:
   - bright
   - paper
 # Enable minification
-minify: false
+minify: true

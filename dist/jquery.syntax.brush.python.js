@@ -1,44 +1,5 @@
-// brush: "python" aliases: []
-
-//	This file is part of the "jQuery.Syntax" project, and is distributed under the MIT License.
-//	Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
-//	See <jquery.syntax.js> for licensing details.
-
-Syntax.register('python', function(brush) {
-	var keywords = ["and", "as", "assert", "break", "class", "continue", "def", "del", "elif", "else", "except", "exec", "finally", "for", "from", "global", "if", "import", "in", "is", "lambda", "not", "or", "pass", "print", "raise", "return", "try", "while", "with", "yield"];
-	
-	var operators = ["!=", "%", "%=", "&", "&=", "(", ")", "*", "**", "**=", "*=", "+", "+=", ",", "-", "-=", ".", "/", "//", "//=", "/=", ":", ";", "<", "<<", "<<=", "<=", "<>", "=", "==", ">", ">=", ">>", ">>=", "@", "[", "]", "^", "^=", "`", "`", "{", "|", "|=", "}", "~"];
-	
-	// Extracted from http://docs.python.org/library/functions.html
-	var builtinFunctions = ["abs", "all", "any", "basestring", "bin", "bool", "callable", "chr", "classmethod", "cmp", "compile", "complex", "delattr", "dict", "dir", "divmod", "enumerate", "eval", "execfile", "file", "filter", "float", "format", "frozenset", "getattr", "globals", "hasattr", "hash", "help", "hex", "id", "input", "int", "isinstance", "issubclass", "iter", "len", "list", "locals", "long", "map", "max", "min", "next", "object", "oct", "open", "ord", "pow", "print", "property", "range", "raw_input", "reduce", "reload", "repr", "reversed", "round", "set", "setattr", "slice", "sorted", "staticmethod", "str", "sum", "super", "tuple", "type", "type", "unichr", "unicode", "vars", "xrange", "zip", "__import__", "apply", "buffer", "coerce", "intern"];
-	
-	var values = ["self", "True", "False", "None"];
-	
-	brush.push({pattern: /^\s*@\w+/gm, klass: 'decorator'});
-	brush.push(values, {klass: 'constant'});
-	brush.push(keywords, {klass: 'keyword'});
-	brush.push(operators, {klass: 'operator'});
-	brush.push(builtinFunctions, {klass: 'builtin'});
-	
-	// ClassNames (CamelCase)
-	brush.push(Syntax.lib.camelCaseType);
-	brush.push(Syntax.lib.cStyleFunction);
-	
-	brush.push(Syntax.lib.perlStyleComment);
-	brush.push({pattern: /(['\"]{3})([^\1])*?\1/gm, klass: 'comment'});
-	brush.push(Syntax.lib.webLink);
-	
-	// Strings
-	brush.push(Syntax.lib.singleQuotedString);
-	brush.push(Syntax.lib.doubleQuotedString);
-	brush.push(Syntax.lib.stringEscape);
-	
-	// Numbers
-	brush.push(Syntax.lib.decimalNumber);
-	brush.push(Syntax.lib.hexNumber);
-	
-	brush.processes['function'] = Syntax.lib.webLinkProcess("http://docs.python.org/search.html?q=");
-	brush.processes['type'] = Syntax.lib.webLinkProcess("http://docs.python.org/search.html?q=");
-	brush.processes['builtin'] = Syntax.lib.webLinkProcess("http://docs.python.org/search.html?q=");
-});
-
+// This file is part of the "jQuery.Syntax" project, and is distributed under the MIT License.
+Syntax.register("python",function(a){a.push({pattern:/^\s*@\w+/gm,klass:"decorator"});a.push(["self","True","False","None"],{klass:"constant"});a.push("and as assert break class continue def del elif else except exec finally for from global if import in is lambda not or pass print raise return try while with yield".split(" "),{klass:"keyword"});a.push("!= % %= & &= ( ) * ** **= *= + += , - -= . / // //= /= : ; < << <<= <= <> = == > >= >> >>= @ [ ] ^ ^= ` ` { | |= } ~".split(" "),{klass:"operator"});
+a.push("abs all any basestring bin bool callable chr classmethod cmp compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type type unichr unicode vars xrange zip __import__ apply buffer coerce intern".split(" "),
+{klass:"builtin"});a.push(Syntax.lib.camelCaseType);a.push(Syntax.lib.cStyleFunction);a.push(Syntax.lib.perlStyleComment);a.push({pattern:/(['\"]{3})([^\1])*?\1/gm,klass:"comment"});a.push(Syntax.lib.webLink);a.push(Syntax.lib.singleQuotedString);a.push(Syntax.lib.doubleQuotedString);a.push(Syntax.lib.stringEscape);a.push(Syntax.lib.decimalNumber);a.push(Syntax.lib.hexNumber);a.processes["function"]=Syntax.lib.webLinkProcess("http://docs.python.org/search.html?q=");a.processes.type=Syntax.lib.webLinkProcess("http://docs.python.org/search.html?q=");
+a.processes.builtin=Syntax.lib.webLinkProcess("http://docs.python.org/search.html?q=")});
