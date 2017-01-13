@@ -2,6 +2,36 @@
 
 jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamically loads external dependencies (JavaScript & CSS) when required. It uses jQuery to make it cross-browser compatible and to simplify integration and integration with other systems.
 
+## Motivation
+
+jQuery.Syntax was built at a time when syntax highlighting on the web was a bit of a mess - browser incompatibilities and limitations made it hard to do the right thing consistently. Rather than a single definition of "good", presenting code nicely in a browser was dictated by a set of trade-offs.
+
+At the time, syntax highlighters were often all-or-nothing - this made it cumbersome for sites that only had a few pages with code on them. jQuery.Syntax was designed from the ground up to use dynamic loading of assets when required. On top of that, the implementation was built using a profiler and is fairly efficient.
+
+It's a good library and it's fast, that's why I continue to maintain and develop it.
+
+### Isn't jQuery big?
+
+Your right, small is pretty subjective.
+
+jQuery as a dependency is based on a design from 2012. When browsers were a bit less "compatible", this was a good trade-off. These days, it could probably be removed, but it isn't worth the effort and for me personally it's a zero-cost dependency since I use it anyway on most of my sites.
+
+The library is modular and only loads exactly the CSS and JS required. The minimised and gzipped library is 1.6Kbytes, this provide the top-level API and the dynamic loading functionality.
+
+To highlight anything, you need to load the core parser and renderer code. It's 4.1Kbytes minified and gzipped. The CSS and Script files are tiny, most less < 1Kbyte, per language.
+
+### Compared to xyz?
+
+All syntax highlighters are pretty good these days. But, there are some key differences worth considering:
+
+- How much does it load by default, even when not highlighting anything?
+- How efficient/fast is it when highlighting code?
+- How does line wrapping work?
+- Can you embed `<span>` and `<a>` elements?
+- Can it handle embedded code (e.g. JavaScript inside HTML)?
+- Is it easy to install?
+- Is it easy to customize?
+
 ## Installation
 
 jQuery.Syntax is easily installed using bower.
@@ -12,7 +42,7 @@ It has a `dist/` directory which follows standard conventions.
 
 ### Advanced Configuration
 
-jQuery.Syntax compiles and minifies it's code using uses Rake (Ruby) and [Sass](http://sass-lang.com). Please review the included `Rakefile` for more details.
+jQuery.Syntax compiles and minifies it's code using uses Rake (Ruby) and [Sass](http://sass-lang.com). Please review the included `Rakefile` and `install.yaml` for more details.
 
 ## Usage
 
