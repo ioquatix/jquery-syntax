@@ -28,4 +28,3 @@ Syntax.register('nginx', function(brush) {
 	
 	brush.push(Syntax.lib.webLink);
 });
-
