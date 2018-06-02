@@ -3,7 +3,7 @@
   "dependencies": {
     "jquery": ">=1.4.1"
   },
-  "description": "jQuery.Syntax is an extremely fast and lightweight syntax highlighter written in JavaScript. It has dynamic loading of syntax source files and integrates cleanly using CSS or modelines.",
+  "description": "jQuery.Syntax is an extremely fast and lightweight syntax highlighter.",
   "main": "dist/jquery.syntax.js",
   "authors": [
     "Samuel Williams <samuel@codeotaku.com (http://www.codeotaku.com)"
