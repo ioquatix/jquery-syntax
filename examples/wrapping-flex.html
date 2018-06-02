@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			pre {
+				-white-space: pre-wrap;
+			}
+			
+			.syntax .line {
+				background-color: blue;
+				display: inline-flex;
+			}
+			
+			.syntax .indent {
+				display: inline;
+				white-space: pre;
+				
+				background-color: lightblue;
+				
+				flex-grow: 0;
+				flex-shrink: 0;
+			}
+			
+			.syntax .text {
+				display: inline;
+				white-space: pre;
+				
+				background-color: lightgreen;
+				white-space: normal;
+				overflow: hidden;
+				
+				padding-left: 2em;
+				text-indent: -2em;
+			}
+		</style>
+		
+		<script>
+			function extractText(selection) {
+				var buffer = "";
+				
+				for (var i = 0; i < selection.rangeCount; i += 1) {
+					let range = selection.getRangeAt(i),
+						text = range.toString();
+					
+					buffer += text;
+				}
+				
+				return buffer;
+			}
+			
+			function copyCode(event) {
+				let
+					selection = window.getSelection(),
+					text = extractText(selection);
+				
+				event.clipboardData.setData('text/plain', text);
+				
+				console.log("copied", text);
+				
+				return false;
+			}
+		</script>
+	</head>
+	<body>
+		<p>sally</p>
+<pre class="syntax" oncopy="return copyCode(event);"><span class="line"><span class="indent">			</span><span class="text">foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar</span></span>
+<span class="line"><span class="indent">			</span><span class="text">apples = 10</span></span>
+</pre>
+<p>bob</p>
+	</body>
+</html>

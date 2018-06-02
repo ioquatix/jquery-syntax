@@ -42,6 +42,29 @@ Syntax.innerText = function(element) {
 	return text.replace(/\r\n?/g, '\n');
 }
 
+Syntax.extractTextFromSelection = function(selection) {
+	var buffer = "";
+	
+	for (var i = 0; i < selection.rangeCount; i += 1) {
+		var range = selection.getRangeAt(i),
+			text = range.toString();
+		
+		buffer += text;
+	}
+	
+	return buffer;
+}
+
+Syntax.copyCode = function(event) {
+	var
+		selection = window.getSelection(),
+		text = Syntax.extractTextFromSelection(selection);
+	
+	event.clipboardData.setData('text/plain', text);
+	
+	return false;
+}
+
 // Convert to stack based implementation
 Syntax.extractElementMatches = function (elems, offset) {
 	var matches = [], current = [elems];
@@ -1047,7 +1070,7 @@ Syntax.highlight = function (elements, options, callback) {
 		var container = jQuery(this);
 		var brush = options.brush || Syntax.extractBrushName(this.className);
 		var text = Syntax.innerText(this);
-
+		
 		// We can augment the plain text to extract existing annotations (e.g. <span class="foo">...</span>).
 		var matches = Syntax.extractElementMatches(container);
 		
@@ -1056,8 +1079,10 @@ Syntax.highlight = function (elements, options, callback) {
 		}
 		
 		Syntax.highlightText(text, brush, matches, options, function(html, brush/*, text, options*/) {
+			html.oncopy = Syntax.copyCode;
+			
 			html = jQuery(html);
-
+			
 			// If there is a theme specified, ensure it is added to the top level class.
 			if (options.theme) {
 				// Load dependencies

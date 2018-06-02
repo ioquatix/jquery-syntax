@@ -2,35 +2,180 @@
 <html>
 	<head>
 		<style>
-			pre {
-				-white-space: pre-wrap;
-			}
-			
-			.line {
+			.syntax > span {
 				background-color: blue;
-				overflow: hidden;
-				display: block;
+				display: flex;
 			}
 			
-			.indent {
+			.syntax .indent {
 				background-color: lightblue;
-				display: block;
-				float: left;
+				
+				flex-grow: 0;
+				flex-shrink: 0;
 			}
 			
-			.text {
-				background-color: #cfc;
-				white-space: normal;
-				display: block;
-				overflow: hidden;
+			.syntax .text {
+				background-color: lightgreen;
+				white-space: pre-wrap;
 				
 				padding-left: 2em;
 				text-indent: -2em;
 			}
 		</style>
+		
+		<script>
+			function extractText(selection) {
+				var buffer = "";
+				
+				for (var i = 0; i < selection.rangeCount; i += 1) {
+					let range = selection.getRangeAt(i),
+						text = range.toString();
+					
+					buffer += text;
+				}
+				
+				return buffer;
+			}
+			
+			function copyCode(event) {
+				let
+					selection = window.getSelection(),
+					text = extractText(selection);
+				
+				event.clipboardData.setData('text/plain', text);
+				
+				console.log("copied", text);
+				
+				return false;
+			}
+		</script>
 	</head>
 	<body>
-		<pre><span class="line"><span class="indent">			</span><span class="text">foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar foo = bar</span></span>
-</pre>
+		<p>sally</p>
+<pre><code class="syntax highlighted syntax-theme-base"><span class="clang"><span class="text"><span class="preprocessor">#include &lt;iostream&gt;</span>
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="text"><span class="comment">// If we increase row by 1, the offset will increase by sz (number of elements per row i.e. number of columns)</span>
+</span></span><span class="clang"><span class="text"><span class="comment">// If we increase col by 1, the offset will increase by 1</span>
+</span></span><span class="clang"><span class="text"><span class="type">unsigned</span> <span class="function">rowMajorOffset</span>(<span class="type">unsigned</span> row, <span class="type">unsigned</span> col, <span class="type">unsigned</span> sz)
+</span></span><span class="clang"><span class="text">{
+</span></span><span class="clang"><span class="indent">    </span><span class="text"><span class="keyword">return</span> col <span class="operator">+</span> row <span class="operator">*</span> sz;
+</span></span><span class="clang"><span class="text">}
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="text"><span class="comment">// If we increase col by 1, the offset will increase by sz (number of elements per column i.e. number of rows)</span>
+</span></span><span class="clang"><span class="text"><span class="comment">// If we increase row by 1, the offset will increase by 1</span>
+</span></span><span class="clang"><span class="text"><span class="type">unsigned</span> <span class="function">columnMajorOffset</span>(<span class="type">unsigned</span> row, <span class="type">unsigned</span> col, <span class="type">unsigned</span> sz)
+</span></span><span class="clang"><span class="text">{
+</span></span><span class="clang"><span class="indent">    </span><span class="text"><span class="keyword">return</span> row <span class="operator">+</span> col <span class="operator">*</span> sz;
+</span></span><span class="clang"><span class="text">}
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="text"><span class="keyword">template</span> <span class="operator">&lt;</span><span class="keyword">typename</span> <span class="type">_ValueT</span>, <span class="type">unsigned</span> <span class="type">_R</span>, <span class="type">unsigned</span> <span class="type">_C</span>, <span class="type">bool</span> <span class="type">_ColumnMajor</span><span class="operator">&gt;</span>
+</span></span><span class="clang"><span class="text"><span class="keyword">class</span> <span class="type">Matrix</span> {
+</span></span><span class="clang"><span class="text"><span class="access">protected</span>:
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="keyword">enum</span> { <span class="type">ColumnMajor</span> <span class="operator">=</span> <span class="type">_ColumnMajor</span> };
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="keyword">enum</span> { <span class="type">R</span> <span class="operator">=</span> <span class="type">_R</span> };
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="keyword">enum</span> { <span class="type">C</span> <span class="operator">=</span> <span class="type">_C</span> };
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="keyword">typedef</span> <span class="type">_ValueT</span> <span class="type">ValueT</span>;
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="type">ValueT</span> m_values<span class="operator">[</span><span class="type">C</span><span class="operator">*</span><span class="type">R</span><span class="operator">]</span>;
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="text"><span class="access">public</span>:
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="keyword">const</span> <span class="type">ValueT</span> <span class="operator">&amp;</span> <span class="function">at</span> (<span class="type">unsigned</span> r, <span class="type">unsigned</span> c) <span class="keyword">const</span>
+</span></span><span class="clang"><span class="indent">	</span><span class="text">{
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">if</span> (<span class="type">ColumnMajor</span>)
+</span></span><span class="clang"><span class="indent">			</span><span class="text"><span class="keyword">return</span> m_values<span class="operator">[</span><span class="function">columnMajorOffset</span>(r, c, <span class="type">R</span>)<span class="operator">]</span>;
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">else</span>
+</span></span><span class="clang"><span class="indent">			</span><span class="text"><span class="keyword">return</span> m_values<span class="operator">[</span><span class="function">rowMajorOffset</span>(r, c, <span class="type">C</span>)<span class="operator">]</span>;
+</span></span><span class="clang"><span class="indent">	</span><span class="text">}
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="type">ValueT</span> <span class="operator">&amp;</span> <span class="function">at</span> (<span class="type">unsigned</span> r, <span class="type">unsigned</span> c)
+</span></span><span class="clang"><span class="indent">	</span><span class="text">{
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">if</span> (<span class="type">ColumnMajor</span>)
+</span></span><span class="clang"><span class="indent">			</span><span class="text"><span class="keyword">return</span> m_values<span class="operator">[</span><span class="function">columnMajorOffset</span>(r, c, <span class="type">R</span>)<span class="operator">]</span>;
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">else</span>
+</span></span><span class="clang"><span class="indent">			</span><span class="text"><span class="keyword">return</span> m_values<span class="operator">[</span><span class="function">rowMajorOffset</span>(r, c, <span class="type">C</span>)<span class="operator">]</span>;
+</span></span><span class="clang"><span class="indent">	</span><span class="text">}
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="type">void</span> <span class="function">loadTestPattern</span> ()
+</span></span><span class="clang"><span class="indent">	</span><span class="text">{
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">for</span> (<span class="type">unsigned</span> r <span class="operator">=</span> <span class="constant">0</span>; r <span class="operator">&lt;</span> <span class="type">R</span>; r <span class="operator">+</span><span class="operator">=</span> <span class="constant">1</span>)
+</span></span><span class="clang"><span class="indent">			</span><span class="text"><span class="keyword">for</span> (<span class="type">unsigned</span> c <span class="operator">=</span> <span class="constant">0</span>; c <span class="operator">&lt;</span> <span class="type">C</span>; c <span class="operator">+</span><span class="operator">=</span> <span class="constant">1</span>)
+</span></span><span class="clang"><span class="indent">				</span><span class="text"><span class="function">at</span>(r, c) <span class="operator">=</span> (r<span class="constant">+1</span>) <span class="operator">*</span> <span class="constant">1000</span> <span class="operator">+</span> (c<span class="constant">+1</span>);
+</span></span><span class="clang"><span class="indent">	</span><span class="text">}
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="type">void</span> <span class="function">debug</span> ()
+</span></span><span class="clang"><span class="indent">	</span><span class="text">{
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="access">using</span> <span class="keyword">namespace</span> <span class="type">std</span>;
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">if</span> (<span class="type">ColumnMajor</span>)
+</span></span><span class="clang"><span class="indent">			</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"Column-Major Matrix "</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"("</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">R</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">","</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">C</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">")"</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">" @ "</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="constant">this</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">else</span>
+</span></span><span class="clang"><span class="indent">			</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"Row-Major Matrix "</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"("</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">R</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">","</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type">C</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">")"</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">" @ "</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="constant">this</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">		</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"Memory Offset: "</span>;
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">for</span> (<span class="type">unsigned</span> i <span class="operator">=</span> <span class="constant">0</span>; i <span class="operator">&lt;</span> (<span class="type">R</span><span class="operator">*</span><span class="type">C</span>); i <span class="operator">+</span><span class="operator">=</span> <span class="constant">1</span>)
+</span></span><span class="clang"><span class="indent">			</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> i <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"    "</span>;
+</span></span><span class="clang"><span class="indent">		</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">		</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"       Values: "</span>;	
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">for</span> (<span class="type">unsigned</span> i <span class="operator">=</span> <span class="constant">0</span>; i <span class="operator">&lt;</span> (<span class="type">R</span><span class="operator">*</span><span class="type">C</span>); i <span class="operator">+</span><span class="operator">=</span> <span class="constant">1</span>)
+</span></span><span class="clang"><span class="indent">			</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> m_values<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">" "</span>;
+</span></span><span class="clang"><span class="indent">		</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">		</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"Standard Mathematical Notation:"</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+</span></span><span class="clang"><span class="indent">		</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"      "</span>;
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">for</span> (<span class="type">unsigned</span> c <span class="operator">=</span> <span class="constant">0</span>; c <span class="operator">&lt;</span> <span class="type">C</span>; c <span class="operator">+</span><span class="operator">=</span> <span class="constant">1</span>)
+</span></span><span class="clang"><span class="indent">			</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"Col "</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> c <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">" "</span>;
+</span></span><span class="clang"><span class="indent">		</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">for</span> (<span class="type">unsigned</span> r <span class="operator">=</span> <span class="constant">0</span>; r <span class="operator">&lt;</span> <span class="type">R</span>; r <span class="operator">+</span><span class="operator">=</span> <span class="constant">1</span>) {
+</span></span><span class="clang"><span class="indent">			</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"Row "</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> r <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">" "</span>;
+</span></span><span class="clang"><span class="indent">			</span><span class="text"><span class="keyword">for</span> (<span class="type">unsigned</span> c <span class="operator">=</span> <span class="constant">0</span>; c <span class="operator">&lt;</span> <span class="type">C</span>; c <span class="operator">+</span><span class="operator">=</span> <span class="constant">1</span>)
+</span></span><span class="clang"><span class="indent">				</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="function">at</span>(r, c) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">"  "</span>;
+</span></span><span class="clang"><span class="indent">			</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+</span></span><span class="clang"><span class="indent">		</span><span class="text">}
+</span></span><span class="clang"><span class="indent">		</span><span class="text">cout <span class="operator">&lt;</span><span class="operator">&lt;</span> endl;
+</span></span><span class="clang"><span class="indent">	</span><span class="text">}
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="type">Matrix</span><span class="operator">&lt;</span><span class="type">ValueT</span>, <span class="type">R</span>, <span class="type">C</span>, <span class="operator">!</span><span class="type">ColumnMajor</span><span class="operator">&gt;</span> <span class="function">transposeStorage</span> () <span class="keyword">const</span>
+</span></span><span class="clang"><span class="indent">	</span><span class="text">{
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="type">Matrix</span><span class="operator">&lt;</span><span class="type">ValueT</span>, <span class="type">R</span>, <span class="type">C</span>, <span class="operator">!</span><span class="type">ColumnMajor</span><span class="operator">&gt;</span> result;
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">for</span> (<span class="type">unsigned</span> r <span class="operator">=</span> <span class="constant">0</span>; r <span class="operator">&lt;</span> <span class="type">R</span>; r <span class="operator">+</span><span class="operator">=</span> <span class="constant">1</span>)
+</span></span><span class="clang"><span class="indent">			</span><span class="text"><span class="keyword">for</span> (<span class="type">unsigned</span> c <span class="operator">=</span> <span class="constant">0</span>; c <span class="operator">&lt;</span> <span class="type">C</span>; c <span class="operator">+</span><span class="operator">=</span> <span class="constant">1</span>)
+</span></span><span class="clang"><span class="indent">				</span><span class="text">result.<span class="function">at</span>(r, c) <span class="operator">=</span> <span class="function">at</span>(r, c);
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">return</span> result;
+</span></span><span class="clang"><span class="indent">	</span><span class="text">}
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="type">Matrix</span><span class="operator">&lt;</span><span class="type">ValueT</span>, <span class="type">C</span>, <span class="type">R</span>, <span class="operator">!</span><span class="type">ColumnMajor</span><span class="operator">&gt;</span> <span class="function">transposeMatrix</span> () <span class="keyword">const</span>
+</span></span><span class="clang"><span class="indent">	</span><span class="text">{
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="type">Matrix</span><span class="operator">&lt;</span><span class="type">ValueT</span>, <span class="type">C</span>, <span class="type">R</span>, <span class="operator">!</span><span class="type">ColumnMajor</span><span class="operator">&gt;</span> result;
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="function">memcpy</span>(<span class="operator">&amp;</span>result.<span class="function">at</span>(<span class="constant">0</span>,<span class="constant">0</span>), m_values, <span class="keyword">sizeof</span>(m_values));
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">		</span><span class="text"><span class="keyword">return</span> result;
+</span></span><span class="clang"><span class="indent">	</span><span class="text">}
+</span></span><span class="clang"><span class="text">};
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="text"><span class="type">int</span> <span class="function">main</span> (<span class="type">int</span> argc, <span class="type">char</span> <span class="operator">*</span> <span class="keyword">const</span> argv<span class="operator">[</span><span class="operator">]</span>) {
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="type">Matrix</span><span class="operator">&lt;</span><span class="type">float</span>, <span class="constant">4</span>, <span class="constant">2</span>, <span class="constant">false</span><span class="operator">&gt;</span> rowMajorMatrix;
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="type">Matrix</span><span class="operator">&lt;</span><span class="type">float</span>, <span class="constant">4</span>, <span class="constant">2</span>, <span class="constant">true</span><span class="operator">&gt;</span> columnMajorMatrix;
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text">rowMajorMatrix.<span class="function">loadTestPattern</span>();
+</span></span><span class="clang"><span class="indent">	</span><span class="text">rowMajorMatrix.<span class="function">debug</span>();
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text">columnMajorMatrix.<span class="function">loadTestPattern</span>();
+</span></span><span class="clang"><span class="indent">	</span><span class="text">columnMajorMatrix.<span class="function">debug</span>();
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text">rowMajorMatrix <span class="operator">=</span> columnMajorMatrix.<span class="function">transposeStorage</span>();
+</span></span><span class="clang"><span class="indent">	</span><span class="text">rowMajorMatrix.<span class="function">debug</span>();
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="type">Matrix</span><span class="operator">&lt;</span><span class="type">float</span>, <span class="constant">2</span>, <span class="constant">4</span>, <span class="constant">false</span><span class="operator">&gt;</span> transposedMatrix <span class="operator">=</span> columnMajorMatrix.<span class="function">transposeMatrix</span>();
+</span></span><span class="clang"><span class="indent">	</span><span class="text">transposedMatrix.<span class="function">debug</span>();
+</span></span><span class="clang"><span class="text">
+</span></span><span class="clang"><span class="indent">	</span><span class="text"><span class="keyword">return</span> <span class="constant">0</span>;
+</span></span><span class="clang"><span class="text">}</span></span></code></pre>
+<p>bob</p>
 	</body>
 </html>

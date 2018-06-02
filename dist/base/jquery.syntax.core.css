@@ -1,17 +1,12 @@
-pre code.syntax-theme-base {
-  display: block; }
-  pre code.syntax-theme-base > span {
-    display: block;
-    white-space: pre-wrap; }
-  pre code.syntax-theme-base .indent {
-    display: block;
-    float: left; }
-  pre code.syntax-theme-base .text {
-    white-space: pre-wrap;
-    display: block;
-    overflow: hidden;
-    padding-left: 1rem;
-    text-indent: -1rem; }
+pre code.syntax-theme-base > span {
+  display: flex; }
+pre code.syntax-theme-base .indent {
+  flex-grow: 0;
+  flex-shrink: 0; }
+pre code.syntax-theme-base .text {
+  white-space: pre-wrap;
+  padding-left: 2ch;
+  text-indent: -2ch; }
 
 .syntax-theme-base a {
   text-decoration: none;
@@ -39,21 +34,3 @@ pre code.syntax-theme-base {
   color: #466997; }
 .syntax-theme-base .highlight {
   background-color: #fdfdba; }
-.syntax-theme-base pre {
-  overflow: auto;
-  font-family: inherit; }
-
-.syntax-container.syntax-theme-base {
-  position: relative; }
-  .syntax-container.syntax-theme-base .toolbar {
-    font-size: 80%;
-    text-align: right;
-    padding: 0 0.2em 0.2em; }
-    .syntax-container.syntax-theme-base .toolbar a {
-      margin-left: 1em; }
-  .syntax-container.syntax-theme-base pre.raw {
-    overflow: auto;
-    padding: 0 0.4em 0 !important;
-    margin: 0 !important;
-    background-color: #f0f0f0;
-    border: 1px solid #aaa; }
