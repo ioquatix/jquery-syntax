@@ -5,4 +5,8 @@
 .syntax-theme-base
   .preprocessor
     color: #63381f
-    font-style: italic
+
+@media (prefers-color-scheme: dark)
+  .syntax-theme-base
+    .preprocessor
+      color: lighten(#63381f, 30%)

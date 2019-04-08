@@ -3,6 +3,8 @@
 //	See <jquery.syntax.js> for licensing details.
 
 pre code.syntax-theme-base
+  display: block
+  
   > span
     display: flex
   
@@ -12,7 +14,6 @@ pre code.syntax-theme-base
   
   .text
     white-space: pre-wrap
-
     padding-left: 2ch
     text-indent: -2ch
 
@@ -43,7 +44,7 @@ pre code.syntax-theme-base
     color: #f99
 
   .operator
-    color: #000000
+    color: black
 
   .href
     color: #0e0eff
@@ -54,3 +55,32 @@ pre code.syntax-theme-base
 
   .highlight
     background-color: opacify(#fdfdba, 0.5)
+
+@media (prefers-color-scheme: dark)
+  .syntax-theme-base
+    .operator
+      color: white
+      
+    .function
+      color: #c59de7
+
+    .keyword, .access
+      color: darken(#98c6ff, 20%)
+
+    .type
+      color: #37a4ff
+
+    .comment
+      color: #849fca
+
+    .constant
+      color: lighten(#9d7c31, 15%)
+
+    .string, .symbol
+      color: lighten(#e43c3a, 15%)
+
+    .string .escape
+      color: #f99
+    
+    .variable
+      color: lighten(#466997, 20%)
