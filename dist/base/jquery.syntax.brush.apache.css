@@ -4,3 +4,9 @@
   color: #00f; }
 .syntax-theme-base .apache .tag-name {
   font-weight: bold; }
+
+@media (prefers-color-scheme: dark) {
+  .syntax-theme-base .apache .tag {
+    color: #6666ff; }
+  .syntax-theme-base .apache .tag-name {
+    color: #9999ff; } }

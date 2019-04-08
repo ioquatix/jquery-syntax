@@ -1,3 +1,6 @@
 .syntax-theme-base .preprocessor {
-  color: #63381f;
-  font-style: italic; }
+  color: #63381f; }
+
+@media (prefers-color-scheme: dark) {
+  .syntax-theme-base .preprocessor {
+    color: #c97e52; } }

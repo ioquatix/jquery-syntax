@@ -1,12 +1,14 @@
-pre code.syntax-theme-base > span {
-  display: flex; }
-pre code.syntax-theme-base .indent {
-  flex-grow: 0;
-  flex-shrink: 0; }
-pre code.syntax-theme-base .text {
-  white-space: pre-wrap;
-  padding-left: 2ch;
-  text-indent: -2ch; }
+pre code.syntax-theme-base {
+  display: block; }
+  pre code.syntax-theme-base > span {
+    display: flex; }
+  pre code.syntax-theme-base .indent {
+    flex-grow: 0;
+    flex-shrink: 0; }
+  pre code.syntax-theme-base .text {
+    white-space: pre-wrap;
+    padding-left: 2ch;
+    text-indent: -2ch; }
 
 .syntax-theme-base a {
   text-decoration: none;
@@ -26,7 +28,7 @@ pre code.syntax-theme-base .text {
 .syntax-theme-base .string .escape {
   color: #f99; }
 .syntax-theme-base .operator {
-  color: #000000; }
+  color: black; }
 .syntax-theme-base .href {
   color: #0e0eff;
   text-decoration: underline; }
@@ -34,3 +36,23 @@ pre code.syntax-theme-base .text {
   color: #466997; }
 .syntax-theme-base .highlight {
   background-color: #fdfdba; }
+
+@media (prefers-color-scheme: dark) {
+  .syntax-theme-base .operator {
+    color: white; }
+  .syntax-theme-base .function {
+    color: #c59de7; }
+  .syntax-theme-base .keyword, .syntax-theme-base .access {
+    color: #328eff; }
+  .syntax-theme-base .type {
+    color: #37a4ff; }
+  .syntax-theme-base .comment {
+    color: #849fca; }
+  .syntax-theme-base .constant {
+    color: #c9a452; }
+  .syntax-theme-base .string, .syntax-theme-base .symbol {
+    color: #ed7f7d; }
+  .syntax-theme-base .string .escape {
+    color: #f99; }
+  .syntax-theme-base .variable {
+    color: #7f9dc4; } }
