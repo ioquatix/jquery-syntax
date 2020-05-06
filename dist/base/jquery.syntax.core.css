@@ -15,7 +15,7 @@ pre code.syntax-theme-base {
   color: inherit; }
 .syntax-theme-base .function {
   color: #33f; }
-.syntax-theme-base .keyword, .syntax-theme-base .access {
+.syntax-theme-base .keyword, .syntax-theme-base .access, .syntax-theme-base .option {
   color: #7a0968; }
 .syntax-theme-base .type {
   color: #3239D6; }
@@ -42,7 +42,7 @@ pre code.syntax-theme-base {
     color: white; }
   .syntax-theme-base .function {
     color: #c59de7; }
-  .syntax-theme-base .keyword, .syntax-theme-base .access {
+  .syntax-theme-base .keyword, .syntax-theme-base .access, .syntax-theme-base .option {
     color: #328eff; }
   .syntax-theme-base .type {
     color: #37a4ff; }

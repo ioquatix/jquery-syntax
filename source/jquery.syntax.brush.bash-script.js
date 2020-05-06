@@ -55,7 +55,7 @@ Syntax.register('bash-statement', function(brush) {
 		klass: 'variable'
 	});
 	
-	brush.push({pattern: /\s\-+\w+/g, klass: 'option'})
+	brush.push({pattern: /\s\-+[\w-]+/g, klass: 'option'})
 	
 	brush.push(Syntax.lib.singleQuotedString);
 	brush.push(Syntax.lib.doubleQuotedString);
