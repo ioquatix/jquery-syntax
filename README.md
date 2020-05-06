@@ -74,7 +74,7 @@ jQuery.Syntax is typically used to highlight both block code elements and inline
 
 Released under the MIT license.
 
-Copyright, 2016, by [Samuel G. D. Williams](http://www.codeotaku.com/samuel-williams).
+Copyright, 2011-2020, by [Samuel G. D. Williams](https://www.codeotaku.com/).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
