@@ -62,6 +62,41 @@ jQuery.Syntax is typically used to highlight both block code elements and inline
 	<!-- Your code to highlight -->
 	<pre><code class="language-ruby">puts "Hello World"</code></pre>
 
+### Stylesheet Compatibility
+
+The following stylesheet sets some useful defaults and enables responsive tab-size indentation.
+
+```css
+html {
+	font-size: 16px;
+	
+	/* Fix odd text-size in `display: flex` elements on Safari iOS */
+	text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+
+@media (min-width: 40em) {
+	html {
+		font-size: 18px;
+		--tab-size: 4;
+	}
+}
+
+@media (min-width: 80em) {
+	html {
+		font-size: 20px;
+		--tab-size: 4;
+	}
+}
+
+pre {
+	/* -moz-tab-size is still required by Firefox */
+	--tab-size: 2;
+	tab-size: var(--tab-size);
+	-moz-tab-size: var(--tab-size);
+}
+```
+
 ## Contributing
 
 1. Fork it
