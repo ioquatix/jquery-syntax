@@ -259,7 +259,13 @@ Syntax.Match.defaultReduceCallback = function (node, container) {
 // Convert a tree of matches into some flat form (typically HTML nodes).
 Syntax.Match.prototype.reduce = function (append, process) {
 	var start = this.offset;
-	var container = document.createElement('span');
+	var container = null;
+	
+	if (this.expression && this.expression.element) {
+		container = this.expression.element.cloneNode(false);
+	} else {
+		container = document.createElement('span');
+	}
 	
 	append = append || Syntax.Match.defaultReduceCallback;
 	
