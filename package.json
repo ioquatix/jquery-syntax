@@ -7,12 +7,8 @@
     "email": "samuel@codeotaku.com",
     "url": "https://www.codeotaku.com"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
-    }
-  ],
+  "license": "MIT",
+  "repository": "https://github.com/ioquatix/jquery-syntax",
   "dependencies": {
     "jquery": ">=1.4.1"
   },
