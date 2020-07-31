@@ -34,15 +34,15 @@ All syntax highlighters are pretty good these days. But, there are some key diff
 
 ## Installation
 
-jQuery.Syntax is easily installed using bower.
+jQuery.Syntax is easily installed using `yarn`.
 
-	$ bower install jquery-syntax
+	$ yarn install jquery-syntax
 
 It has a `dist/` directory which follows standard conventions.
 
 ### Advanced Configuration
 
-jQuery.Syntax compiles and minifies it's code using uses Rake (Ruby) and [Sass](http://sass-lang.com). Please review the included `Rakefile` and `install.yaml` for more details.
+jQuery.Syntax compiles and minifies it's code using uses [`bake`](https://github.com/ioquatix/bake) (Ruby) and [Sass](http://sass-lang.com). Please review the included `bake.rb` and `install.yaml` for more details.
 
 ## Usage
 
