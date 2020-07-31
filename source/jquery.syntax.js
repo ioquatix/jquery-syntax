@@ -151,17 +151,6 @@ var Syntax = {
 	getScript: function (path, callback) {
 		var script = document.createElement('script');
 		
-		// Internet Exploder
-		script.onreadystatechange = function() {
-			if (this.onload && (this.readyState == 'loaded' || this.readyState == 'complete')) {
-				this.onload();
-				
-				// Ensure the function is only called once.
-				this.onload = null;
-			}
-		};
-		
-		// Every other modern browser
 		script.onload = callback;
 		script.type = "text/javascript";
 		
