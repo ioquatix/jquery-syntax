@@ -1,13 +1,13 @@
-// brush: "html" aliases: []
+// brush: "xrb" aliases: ["trenni"]
 
 //	This file is part of the "jQuery.Syntax" project, and is distributed under the MIT License.
 //	Copyright (c) 2011 Samuel G. D. Williams. <http://www.oriontransfer.co.nz>
 //	See <jquery.syntax.js> for licensing details.
 
-Syntax.brushes.dependency('trenni', 'xml');
-Syntax.brushes.dependency('trenni', 'ruby');
+Syntax.brushes.dependency('xrb', 'xml');
+Syntax.brushes.dependency('xrb', 'ruby');
 
-Syntax.register('trenni', function(brush) {
+Syntax.register('xrb', function(brush) {
 	brush.push({
 		pattern: /((<\?r)([\s\S]*?)(\?>))/gm,
 		matches: Syntax.extractMatches(
