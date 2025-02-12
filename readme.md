@@ -34,9 +34,9 @@ All syntax highlighters are pretty good these days. But, there are some key diff
 
 ## Installation
 
-jQuery.Syntax is easily installed using `yarn`.
+jQuery.Syntax is easily installed using `npm`.
 
-	$ yarn install jquery-syntax
+	$ npm install jquery-syntax
 
 It has a `dist/` directory which follows standard conventions.
 
