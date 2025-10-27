@@ -1,5 +1,7 @@
 # jQuery.Syntax
 
+> **⚠️ ARCHIVED:** This project has been superseded by [syntax-js](https://github.com/socketry/syntax-js) (npm: [`@socketry/syntax`](https://www.npmjs.com/package/@socketry/syntax)). The new version is a modern, zero-dependency ES module implementation without jQuery. Please use the new package for new projects.
+
 jQuery.Syntax is a light-weight client-side syntax highlighter, which dynamically loads external dependencies (JavaScript & CSS) when required. It uses jQuery to make it cross-browser compatible and to simplify integration and integration with other systems.
 
 ## Motivation
